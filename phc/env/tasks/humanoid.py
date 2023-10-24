@@ -697,8 +697,8 @@ class Humanoid(BaseTask):
             asset_id = uuid4()
             asset_file_real = f"/tmp/smpl/smpl_humanoid_{asset_id}.xml"
                 
-                smpl_robot.load_from_skeleton(betas=torch.from_numpy(gender_beta[None, 1:]), gender=gender_beta[0:1], objs_info=None)
-                smpl_robot.write_xml(asset_file_real)
+            smpl_robot.load_from_skeleton(betas=torch.from_numpy(gender_beta[None, 1:]), gender=gender_beta[0:1], objs_info=None)
+            smpl_robot.write_xml(asset_file_real)
                 
             res[idx] = (gender_beta, asset_file_real)
 
