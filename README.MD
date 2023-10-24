@@ -1,6 +1,3 @@
-[Repo still under construction, please check back later]
-
-
 # Perpetual Humanoid Control for Real-time Simulated Avatars
 
 Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real-time Simulated Avatars". In this paper, we present a physics-based humanoid controller that achieves high-fidelity motion imitation and fail-statue recovery in the presence of noisy input (e.g. pose estimates from video or generated from language) and unexpected falls. No external forces is used. 
