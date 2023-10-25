@@ -49,14 +49,10 @@ def run(in_file: str, out_file: str):
 
     mujoco_joint_names = ['Pelvis', 'L_Hip', 'L_Knee', 'L_Ankle', 'L_Toe', 'R_Hip', 'R_Knee', 'R_Ankle', 'R_Toe', 'Torso', 'Spine', 'Chest', 'Neck', 'Head', 'L_Thorax', 'L_Shoulder', 'L_Elbow', 'L_Wrist', 'L_Hand', 'R_Thorax', 'R_Shoulder', 'R_Elbow', 'R_Wrist', 'R_Hand']
     
-    amss_walk_data = ["0-KIT_359_walking_slow10_poses"]
-
-    amass_remove_data = []
 
     amass_full_motion_dict = {}
     for key_name in tqdm(amass_data.keys()):
         smpl_data_entry = amass_data[key_name]
-        file_name = f"data/amass/singles/{key_name}.npy"
         B = smpl_data_entry['pose_aa'].shape[0]
 
         start, end = 0, 0

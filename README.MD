@@ -10,7 +10,7 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
-[October 3, 2023] Training and Evaluation code released.
+[October 25, 2023] Training and Evaluation code released.
 
 
 ## TODOs
@@ -29,6 +29,19 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## Introduction
 We present a physics-based humanoid controller that achieves high-fidelity motion imitation and fault-tolerant behavior in the presence of noisy input (e.g. pose estimates from video or generated from language) and unexpected falls. Our controller scales up to learning ten thousand motion clips without using any external stabilizing forces and learns to naturally recover from fail-state. Given reference motion, our controller can perpetually control simulated avatars without requiring resets. At its core, we propose the progressive multiplicative control policy (PMCP), which dynamically allocates new network capacity to learn harder and harder motion sequences. PMCP allows efficient scaling for learning from large-scale motion databases and adding new tasks, such as fail-state recovery, without catastrophic forgetting. We demonstrate the effectiveness of our controller by using it to imitate noisy poses from video-based pose estimators and language-based motion generators in a live and real-time multi-person avatar use case.
+
+> ❗️❗️❗️Notice that the current released models used a different coordinate system as SMPL (with negative z as gravity direction), and the humanoid is modifed in a way such that it is facing positive x direction (instead of the original SMPL facing). This is reflected in a "up_right_start" flag in the humanoid robot (`smpl_local_robot.py`) configuration. This is done to make the humanoid's heading to be eailerly defined and flipping left and right easier, but would require further modification for converting back to SMPL (which is provided in the code). In the future I am working towards removing this modification. 
+
+## Current Results on Cleaned AMASS (11313 Sequences)
+
+All evaluation is done using the mean SMPL body pose and adjust the height, using the same evaluation protocal as in [UHC](https://github.com/ZhengyiLuo/UniversalHumanoidControl/tree/master). Noticed that different evaluation protocal will lead to different results, and Isaac gym itself can lead to (slightly) different results based on batch size/machine setup. 
+
+| Models         | Succ | G-MPJPE | ACC |
+|----------------|:----:|:------------:|:----:|
+| PHC           | 98.9% |     37.5     | 3.3 |
+| PHC-KP          | 98.7% |     40.7     | 3.5 |
+| PHC+ [in Pulse](https://zhengyiluo.github.io/PULSE/)  | 100% |     26.6     | 2.7 |
+| PHC-Fut (using future) | 100% |     25.3     | 2.5 |
 
 ## Dependencies
 
@@ -76,6 +89,8 @@ Use the following script to download trained models and sample data.
 bash download_data.sh
 ```
 
+To evaluate with your own SMPL data, see the script `scripts/data_process/convert_data_smpl.py`. Pay speical attention to make sure the coordinate system is the same as the one used  in simulaiton (with negative z as gravity direction). 
+
 ### Training
 
 We train on a subset of the [AMASS](https://amass.is.tue.mpg.de/) dataset.
@@ -101,6 +116,7 @@ python scripts/data_process/convert_amass_isaac.py
 
 Which should give you 11313 sequences for trainig. 
 
+
 ## Evaluation 
 
 
@@ -114,6 +130,16 @@ python phc/run.py --task HumanoidImMCPGetup --cfg_env phc/data/cfg/phc_shape_mcp
 
 ## keypoint model
 python phc/run.py --task HumanoidImMCPGetup --cfg_env phc/data/cfg/phc_kp_mcp_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_mcp.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_kp_mcp_iccv --test --num_envs 1 --epoch -1
+```
+
+Evaluate on AMASS:
+
+```
+## Shape + rotation + keypoint model
+python phc/run.py --task HumanoidImMCPGetup --cfg_env phc/data/cfg/phc_shape_mcp_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_mcp.yaml --motion_file sample_data/[amass_data].pkl --network_path output/phc_shape_mcp_iccv --test --num_envs 1024 --epoch -1 --im_eval
+
+## keypoint model
+python phc/run.py --task HumanoidImMCPGetup --cfg_env phc/data/cfg/phc_kp_mcp_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_mcp.yaml --motion_file sample_data/[amass_data].pkl --network_path output/phc_kp_mcp_iccv --test --num_envs 1024 --epoch -1 --im_eval
 ```
 
 Evaluate single primitive model:
@@ -248,7 +274,7 @@ Also consider citing these prior works that are used in this project:
 
 ## References
 This repository is built on top of the following amazing repositories:
-* Main code framework is from: [AMP](https://github.com/NVIDIA-Omniverse/IsaacGymEnvs)
+* Main code framework is from: [IsaacGymEnvs](https://github.com/NVIDIA-Omniverse/IsaacGymEnvs)
 * Part of the SMPL_robot code is from: [UHC](https://github.com/ZhengyiLuo/UniversalHumanoidControl)
 * SMPL models and layer is from: [SMPL-X model](https://github.com/vchoutas/smplx)
 
