@@ -13,8 +13,6 @@ import os.path as osp
 
 sys.path.append(os.getcwd())
 
-from mujoco_py import load_model_from_path
-import mujoco_py
 from uhc.khrylib.utils import get_body_qposaddr
 from uhc.smpllib.smpl_mujoco import SMPL_BONE_ORDER_NAMES as joint_names
 from uhc.smpllib.smpl_local_robot import SMPL_Robot as LocalRobot

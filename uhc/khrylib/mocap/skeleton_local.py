@@ -394,8 +394,7 @@ class Skeleton:
                     pos[1] = parent_pos[1] - bone.pos[1]  # To get toe to be at the y as the parent
 
                 rot = np.array([1, 0, 0, 0])
-                if self.real_weight_porpotion_capsules:
-                    g_attr["density"] = str((hull_params['volume'] / (size[0] * size[1] * size[2] * 8)) * base_density)
+                
                 g_attr["type"] = "box"
                 g_attr["pos"] = "{0:.4f} {1:.4f} {2:.4f}".format(*pos)
                 g_attr["size"] = "{0:.4f} {1:.4f} {2:.4f}".format(*size)
