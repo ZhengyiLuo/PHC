@@ -9,3 +9,6 @@ python uhc/smpllib/smpl_local_robot.py
 ```
 
 This model supports mesh and non-mesh based humanoid used in [Trace & Pace](https://research.nvidia.com/labs/toronto-ai/trace-pace/). There is a number of setting you can play with like "upright_start", which generates a humanoid that that starts in an upright position facing x-direcation (default SMPL faces upward). 
+
+
+[More to come]
