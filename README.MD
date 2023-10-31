@@ -5,7 +5,7 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 [[paper]](https://arxiv.org/abs/2305.06456) [[website]](https://zhengyiluo.github.io/PHC/) [[Video]](https://www.youtube.com/watch?v=zS6Y00EW37A)
 
 <div float="center">
-  <img src="assets/phc.gif" />
+  <img src="assets/phc_teaser.gif" />
 </div>
 
 ## News 🚩
