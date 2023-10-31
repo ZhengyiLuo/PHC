@@ -20,7 +20,7 @@ git+https://github.com/ZhengyiLuo/smplx.git@master
 lxml
 human_body_prior
 autograd
-sklearn
+scikit-learn
 chumpy
 patchelf
 rl-games==1.1.4
@@ -33,7 +33,6 @@ ipdb
 git+https://github.com/geoopt/geoopt.git
 chardet
 cchardet
-geoopt
 imageio-ffmpeg
 easydict
 open3d
