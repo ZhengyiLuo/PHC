@@ -123,6 +123,28 @@ Which should give you 11313 sequences for trainig.
 ## Evaluation 
 
 
+## Viewer Shortcuts
+
+| Keyboard | Function |
+| ---- | --- |
+| f | focus on humanoid |
+| Right click + WASD | change view port |
+| Shift + Right click + WASD | change view port fast |
+| r | reset episode |
+| j | apply large force to the humanoid |
+| l | record screenshot, press again to stop recording|
+| ; | cancel screen shot|
+| m | cancel termination based on imitation |
+
+... more short cut can be found in `pacer/env/tasks/base_task.py`
+
+Notes on rendering: I am using pyvirtualdisplay to record the video such that you can see all humanoids at the same time (default function will only capture the first environment). You can disable it using the flag `--no_virtual_display`. 
+
+You can use the `--render_o3d --no_virtual_display` flag to render the SMPL mesh together with your Isaac Gym simulation in real time like this: 
+<div float="center">
+  <img src="assets/open3d.gif" />
+</div>
+
 ### Imitation 
 
 Evaluate full model:
@@ -219,23 +241,6 @@ You can also just train one model for imitation (no PNN):
 python phc/run.py --task HumanoidIm --cfg_env phc/data/cfg/phc_prim_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im.yaml --motion_file data/amass/pkls/amass_isaac_im_train_take6_upright_slim.pkl --network_path output/phc_prim_iccv --headless --has_eval
 ```
 
-
-## Viewer Shortcuts
-
-| Keyboard | Function |
-| ---- | --- |
-| f | focus on humanoid |
-| Right click + WASD | change view port |
-| Shift + Right click + WASD | change view port fast |
-| r | reset episode |
-| j | apply large force to the humanoid |
-| l | record screenshot, press again to stop recording|
-| ; | cancel screen shot|
-| m | cancel termination based on imitation |
-
-... more short cut can be found in `pacer/env/tasks/base_task.py`
-
-Notes on rendering: I am using pyvirtualdisplay to record the video such that you can see all humanoids at the same time (default function will only capture the first environment). You can disable it using the flag `--no_virtual_display`. 
 
 
 ## Citation
