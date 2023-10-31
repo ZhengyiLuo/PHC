@@ -11,6 +11,7 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 ## News 🚩
 
 [October 31, 2023] Remove dependency on mujoco 210 and update to the newest mujoco version (for creating xml robot; no more downloads and direct install with `pip install mujoco`!). Updated amass_occlusion_v3 to 11313 sequences for training (was 11315). Updated requirement.txt. 
+
 [October 25, 2023] Training and Evaluation code released.
 
 
