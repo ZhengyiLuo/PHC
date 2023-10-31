@@ -1,3 +1,4 @@
+mujoco
 pytorch_lightning
 numpy-stl
 vtk
@@ -12,7 +13,6 @@ joblib>=1.2.0
 opencv-python==4.6.0.66
 tqdm 
 pyyaml
-mujoco-py<2.2,>=2.1
 wandb
 scikit-image
 gym

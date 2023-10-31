@@ -8,7 +8,6 @@ import os.path as osp
 
 sys.path.append(os.getcwd())
 
-import mujoco_py
 import numpy as np
 import math
 from copy import deepcopy
@@ -16,7 +15,7 @@ from collections import defaultdict
 from lxml.etree import XMLParser, parse, ElementTree, Element, SubElement
 from lxml import etree
 from io import BytesIO
-from mujoco_py import load_model_from_path, load_model_from_xml, MjSim, MjViewer
+import mujoco
 from uhc.khrylib.mocap.skeleton_local import Skeleton
 from uhc.khrylib.mocap.skeleton_mesh_local import Skeleton as SkeletonMesh
 from uhc.smpllib.smpl_parser import (
@@ -35,6 +34,7 @@ import joblib
 # from scipy.spatial.qhull import _Qhull
 from uhc.utils.flags import flags
 import cv2
+import mujoco.viewer
 
 
 def parse_vec(string):
@@ -2443,42 +2443,28 @@ if __name__ == "__main__":
     print(smpl_robot.height)
 
     smpl_robot.write_xml(f"phc/data/assets/mjcf/smpl_humanoid.xml")
-    model = load_model_from_path(f"phc/data/assets/mjcf/smpl_humanoid.xml")
-
-    # smpl_robot.write_xml(f"/tmp/smpl/smpl_humanoid.xml")
-    # model = load_model_from_path(f"/tmp/smpl/smpl_humanoid.xml")
-
-    # smpl_robot.write_xml(f"test_good.xml")
-    # model = load_model_from_path(f"test_good.xml")
+    m = mujoco.MjModel.from_xml_path(f"phc/data/assets/mjcf/smpl_humanoid.xml")
+    d = mujoco.MjData(m)
     # model = load_model_from_path(f"phc/data/assets/mjcf/amp_humanoid.xml")
 
-    print(f"mass {mujoco_py.functions.mj_getTotalmass(model)}")
-    sim = MjSim(model)
-    t1 = time.time()
-    print(t1 - t0)
+    with mujoco.viewer.launch_passive(m, d) as viewer:
+        # Close the viewer automatically after 30 wall-seconds.
+        start = time.time()
+        while viewer.is_running() and time.time() - start < 30:
+            step_start = time.time()
 
-    viewer = MjViewer(sim)
-    viewer.cam.distance = 5
+            # mj_step can be replaced with code that also evaluates
+            # a policy and applies a control signal before stepping the physics.
+            mujoco.mj_step(m, d)
 
-    jind = -1
-    jang = 30.0
-    # print(sim.data.qpos.shape, sim.data.ctrl.shape)
-    from scipy.spatial.transform import Rotation as sRot
-    i = 0
-    sim.data.qpos[2] = 1
-    sim.forward()
-    while True:
-        # sim.data.qpos[2] = 1
-        # sim.data.qpos[7 + 42] = -np.pi/6
-        # sim.data.qpos[7 + 44] = -np.pi/2
+            # Example modification of a viewer option: toggle contact points every two seconds.
+            with viewer.lock():
+                viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_CONTACTPOINT] = int(d.time % 2)
 
-        # sim.data.qpos[7 + 59] = np.pi/2
-        # sim.data.qpos[7 + 57] = -np.pi/6
-        # sim.data.qpos[7 + 14] = -np.pi/3
-        # sim.data.qpos[7 + 28] = -np.pi/4
-        # sim.data.qpos[7 + 31] = -np.pi/4
-        sim.data.ctrl[:] = 0
-        i += 1
-        sim.forward()
-        # sim.step()
-        viewer.render()
+            # Pick up changes to the physics state, apply perturbations, update options from GUI.
+            viewer.sync()
+
+            # Rudimentary time keeping, will drift relative to wall clock.
+            time_until_next_step = m.opt.timestep - (time.time() - step_start)
+            if time_until_next_step > 0:
+                time.sleep(time_until_next_step)

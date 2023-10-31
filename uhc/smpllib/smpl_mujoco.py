@@ -14,11 +14,9 @@ import os.path as osp
 sys.path.append(os.getcwd())
 
 from uhc.utils.image_utils import write_frames_to_video
-from mujoco_py import load_model_from_path, MjSim, MjRenderContextOffscreen
 from uhc.khrylib.utils import get_body_qposaddr, get_body_qveladdr
 from uhc.smpllib.smpl_parser import SMPL_BONE_ORDER_NAMES, SMPLH_BONE_ORDER_NAMES
 from uhc.smpllib.smpl_parser import SMPL_Parser
-from uhc.khrylib.rl.envs.common.mjviewer import MjViewer
 
 from uhc.utils.torch_geometry_transforms import (
     angle_axis_to_rotation_matrix,
