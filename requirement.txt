@@ -36,3 +36,4 @@ cchardet
 imageio-ffmpeg
 easydict
 open3d
+gdown
