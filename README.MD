@@ -35,6 +35,9 @@ We present a physics-based humanoid controller that achieves high-fidelity motio
 
 > ❗️❗️❗️Notice that the current released models used a different coordinate system as SMPL (with negative z as gravity direction), and the humanoid is modifed in a way such that it is facing positive x direction (instead of the original SMPL facing). This is reflected in a "up_right_start" flag in the humanoid robot (`smpl_local_robot.py`) configuration. This is done to make the humanoid's heading to be eailerly defined and flipping left and right easier, but would require further modification for converting back to SMPL (which is provided in the code). In the future I am working towards removing this modification. 
 
+### Docs 
+- [Docs on SMPL_Robot](docs/smpl_robot_instruction.MD)
+
 ## Current Results on Cleaned AMASS (11313 Sequences)
 
 All evaluation is done using the mean SMPL body pose and adjust the height, using the same evaluation protocal as in [UHC](https://github.com/ZhengyiLuo/UniversalHumanoidControl/tree/master). Noticed that different evaluation protocal will lead to different results, and Isaac gym itself can lead to (slightly) different results based on batch size/machine setup. 
@@ -144,6 +147,8 @@ You can use the `--render_o3d --no_virtual_display` flag to render the SMPL mesh
 <div float="center">
   <img src="assets/open3d.gif" />
 </div>
+
+to do the above visulaization, press m (to cancel termination based on imitation), and then press j (to apply a large force to the humanoid). 
 
 ### Imitation 
 
