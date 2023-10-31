@@ -8,7 +8,7 @@ scikit-image
 numpy
 scipy
 ipdb
-joblib
+joblib>=1.2.0
 opencv-python==4.6.0.66
 tqdm 
 pyyaml
