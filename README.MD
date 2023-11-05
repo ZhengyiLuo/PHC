@@ -140,7 +140,7 @@ Which should give you 11313 sequences for trainig.
 | ; | cancel screen shot|
 | m | cancel termination based on imitation |
 
-... more short cut can be found in `pacer/env/tasks/base_task.py`
+... more shortcut can be found in `pacer/env/tasks/base_task.py`
 
 Notes on rendering: I am using pyvirtualdisplay to record the video such that you can see all humanoids at the same time (default function will only capture the first environment). You can disable it using the flag `--no_virtual_display`. 
 

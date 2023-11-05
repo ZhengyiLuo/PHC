@@ -30,7 +30,6 @@ chumpy
 patchelf
 lxml
 ipdb
-git+https://github.com/geoopt/geoopt.git
 chardet
 cchardet
 imageio-ffmpeg
