@@ -38,7 +38,7 @@ We present a physics-based humanoid controller that achieves high-fidelity motio
 
 ### Docs 
 - [Docs on SMPL_Robot](docs/smpl_robot_instruction.MD)
-- [Docker Instructions](docs/docker_instruction.MD) (from @kexul)
+- [Docker Instructions](docs/docker_instruction.MD) (from [@kexul](https://github.com/kexul))
 
 ## Current Results on Cleaned AMASS (11313 Sequences)
 
