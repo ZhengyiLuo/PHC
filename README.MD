@@ -25,7 +25,7 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 - [ ] Release image and language-based demo code.  
 
-- [ ] Additional instruction on Isaac Gym SMPL robot. 
+- [x] Additional instruction on Isaac Gym SMPL robot. 
 
 - [x] Release training code. 
 
