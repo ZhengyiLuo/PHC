@@ -90,20 +90,22 @@ python scripts/joint_monkey_smpl.py
 
 ## Data processing for evaluating/training PHC
 
-### Evaluation
+### Minimal Viable Evaluation
 Use the following script to download trained models and sample data.
 
 ```
 bash download_data.sh
 ```
 
+this wil download amass_isaac_standing_upright_slim.pkl, which is a standing still pose for testing. 
+
 To evaluate with your own SMPL data, see the script `scripts/data_process/convert_data_smpl.py`. Pay speical attention to make sure the coordinate system is the same as the one used  in simulaiton (with negative z as gravity direction). 
 
-### Training
+### Training and Evaluation on AMASS
 
 We train on a subset of the [AMASS](https://amass.is.tue.mpg.de/) dataset.
 
-For prcessing the AMASS, first, download the AMASS dataset from [AMASS](https://amass.is.tue.mpg.de/). Then, run the following script on the unzipped data:
+For processing the AMASS, first, download the AMASS dataset from [AMASS](https://amass.is.tue.mpg.de/). Then, run the following script on the unzipped data:
 
 
 ```
