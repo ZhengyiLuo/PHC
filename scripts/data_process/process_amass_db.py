@@ -189,7 +189,6 @@ def process_qpos_list(qpos_list):
         with torch.no_grad():
             amass_pose = amass_pose[:bound]
             batch_size = amass_pose.shape[0]
-            import ipdb; ipdb.set_trace()
             amass_pose = np.concatenate([amass_pose[:, :66], np.zeros((batch_size, 6))], axis=1) # We use SMPL and not SMPLH
             
             pose_aa = torch.tensor(amass_pose)  # After sampling the bound
@@ -263,7 +262,6 @@ if __name__ == "__main__":
     smpl_parser_m = SMPL_Parser(model_path="data/smpl", gender="male", use_pca=False, create_transl=False)
     smpl_parser_f = SMPL_Parser(model_path="data/smpl", gender="female", use_pca=False, create_transl=False)
 
-    # import ipdb; ipdb.set_trace()
     amass_seq_data = process_qpos_list(qpos_list)
      
 
@@ -286,8 +284,6 @@ if __name__ == "__main__":
         if not found:
             print(f"Not found!! {start_name}")
 
-    import ipdb
-    ipdb.set_trace()
     joblib.dump(train_data, f"sample_data/amass_{take_num}_train.pkl")
     joblib.dump(test_data, f"sample_data/amass_{take_num}_test.pkl")
     joblib.dump(valid_data, f"sample_data/amass_{take_num}_valid.pkl")
