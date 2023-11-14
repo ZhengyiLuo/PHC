@@ -22,7 +22,7 @@ from uhc.smpllib.smpl_mujoco import smpl_to_qpose, qpos_to_smpl
 import copy
 
 
-def compute_metrics_lite(pred_pos_all, gt_pos_all, root_idx = 0, use_tqdm = True):
+def compute_metrics_lite(pred_pos_all, gt_pos_all, root_idx = 0, use_tqdm = True, concatenate = True):
     metrics = defaultdict(list)
     if use_tqdm:
         pbar = tqdm(range(len(pred_pos_all)))
@@ -49,8 +49,8 @@ def compute_metrics_lite(pred_pos_all, gt_pos_all, root_idx = 0, use_tqdm = True
         metrics["mpjpe_pa"].append(pa_mpjpe)
         metrics["vel_dist"].append(vel_dist)
         metrics["accel_dist"].append(accel_dist)
-
-    metrics = {k:np.concatenate(v) for k, v in metrics.items()}
+    if concatenate:
+        metrics = {k:np.concatenate(v) for k, v in metrics.items()}
     return metrics
 
 
