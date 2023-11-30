@@ -138,7 +138,5 @@ log/
 stageroom_train/ # tensorboard log
 trials/
 output_videos/
-demo_vis
-demo*
 *.pkl
 new_trials
