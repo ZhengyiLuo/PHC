@@ -160,10 +160,10 @@ Evaluate full model:
 
 ```
 ## Shape + rotation + keypoint model
-python phc/run.py --task HumanoidImMCPGetup --cfg_env phc/data/cfg/phc_shape_mcp_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_mcp.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_shape_mcp_iccv --test --num_envs 1 --epoch -1
+python phc/run.py --task HumanoidImMCPGetup --cfg_env phc/data/cfg/phc_shape_mcp_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_mcp.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_shape_mcp_iccv --test --num_envs 1 --epoch -1  --no_virtual_display
 
 ## keypoint model
-python phc/run.py --task HumanoidImMCPGetup --cfg_env phc/data/cfg/phc_kp_mcp_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_mcp.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_kp_mcp_iccv --test --num_envs 1 --epoch -1
+python phc/run.py --task HumanoidImMCPGetup --cfg_env phc/data/cfg/phc_kp_mcp_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_mcp.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_kp_mcp_iccv --test --num_envs 1 --epoch -1  --no_virtual_display
 ```
 
 Evaluate on AMASS:
@@ -180,10 +180,10 @@ Evaluate single primitive model:
 
 ```
 ## Shape + rotation + keypoint model
-python phc/run.py --task HumanoidIm --cfg_env phc/data/cfg/phc_shape_pnn_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_pnn.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_shape_pnn_iccv --test --num_envs 1 --epoch -1
+python phc/run.py --task HumanoidIm --cfg_env phc/data/cfg/phc_shape_pnn_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_pnn.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_shape_pnn_iccv --test --num_envs 1 --epoch -1  --no_virtual_display
 
 ## keypoint model
-python phc/run.py --task HumanoidIm --cfg_env phc/data/cfg/phc_kp_pnn_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_pnn.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_kp_pnn_iccv --test --num_envs 1 --epoch -1
+python phc/run.py --task HumanoidIm --cfg_env phc/data/cfg/phc_kp_pnn_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_pnn.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_kp_pnn_iccv --test --num_envs 1 --epoch -1  --no_virtual_display
 ```
 
 ### In-the-wild Avatar Control
