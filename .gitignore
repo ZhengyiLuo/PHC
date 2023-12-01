@@ -139,4 +139,5 @@ stageroom_train/ # tensorboard log
 trials/
 output_videos/
 *.pkl
+*.pt
 new_trials

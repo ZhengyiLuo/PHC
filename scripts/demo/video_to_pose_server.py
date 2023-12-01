@@ -22,15 +22,12 @@ import torch
 from collections import deque
 from datetime import datetime
 from torchvision import transforms as T
-import poseviz
 import time
-from zen_tracker import run, parse_opt
+from ultralytics import YOLO
 
-# det_transform = T.Compose([T.ToTensor()])
-# det_model = torch.hub.load('ultralytics/yolov5', 'yolov5l', pretrained=True)
-# det_model.classes = [0]
-# det_model.cuda()
-# det_model.eval()
+det_model = YOLO("yolov8s.pt")
+# accepts all formats - image/dir/Path/URL/video/PIL/ndarray. 0 for webcam
+
 
 def xyxy2xywh(bbox):
     x1, y1, x2, y2 = bbox
@@ -50,34 +47,29 @@ def download_model(model_type):
     return model_path
 
 async def main():
-    global pose_mat, trans, dt, reset_offset, offset_height, superfast, j3d, j2d, num_ppl, bbox, frame, tracking_res, images_acc
-    offset = np.zeros((5, 1))
-    
-    ## debug 
+    global pose_mat, trans, dt, reset_offset, offset_height, superfast, j3d, j2d, num_ppl, bbox, frame
+    offset = 0
 
     from scipy.spatial.transform import Rotation as sRot
     global_transform = sRot.from_quat([0.5, 0.5, 0.5, 0.5]).inv().as_matrix()
     transform = sRot.from_euler('xyz', np.array([-np.pi / 2, 0, 0]), degrees=False).as_matrix()
 
+    prev_box = None
     t_s = time.time()
     print('### Run Model...')
     
     # model = tf.saved_model.load(download_model('metrabs_mob3l_y4'))
-    # model = tf.saved_model.load(download_model('metrabs_eff2s_y4'))
     model = hub.load('https://bit.ly/metrabs_s') # or _s
 
     skeleton = 'smpl_24'
+    joint_names = model.per_skeleton_joint_names[skeleton].numpy().astype(str)
+    joint_edges = model.per_skeleton_joint_edges[skeleton].numpy()
     # viz = poseviz.PoseViz(joint_names, joint_edges)
     print("==================================> Metrabs model loaded <==================================")
     
     with torch.no_grad():
         while True:
-            if 'img' in tracking_res and "detections" in tracking_res:
-                
-                tracking_boxes = tracking_res['detections']
-                frame = tracking_res['img']
-                bbox = tracking_boxes[:, :4]
-                
+            if not frame is None:
                 # pred = model.detect_poses(frame, skeleton=skeleton, default_fov_degrees=55, detector_threshold=0.5, num_aug=5)
                 pred = model.estimate_poses(frame, tf.constant(bbox, dtype=tf.float32), skeleton=skeleton, default_fov_degrees=55, num_aug=1)
                 
@@ -86,43 +78,111 @@ async def main():
                 # camera = poseviz.Camera.from_fov(55, frame.shape[:2])
                 # viz.update(frame, pred['boxes'], pred['poses3d'], camera)
                 pred_j3d = pred['poses3d'].numpy()
-                num_ppl = min(pred_j3d.shape[0], 5)
-                
-                j3d_curr = pred_j3d[:num_ppl]/1000
-                if num_ppl < 5:
-                    j3d[num_ppl:, 0, 0] = np.arange(5 - num_ppl) + 1
-                    
+                num_ppl = pred_j3d.shape[0]
+                j3d[:num_ppl] = pred_j3d/1000
                 j2d =  pred['poses2d'].numpy()
                 t_s = time.time()
                 
                 if reset_offset:
-                    offset[:num_ppl] = - offset_height - j3d_curr[:num_ppl, [0], 1]
+                    offset = - offset_height - j3d[:num_ppl, [0], 1]
                     reset_offset = False
-                
-                j3d_curr[:offset.shape[0], ..., 1] += offset[:num_ppl]
-                
-                j3d = j3d.copy() # Trying to handle race condition
-                j3d[:num_ppl] = j3d_curr
-                    
-                tracking_res['j2d'] = j2d
-                
-             
-def frames_from_webcam_lite():
-    global frame, images_acc, recording, j2d, bbox, tracking_res
+                j3d[:num_ppl, :, 1] += offset
+            
+def get_max_iou_box(det_output, prev_bbox, thrd=0.9):
+    max_score = 0
+    max_bbox = None
+    for i in range(det_output['boxes'].shape[0]):
+        bbox = det_output['boxes'][i]
+        score = det_output['scores'][i]
+        # if float(score) < thrd:
+        #     continue
+        # area = (bbox[2] - bbox[0]) * (bbox[3] - bbox[1])
+        iou = calc_iou(prev_bbox, bbox)
+        iou_score = float(score) * iou
+        if float(iou_score) > max_score:
+            max_bbox = [float(x) for x in bbox]
+            max_score = iou_score
+    if max_bbox is None:
+        max_bbox = prev_bbox
+
+    return max_bbox
+
+def calc_iou(bbox1, bbox2):
+    bbox1 = [float(x) for x in bbox1]
+    bbox2 = [float(x) for x in bbox2]
+
+    xA = max(bbox1[0], bbox2[0])
+    yA = max(bbox1[1], bbox2[1])
+    xB = min(bbox1[2], bbox2[2])
+    yB = min(bbox1[3], bbox2[3])
+
+    interArea = max(0, xB - xA + 1) * max(0, yB - yA + 1)
+
+    box1Area = (bbox1[2] - bbox1[0] + 1) * (bbox1[3] - bbox1[1] + 1)
+    box2Area = (bbox2[2] - bbox2[0] + 1) * (bbox2[3] - bbox2[1] + 1)
+    
+    iou = interArea / float(box1Area + box2Area - interArea)
+
+    return iou
+
+def get_one_box(det_output, thrd=0.9):
+    max_area = 0
+    max_bbox = None
+
+    if det_output['boxes'].shape[0] == 0 or thrd < 1e-5:
+        return None
+
+    for i in range(det_output['boxes'].shape[0]):
+        bbox = det_output['boxes'][i]
+        score = det_output['scores'][i]
+        if float(score) < thrd:
+            continue
+        area = (bbox[2] - bbox[0]) * (bbox[3] - bbox[1])
+        if float(area) > max_area:
+            max_bbox = [float(x) for x in bbox]
+            max_area = area
+
+    if max_bbox is None:
+        return get_one_box(det_output, thrd=thrd - 0.1)
+
+    return max_bbox
+
+
+def frames_from_webcam():
+    global frame, images_acc, recording, j2d, bbox
     cap = cv2.VideoCapture(-1)
+    prev_box = None
     
     while (cap.isOpened()):
         # Capture frame-by-frame
         ret, frame_orig = cap.read()
-        tracking_res['img'] = frame_orig
+        # x1, y1, x2, y2 = bbox
+        detec_threshold = 0.6
         
+        frame = cv2.cvtColor(frame_orig, cv2.COLOR_BGR2RGB) # send to the detector & model 
+        yolo_output = det_model.predict(source=frame, show=False, classes=[0], verbose=False)
+        
+        if len(yolo_output[0].boxes) > 0:
+            yolo_out_xyxy = yolo_output[0].boxes.xyxy.cpu().numpy()
+            
+            bbox = np.stack([yolo_out_xyxy[:, 0], yolo_out_xyxy[:, 1], (yolo_out_xyxy[:, 2] - yolo_out_xyxy[:, 0]), (yolo_out_xyxy[:, 3] - yolo_out_xyxy[:, 1])], axis = 1)
+            x1, y1, x2, y2 = yolo_out_xyxy[0]
+            
+            frame_orig = cv2.rectangle(frame_orig, (int(x1), int(y1)), (int(x2), int(y2)), (154, 201, 219), 5)
+            
+        if not j2d is None:
+            for pt in j2d.reshape(-1, 2):
+                x, y = pt
+                frame_orig = cv2.circle(frame_orig, (int(x), int(y)), 3, (255, 136, 132), 3)
+                
         if recording:
             images_acc.append(frame_orig.copy())
-        # if cv2.waitKey(1) == ord('q'):
-            # break
-
-
-
+            
+        cv2.imshow('frame', frame_orig)
+        
+        if cv2.waitKey(1) == ord('q'):
+            break
+        # yield frame
 
 async def pose_getter(request):
     # query env configurations
@@ -143,6 +203,8 @@ async def pose_getter(request):
         
     return web.json_response(json_resp)
 
+# async def commad_interface(request):
+    
 
 async def websocket_handler(request):
     print('Websocket connection starting')
@@ -210,25 +272,21 @@ async def talk_websocket_handler(request):
                 reset_offset = True
             elif msg.data.startswith("s"):
                 recording = True
-                tracking_res['recording'] =  True
                 print(f"----------------> recording: {recording}")
                 # if recording:
                     # pass
-                if recording and not sim_talker is None:
-                    await sim_talker.send_json({"action": "start_record"})
+                # if recording and not sim_talker is None:
+                    # await sim_talker.send_json({"action": "start_record"})
             elif msg.data.startswith("e"):
                 recording = False
-                tracking_res['recording'] =  False
                 print(f"----------------> recording: {recording}")
-                if not recording and not sim_talker is None:
-                    await sim_talker.send_json({"action": "end_record"})
 
             elif msg.data.startswith("w"):
                 curr_date_time = datetime.now().strftime('%Y-%m-%d-%H:%M:%S')
                 out_file_name = f"output/hybrik_{curr_date_time}.mp4"
                 print(f"----------------> writing video: {out_file_name}")
-                write_frames_to_video(tracking_res['images_acc'], out_file_name = out_file_name)
-                tracking_res['images_acc'] = deque(maxlen = 24000)
+                write_frames_to_video(images_acc, out_file_name = out_file_name)
+                images_acc = deque(maxlen = 24000)
             elif msg.data.startswith("get_pose"):
                 await sim_talker.send_json({
                     "j3d": j3d.tolist(),
@@ -247,41 +305,17 @@ def start_pose_estimate():
     loop.run_until_complete(main())
 
 
-if __name__ == "__main__":
-    gpus = tf.config.list_physical_devices('GPU')
-    if gpus:
-        try:
-            # Currently, memory growth needs to be the same across GPUs
-            for gpu in gpus:
-                tf.config.experimental.set_memory_growth(gpu, True)
-                logical_gpus = tf.config.list_logical_devices('GPU')
-                print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
-        except RuntimeError as e:
-            # Memory growth must be set before GPUs have been initialized
-            print(e)
-        
-    opt = parse_opt() # Tracker
-    
-    bbox, pose_mat, j3d, j2d, trans, dt, ws_talkers, reset_offset, offset_height, images_acc, recording, sim_talker, num_ppl = np.zeros([5, 4]), np.zeros([24, 3, 3]), np.zeros([5, 24, 3]), None, np.zeros([3]), 1 / 10, [], True, 0.92, deque(maxlen = 24000), False, None, 0
-    j3d[:, 0, 0] = np.arange(5)
-    tracking_res = {}
-    frame = None
-    superfast = True
-    
-    tracking_res['recording'] = recording
-    tracking_res['images_acc'] = deque(maxlen = 24000)
-    # main()
-    app = web.Application(client_max_size=1024**2)
-    app.router.add_route('GET', '/ws', websocket_handler)
-    app.router.add_route('GET', '/ws_talk', talk_websocket_handler)
-    app.router.add_route('GET', '/get_pose', pose_getter)
-    # threading.Thread(target=frames_from_webcam_lite, daemon=True).start()
-    threading.Thread(target=tracking_from_tracker, daemon=True).start()
-    threading.Thread(target=start_pose_estimate, daemon=True).start()
-    # tracking_from_tracker()
-    
-    
-    print("=================================================================")
-    print("r: reset offset (use r:0.91), s: start recording, e: end recording, w: write video")
-    print("=================================================================")
-    web.run_app(app, port=8080)
+bbox, pose_mat, j3d, j2d, trans, dt, ws_talkers, reset_offset, offset_height, images_acc, recording, sim_talker, num_ppl = np.zeros([5, 4]), np.zeros([24, 3, 3]), np.zeros([5, 24, 3]), None, np.zeros([3]), 1 / 10, [], True, 0.92, deque(maxlen = 24000), False, None, 0
+frame = None
+superfast = True
+# main()
+app = web.Application(client_max_size=1024**2)
+app.router.add_route('GET', '/ws', websocket_handler)
+app.router.add_route('GET', '/ws_talk', talk_websocket_handler)
+app.router.add_route('GET', '/get_pose', pose_getter)
+# threading.Thread(target=frames_from_webcam, daemon=True).start()
+threading.Thread(target=start_pose_estimate, daemon=True).start()
+print("=================================================================")
+print("r: reset offset (use r:0.91), s: start recording, e: end recording, w: write video")
+print("=================================================================")
+web.run_app(app, port=8080)
