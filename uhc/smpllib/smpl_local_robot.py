@@ -2420,7 +2420,7 @@ if __name__ == "__main__":
         "replace_feet": True,
         "masterfoot": False,
         "big_ankle": True,
-        "freeze_hand": True, 
+        "freeze_hand": True,
         "box_body": False,
         "master_range": 50,
         "model": "smpl",

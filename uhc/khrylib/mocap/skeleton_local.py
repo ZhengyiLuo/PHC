@@ -386,12 +386,18 @@ class Skeleton:
                 pos = (max_verts + min_verts) / 2
                 size /= 2
 
-                if bone.name == "L_Toe" or bone.name == "R_Toe":
+                if self.upright_start:
                     parent_min, parent_max = self.hull_dict[bone.parent.name]['norm_verts'].min(axis=0).values, self.hull_dict[bone.parent.name]['norm_verts'].max(axis=0).values
                     parent_pos = (parent_max + parent_min) / 2
 
                     pos[2] = parent_min[2] - bone.pos[2] + size[2]  # To get toe to be at the same height as the parent
                     pos[1] = parent_pos[1] - bone.pos[1]  # To get toe to be at the y as the parent
+                else:
+                    parent_min, parent_max = self.hull_dict[bone.parent.name]['norm_verts'].min(axis=0).values, self.hull_dict[bone.parent.name]['norm_verts'].max(axis=0).values
+                    parent_pos = (parent_max + parent_min) / 2
+
+                    pos[1] = parent_min[1] - bone.pos[1] + size[1]  # To get toe to be at the same height as the parent
+                    pos[0] = parent_pos[0] - bone.pos[0]  # To get toe to be at the y as the parent
 
                 rot = np.array([1, 0, 0, 0])
                 
