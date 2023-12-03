@@ -21,7 +21,6 @@ from uhc.utils.math_utils import *
 from uhc.smpllib.smpl_mujoco import smpl_to_qpose, qpos_to_smpl
 import copy
 
-
 def compute_metrics_lite(pred_pos_all, gt_pos_all, root_idx = 0, use_tqdm = True, concatenate = True):
     metrics = defaultdict(list)
     if use_tqdm:
@@ -32,7 +31,7 @@ def compute_metrics_lite(pred_pos_all, gt_pos_all, root_idx = 0, use_tqdm = True
     for idx in pbar:
         jpos_pred = pred_pos_all[idx].copy()
         jpos_gt = gt_pos_all[idx].copy()
-        mpjpe_g = np.linalg.norm(jpos_gt - jpos_pred, axis=2).mean(axis = -1) * 1000
+        mpjpe_g = np.linalg.norm(jpos_gt - jpos_pred, axis=2)  * 1000
         
 
         vel_dist = (compute_error_vel(jpos_pred, jpos_gt)) * 1000
@@ -41,18 +40,18 @@ def compute_metrics_lite(pred_pos_all, gt_pos_all, root_idx = 0, use_tqdm = True
         jpos_pred = jpos_pred - jpos_pred[:, [root_idx]]  # zero out root
         jpos_gt = jpos_gt - jpos_gt[:, [root_idx]]
 
-        pa_mpjpe = p_mpjpe(jpos_pred, jpos_gt).mean(axis = -1) * 1000
-        mpjpe = np.linalg.norm(jpos_pred - jpos_gt, axis=2).mean(axis = -1) * 1000
+        pa_mpjpe = p_mpjpe(jpos_pred, jpos_gt) * 1000
+        mpjpe = np.linalg.norm(jpos_pred - jpos_gt, axis=2)* 1000
         
         metrics["mpjpe_g"].append(mpjpe_g)
         metrics["mpjpe_l"].append(mpjpe)
         metrics["mpjpe_pa"].append(pa_mpjpe)
-        metrics["vel_dist"].append(vel_dist)
         metrics["accel_dist"].append(accel_dist)
+        metrics["vel_dist"].append(vel_dist)
+    
     if concatenate:
         metrics = {k:np.concatenate(v) for k, v in metrics.items()}
     return metrics
-
 
 def p_mpjpe(predicted, target):
     """
@@ -93,10 +92,7 @@ def p_mpjpe(predicted, target):
     predicted_aligned = a * np.matmul(predicted, R) + t
 
     # Return MPJPE
-    return np.mean(
-        np.linalg.norm(predicted_aligned - target, axis=len(target.shape) - 1)
-    )
-
+    return np.linalg.norm(predicted_aligned - target, axis=len(target.shape) - 1)
 
 def compute_metrics(res, converter=None):
     res = copy.deepcopy(res)
