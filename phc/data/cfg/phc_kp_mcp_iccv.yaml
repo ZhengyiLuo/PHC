@@ -1,5 +1,5 @@
 # if given, will override the device setting in gym. 
-project_name: "EgoQuest_IM"
+project_name: "PHC"
 notes:  " obs v7, sorry for the confusing name!! This is from im_pnn_1"
 env: 
   numEnvs: 1536

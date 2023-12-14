@@ -191,6 +191,11 @@ python phc/run.py --task HumanoidIm --cfg_env phc/data/cfg/phc_shape_pnn_iccv.ya
 python phc/run.py --task HumanoidIm --cfg_env phc/data/cfg/phc_kp_pnn_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_pnn.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_kp_pnn_iccv --test --num_envs 1 --epoch -1  --no_virtual_display
 ```
 
+```
+python phc/run.py --task HumanoidIm --cfg_env phc/data/cfg/phc_prim_vr.yaml --cfg_train phc/data/cfg/train/rlg/im_big.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_prim_vr --test --num_envs 1 --epoch -1  --no_virtual_display
+
+```
+
 ### In-the-wild Avatar Control
 
 See [Webcam Demo](docs/video_to_control_demo.md)

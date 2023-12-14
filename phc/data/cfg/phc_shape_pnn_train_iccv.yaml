@@ -1,5 +1,5 @@
 # if given, will override the device setting in gym. 
-project_name: "EgoQuest_IM"
+project_name: "PHC"
 notes:  "PNN, no Laternal connection "
 env: 
   numEnvs: 1536

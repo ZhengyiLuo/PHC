@@ -1,8 +1,8 @@
 # if given, will override the device setting in gym. 
 project_name: "PHC"
-notes:  "PNN, no Laternal connection "
+notes:  "obs_v6 No z. Bigger no distilliation. Direct policy"
 env: 
-  numEnvs: 1536
+  numEnvs: 3072
   envSpacing: 5
   episodeLength: 300
   isFlagrun: False
@@ -17,42 +17,32 @@ env:
   has_smpl_pd_offset: False
   remove_toe: False # For humanoid's geom toe
   real_weight_porpotion_capsules: True
-  
+  motion_sym_loss: False
   sym_loss_coef: 1
   big_ankle: True
   fut_tracks: False
   obs_v: 6
+  auto_pmcp: False
+  auto_pmcp_soft: True
+  fitting: False
+  eval_full: False
 
-  has_pnn: True
-  fitting: True
-  num_prim: 4
-  training_prim: 0
-  actors_to_load: 0
-  has_lateral: False
-  models: ['output/phc_shape_pnn_iccv/Humanoid.pth']
-
-  cycle_motion: True
+  cycle_motion: False
   hard_negative: False
 
-
-  ######## Getup Configs ########
-  zero_out_far: True
-  zero_out_far_train: False
-  cycle_motion: False
-  getup_udpate_epoch: 78750
-  
   masterfoot: False
   freeze_toe: false
+  freeze_hand: False
 
   real_weight: True
   kp_scale: 1
   remove_toe_im: False # For imitation 
   power_reward: True
   
-  has_shape_obs: True
-  has_shape_obs_disc: True
-  has_shape_variation: True
-  shape_resampling_interval: 500
+  has_shape_obs: false
+  has_shape_obs_disc: false
+  has_shape_variation: False
+  shape_resampling_interval: 250
 
   pdControl: True
   powerScale: 1.0
@@ -65,14 +55,15 @@ env:
   rootHeightObs: True
   keyBodies: ["R_Ankle", "L_Ankle", "R_Wrist",  "L_Wrist"]
   contactBodies: ["R_Ankle", "L_Ankle", "R_Toe", "L_Toe"]
-  resetBodies: ['Pelvis', 'L_Hip', 'L_Knee', 'R_Hip', 'R_Knee', 'Torso', 'Spine', 'Chest', 'Neck', 'Head', 'L_Thorax', 'L_Shoulder', 'L_Elbow', 'L_Wrist', 'L_Hand', 'R_Thorax', 'R_Shoulder', 'R_Elbow', 'R_Wrist', 'R_Hand']
+  resetBodies: ["Head", "L_Hand", "R_Hand"]
+  trackBodies: ["Head", "L_Hand", "R_Hand"]
   terminationHeight: 0.15
   enableEarlyTermination: True
   terminationDistance: 0.25
 
   ### Fut config
-  numTrajSamples: 3
-  trajSampleTimestepInv: 3
+  numTrajSamples: 10
+  trajSampleTimestepInv: 10
   enableTaskObs: True
 
   asset:
