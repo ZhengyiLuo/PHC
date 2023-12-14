@@ -10,6 +10,8 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
+[December 14, 2023] Release VR controller tracking code. 
+
 [December 14, 2023] Release in-the-wild video demo. 
 
 [October 31, 2023] Remove dependency on mujoco 210 and update to the newest mujoco version (for creating xml robot; no more downloads and direct install with `pip install mujoco`!). Updated amass_occlusion_v3 to 11313 sequences for training (was 11315). Updated requirement.txt. 
@@ -23,9 +25,9 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 - [ ] Release PHC+ model (100% success rate on AMASS) used in [PULSE](https://zhengyiluo.github.io/PULSE/). 
 
-- [ ] Release vr controller tracking code.  
-
 - [ ] Release language-based demo code.  
+
+- [x] Release vr controller tracking code.  
 
 - [x] Release video-based demo code.  
 
