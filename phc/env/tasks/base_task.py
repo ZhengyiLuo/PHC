@@ -404,32 +404,13 @@ class BaseTask():
             
             if self.recording_state_change:
                 if not self.recording:
-                    curr_date_time = datetime.now().strftime('%Y-%m-%d-%H:%M:%S')
-                    curr_video_file_name = self._video_path % curr_date_time
-                    curr_states_file_name = self._states_path % curr_date_time
-                    fps = 60
                     if not flags.server_mode:
-                        writer = imageio.get_writer(curr_video_file_name, fps=fps, macro_block_size=None)
-                        height, width, c = self._video_queue[0].shape
-                        height, width = height if height % 2 == 0 else height - 1, width if width % 2 == 0 else width - 1
+                        self.writer.close()
+                        del self.writer
+                        
+                    self._write_states_to_file(self.curr_states_file_name)
+                    print(f"============ Video finished writing {self.curr_states_file_name}============")
 
-                        for frame in tqdm(self._video_queue):
-                            try:
-                                writer.append_data(frame[:height, :width, :])
-                            except:
-                                print('image size changed???')
-                                import ipdb
-                                ipdb.set_trace()
-
-                        writer.close()
-                    self._video_queue = deque(maxlen=self.max_video_queue_size)
-                    self._write_states_to_file(curr_states_file_name)
-                    print(f"============ Video finished writing {curr_video_file_name}============")
-
-                    # if flags.server_mode:
-                    #     shutil.copyfile(curr_states_file_name, "../crossroadweb/output/curr_motion.pkl")
-                    #     shutil.copyfile(curr_video_file_name, "../crossroadweb/output/curr_video.mp4")
-                    #     print("============ Video finished copying to server ============")
                 else:
                     print(f"============ Writing video ============")
                 self.recording_state_change = False
@@ -443,11 +424,19 @@ class BaseTask():
                     else:
                         img = self.virtual_display.grab()
                         self.color_image = np.array(img)
+                        H, W, C = self.color_image.shape
+                        self.color_image = self.color_image[:(H - H % 2), :, :]
 
-                if self.recording:
-                    if not flags.server_mode:
-                        self._video_queue.append(self.color_image)
-                    self._record_states()
+                if not flags.server_mode:
+                    if not "writer" in self.__dict__:
+                        curr_date_time = datetime.now().strftime('%Y-%m-%d-%H:%M:%S')
+                        self.curr_video_file_name = self._video_path % curr_date_time
+                        self.curr_states_file_name = self._states_path % curr_date_time
+                        if not flags.server_mode:
+                            self.writer = imageio.get_writer(self.curr_video_file_name, fps=60, macro_block_size=None)
+                    self.writer.append_data(self.color_image)
+                    
+                self._record_states()
 
             # fetch results
             if self.device != 'cpu':
