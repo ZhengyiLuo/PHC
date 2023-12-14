@@ -23,7 +23,9 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 - [ ] Release vr controller tracking code.  
 
-- [ ] Release image and language-based demo code.  
+- [ ] Release language-based demo code.  
+
+- [ ] Release video-based demo code.  
 
 - [x] Additional instruction on Isaac Gym SMPL robot. 
 
@@ -193,7 +195,7 @@ python phc/run.py --task HumanoidIm --cfg_env phc/data/cfg/phc_kp_pnn_iccv.yaml 
 see `humanoid_im_mcp_demo.py`
 
 ```
-python phc/run.py --task HumanoidImMCPDemo --cfg_env phc/data/cfg/phc_kp_mcp_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_mcp.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_kp_mcp_iccv --test --num_envs 1 --epoch -1 
+python phc/run.py --task HumanoidImMCPDemo --cfg_env phc/data/cfg/phc_kp_mcp_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_mcp.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_kp_mcp_iccv --test --num_envs 1 --epoch -1  --no_virtual_display
 
 ```
 

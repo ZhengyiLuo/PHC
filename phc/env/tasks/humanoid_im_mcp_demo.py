@@ -28,7 +28,7 @@ import scipy.ndimage.filters as filters
 from uhc.utils.transform_utils import quat_correct_two_batch
 import subprocess
 
-SERVER = "*.*.*.*"
+SERVER = "0.0.0.0"
 smpl_2_mujoco = [0, 1, 4, 7, 10, 2, 5, 8, 11, 3, 6, 9, 12, 15, 13, 16, 18, 20, 22, 14, 17, 19, 21, 23]
 
 
