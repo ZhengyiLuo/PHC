@@ -110,8 +110,10 @@ def read_single_sequence(folder, seq_name):
     datas = {}
 
     for subject in tqdm(subjects):
+        if not osp.isdir(osp.join(folder, subject)):
+            continue
         actions = [
-            x for x in os.listdir(osp.join(folder, subject)) if x.endswith(".npz") and osp.isdir(osp.join(folder, subject))
+            x for x in os.listdir(osp.join(folder, subject)) if x.endswith(".npz") 
         ]
 
         for action in actions:
@@ -170,13 +172,16 @@ if __name__ == "__main__":
     parser.add_argument(
         "--out_dir", type=str, help="dataset directory", default="out"
     )
+    parser.add_argument(
+        '--sequences', type=str, nargs='+', help='which sequences to use', default=all_sequences
+    )
 
     args = parser.parse_args()
     out_path = Path(args.out_dir)
     out_path.mkdir(exist_ok=True)
     db_file = osp.join(out_path, "amass_db_smplh.pt")
 
-    db = read_data(args.dir, sequences=all_sequences)
+    db = read_data(args.dir, sequences=args.sequences)
      
     
     print(f"Saving AMASS dataset to {db_file}")
