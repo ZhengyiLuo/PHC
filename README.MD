@@ -10,6 +10,8 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
+[December 14, 2023] Release in-the-wild video demo. 
+
 [October 31, 2023] Remove dependency on mujoco 210 and update to the newest mujoco version (for creating xml robot; no more downloads and direct install with `pip install mujoco`!). Updated amass_occlusion_v3 to 11313 sequences for training (was 11315). Updated requirement.txt. 
 
 [October 25, 2023] Training and Evaluation code released.
@@ -25,7 +27,7 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 - [ ] Release language-based demo code.  
 
-- [ ] Release video-based demo code.  
+- [x] Release video-based demo code.  
 
 - [x] Additional instruction on Isaac Gym SMPL robot. 
 
@@ -41,6 +43,7 @@ We present a physics-based humanoid controller that achieves high-fidelity motio
 ### Docs 
 - [Docs on SMPL_Robot](docs/smpl_robot_instruction.MD)
 - [Docker Instructions](docs/docker_instruction.MD) (from [@kexul](https://github.com/kexul))
+- [Webcam Demo](docs/video_to_control_demo.md) 
 
 ## Current Results on Cleaned AMASS (11313 Sequences)
 
@@ -190,9 +193,15 @@ python phc/run.py --task HumanoidIm --cfg_env phc/data/cfg/phc_kp_pnn_iccv.yaml 
 
 ### In-the-wild Avatar Control
 
-[More instructions coming soon.]
+See [Webcam Demo](docs/video_to_control_demo.md)
 
-see `humanoid_im_mcp_demo.py`
+The tldr is run:
+
+```
+python scripts/demo/video_to_pose_server.py
+```
+
+then
 
 ```
 python phc/run.py --task HumanoidImMCPDemo --cfg_env phc/data/cfg/phc_kp_mcp_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_mcp.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_kp_mcp_iccv --test --num_envs 1 --epoch -1  --no_virtual_display
