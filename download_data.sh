@@ -8,3 +8,4 @@ gdown https://drive.google.com/uc?id=1lROeTwUwZkhzs-NCfzvhFoyJvdy1chPu -O  outpu
 gdown https://drive.google.com/uc?id=1eGTO1hm74FIip9m6WzN8a7AWXeTX3SM9 -O  output/phc_kp_mcp_iccv/
 gdown https://drive.google.com/uc?id=1_B0HgLQElEZhEWkhmg5nweoWKnQB6VYr -O  output/phc_shape_pnn_iccv/
 gdown https://drive.google.com/uc?id=1g1uXLYPev_2RBUQmP3-uYdtXbN9LKbSL -O  output/phc_shape_mcp_iccv/
+gdown https://drive.google.com/uc?id=10Y8ZZBi7kQgRjNKRaddDEj8SebPCH7sj -O  output/phc_prim_vr/
