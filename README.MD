@@ -8,9 +8,28 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
   <img src="assets/phc_teaser.gif" />
 </div>
 
+# Table of Contents
+* [News 🚩](#news-)
+* [TODOs](#todos)
+* [Introduction](#introduction)
+    * [Docs](#docs)
+    * [Current Results on Cleaned AMASS (11313 Sequences)](#current-results-on-cleaned-amass-11313-sequences)
+    * [Dependencies](#dependencies)
+* [Evaluation](#evaluation)
+    * [Minimal Viable Evaluation](#minimal-viable-evaluation)
+    * [Viewer Shortcuts](#viewer-shortcuts)
+    * [Imitation](#imitation)
+    * [In-the-wild Avatar Control](#in-the-wild-avatar-control)
+    * [VR Controller Tracking](#vr-controller-tracking)
+* [Training](#training)
+    * [Data Processing AMASS](#data-processing-amass)
+    * [Training PHC](#training-phc)
+* [Citation](#citation)
+* [References](#references)
+
 ## News 🚩
 
-[December 14, 2023] Release VR controller tracking code. 
+[December 19, 2023] Release VR controller tracking code. 
 
 [December 14, 2023] Release in-the-wild video demo. 
 
@@ -47,7 +66,7 @@ We present a physics-based humanoid controller that achieves high-fidelity motio
 - [Docker Instructions](docs/docker_instruction.MD) (from [@kexul](https://github.com/kexul))
 - [Webcam Demo](docs/video_to_control_demo.md) 
 
-## Current Results on Cleaned AMASS (11313 Sequences)
+### Current Results on Cleaned AMASS (11313 Sequences)
 
 All evaluation is done using the mean SMPL body pose and adjust the height, using the same evaluation protocal as in [UHC](https://github.com/ZhengyiLuo/UniversalHumanoidControl/tree/master). Noticed that different evaluation protocal will lead to different results, and Isaac gym itself can lead to (slightly) different results based on batch size/machine setup. 
 
@@ -58,7 +77,7 @@ All evaluation is done using the mean SMPL body pose and adjust the height, usin
 | PHC+ [in Pulse](https://zhengyiluo.github.io/PULSE/)  | 100% |     26.6     | 2.7 |
 | PHC-Fut (using future) | 100% |     25.3     | 2.5 |
 
-## Dependencies
+### Dependencies
 
 To create the environment, follow the following instructions: 
 
@@ -93,12 +112,7 @@ python uhc/smpllib/smpl_local_robot.py
 python scripts/joint_monkey_smpl.py
 ```
 
-
-
-## Data processing for evaluating/training PHC
-
-### Minimal Viable Evaluation
-Use the following script to download trained models and sample data.
+4. Use the following script to download trained models and sample data.
 
 ```
 bash download_data.sh
@@ -108,36 +122,11 @@ this wil download amass_isaac_standing_upright_slim.pkl, which is a standing sti
 
 To evaluate with your own SMPL data, see the script `scripts/data_process/convert_data_smpl.py`. Pay speical attention to make sure the coordinate system is the same as the one used  in simulaiton (with negative z as gravity direction). 
 
-### Training and Evaluation on AMASS
-
-We train on a subset of the [AMASS](https://amass.is.tue.mpg.de/) dataset.
-
-For processing the AMASS, first, download the AMASS dataset from [AMASS](https://amass.is.tue.mpg.de/). Then, run the following script on the unzipped data:
-
-
-```
-python scripts/data_process/process_amass_raw.py --dir [path_to_amass] --out_dir [out_dir]
-```
-
-which dumps the data into the `amass_db_smplh.pt` file. Then, run 
-
-```
-python scripts/data_process/process_amass_db.py
-```
-
-We further process these data into Motionlib format by running the following script:
-
-```
-python scripts/data_process/convert_amass_isaac.py
-```
-
-Which should give you 11313 sequences for trainig. 
-
 
 ## Evaluation 
 
 
-## Viewer Shortcuts
+### Viewer Shortcuts
 
 | Keyboard | Function |
 | ---- | --- |
@@ -193,11 +182,6 @@ python phc/run.py --task HumanoidIm --cfg_env phc/data/cfg/phc_shape_pnn_iccv.ya
 python phc/run.py --task HumanoidIm --cfg_env phc/data/cfg/phc_kp_pnn_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_pnn.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_kp_pnn_iccv --test --num_envs 1 --epoch -1  --no_virtual_display
 ```
 
-```
-python phc/run.py --task HumanoidIm --cfg_env phc/data/cfg/phc_prim_vr.yaml --cfg_train phc/data/cfg/train/rlg/im_big.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_prim_vr --test --num_envs 1 --epoch -1  --no_virtual_display
-
-```
-
 ### In-the-wild Avatar Control
 
 See [Webcam Demo](docs/video_to_control_demo.md)
@@ -216,7 +200,45 @@ python phc/run.py --task HumanoidImMCPDemo --cfg_env phc/data/cfg/phc_kp_mcp_icc
 ```
 
 
+### VR Controller Tracking
+
+```
+python phc/run.py --task HumanoidIm --cfg_env phc/data/cfg/phc_prim_vr.yaml --cfg_train phc/data/cfg/train/rlg/im_big.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_prim_vr --test --num_envs 1 --epoch -1  --no_virtual_display
+
+```
+
+
+
 ## Training
+
+
+
+### Data Processing AMASS
+
+We train on a subset of the [AMASS](https://amass.is.tue.mpg.de/) dataset.
+
+For processing the AMASS, first, download the AMASS dataset from [AMASS](https://amass.is.tue.mpg.de/). Then, run the following script on the unzipped data:
+
+
+```
+python scripts/data_process/process_amass_raw.py --dir [path_to_amass] --out_dir [out_dir]
+```
+
+which dumps the data into the `amass_db_smplh.pt` file. Then, run 
+
+```
+python scripts/data_process/process_amass_db.py
+```
+
+We further process these data into Motionlib format by running the following script:
+
+```
+python scripts/data_process/convert_amass_isaac.py
+```
+
+Which should give you 11313 sequences for trainig. 
+
+### Training PHC
 
 [This section is still under contruction. Proceed with caution.]
 
