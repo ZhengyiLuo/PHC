@@ -87,7 +87,7 @@ To create the environment, follow the following instructions:
 ```
 conda create -n isaac python=3.8
 conda install pytorch torchvision torchaudio pytorch-cuda=11.6 -c pytorch -c nvidia
-pip install -r requirements.txt
+pip install -r requirement.txt
 ```
 
 2. Download and setup [Isaac Gym](https://developer.nvidia.com/isaac-gym). 
