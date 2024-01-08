@@ -2411,7 +2411,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     robot_cfg = {
         "mesh": False,
-        "rel_joint_lm": True,
+        "rel_joint_lm": False,
         "upright_start": True,
         "remove_toe": False,
         "real_weight": True,
@@ -2435,15 +2435,15 @@ if __name__ == "__main__":
 
     betas = torch.zeros(1, 16)
     # betas = torch.tensor([[5, -0.0670, -0.1558,  0.3380,  0.2385, -1.9571,  1.0835,-0.7026, -0.7133, -2.0366,  1.2852, -1.0309,  0.1753,  0.3070,  3.1381, -3.3069]])
-    gender = [0]
+    gender = [2]
     t0 = time.time()
     params = smpl_robot.get_params()
 
     smpl_robot.load_from_skeleton(betas=betas, objs_info=None, gender=gender)
     print(smpl_robot.height)
 
-    smpl_robot.write_xml(f"phc/data/assets/mjcf/smpl_humanoid.xml")
-    m = mujoco.MjModel.from_xml_path(f"phc/data/assets/mjcf/smpl_humanoid.xml")
+    smpl_robot.write_xml(f"phc/data/assets/mjcf/{robot_cfg['model']}_{gender[0]}_humanoid.xml")
+    m = mujoco.MjModel.from_xml_path(f"phc/data/assets/mjcf/{robot_cfg['model']}_{gender[0]}_humanoid.xml")
     d = mujoco.MjData(m)
     d.qpos[2] = 0.95
     # model = load_model_from_path(f"phc/data/assets/mjcf/amp_humanoid.xml")

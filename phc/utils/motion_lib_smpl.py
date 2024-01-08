@@ -49,10 +49,13 @@ class MotionLibSMPL(MotionLibBase):
         super().__init__(motion_file=motion_file, device=device, fix_height=fix_height, masterfoot_conifg=masterfoot_conifg, min_length=min_length, im_eval=im_eval, multi_thread=multi_thread)
         
         data_dir = "data/smpl"
-        smpl_parser_n = SMPL_Parser(model_path=data_dir, gender="neutral")
-        smpl_parser_m = SMPL_Parser(model_path=data_dir, gender="male")
-        smpl_parser_f = SMPL_Parser(model_path=data_dir, gender="female")
-        self.mesh_parsers = {0: smpl_parser_n, 1: smpl_parser_m, 2: smpl_parser_f}
+        if osp.exists(data_dir):
+            smpl_parser_n = SMPL_Parser(model_path=data_dir, gender="neutral")
+            smpl_parser_m = SMPL_Parser(model_path=data_dir, gender="male")
+            smpl_parser_f = SMPL_Parser(model_path=data_dir, gender="female")
+            self.mesh_parsers = {0: smpl_parser_n, 1: smpl_parser_m, 2: smpl_parser_f}
+        else:
+            self.mesh_parsers = None
     
         return
     
@@ -122,7 +125,11 @@ class MotionLibSMPL(MotionLibBase):
                 trans = torch.matmul(trans, torch.from_numpy(random_heading_rot.as_matrix().T))
             ##### ZL: randomize the heading ######
 
-            trans, trans_fix = MotionLibSMPL.fix_trans_height(pose_aa, trans, curr_gender_beta, mesh_parsers, fix_height_mode = fix_height)
+            if not mesh_parsers is None:
+                trans, trans_fix = MotionLibSMPL.fix_trans_height(pose_aa, trans, curr_gender_beta, mesh_parsers, fix_height_mode = fix_height)
+            else:
+                trans_fix = 0
+                
 
             if not masterfoot_config is None:
                 num_bodies = len(masterfoot_config['body_names'])
