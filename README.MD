@@ -29,9 +29,11 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
+[January 7, 2024] Release language-to-control demo (based on MDM). 
+
 [December 19, 2023] Release VR controller tracking code. 
 
-[December 14, 2023] Release in-the-wild video demo. 
+[December 14, 2023] Release webcam video-based control demo. 
 
 [October 31, 2023] Remove dependency on mujoco 210 and update to the newest mujoco version (for creating xml robot; no more downloads and direct install with `pip install mujoco`!). Updated amass_occlusion_v3 to 11313 sequences for training (was 11315). Updated requirement.txt. 
 
@@ -44,7 +46,7 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 - [ ] Release PHC+ model (100% success rate on AMASS) used in [PULSE](https://zhengyiluo.github.io/PULSE/). 
 
-- [ ] Release language-based demo code.  
+- [x] Release language-based demo code.  
 
 - [x] Release vr controller tracking code.  
 
@@ -65,6 +67,7 @@ We present a physics-based humanoid controller that achieves high-fidelity motio
 - [Docs on SMPL_Robot](docs/smpl_robot_instruction.MD)
 - [Docker Instructions](docs/docker_instruction.MD) (from [@kexul](https://github.com/kexul))
 - [Webcam Demo](docs/video_to_control_demo.md) 
+- [Language Demo](docs/language_to_control_demo.md) 
 
 ### Current Results on Cleaned AMASS (11313 Sequences)
 
