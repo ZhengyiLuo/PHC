@@ -694,11 +694,13 @@ class Humanoid(BaseTask):
             if flags.im_eval:
                 gender_beta = np.zeros(17)
                     
-            asset_id = uuid4()
-            asset_file_real = f"/tmp/smpl/smpl_humanoid_{asset_id}.xml"
-                
-            smpl_robot.load_from_skeleton(betas=torch.from_numpy(gender_beta[None, 1:]), gender=gender_beta[0:1], objs_info=None)
-            smpl_robot.write_xml(asset_file_real)
+            if not smpl_robot is None:
+                asset_id = uuid4()
+                asset_file_real = f"/tmp/smpl/smpl_humanoid_{asset_id}.xml"
+                smpl_robot.load_from_skeleton(betas=torch.from_numpy(gender_beta[None, 1:]), gender=gender_beta[0:1], objs_info=None)
+                smpl_robot.write_xml(asset_file_real)
+            else:
+                asset_file_real = f"phc/data/assets/mjcf/smpl_{int(gender_beta[0])}_humanoid.xml"
                 
             res[idx] = (gender_beta, asset_file_real)
 
@@ -747,10 +749,17 @@ class Humanoid(BaseTask):
                 "geom_params": {},
                 "actuator_params": {},
             }
-            robot = SMPL_Robot(
-                robot_cfg,
-                data_dir="data/smpl",
-            )
+            if os.path.exists("data/smpl"):
+                robot = SMPL_Robot(
+                    robot_cfg,
+                    data_dir="data/smpl",
+                )
+            else:
+                print("!!!!!!! SMPL files not found, loading pre-computed humanoid assets, only for demo purposes !!!!!!!")
+                print("!!!!!!! SMPL files not found, loading pre-computed humanoid assets, only for demo purposes !!!!!!!")
+                print("!!!!!!! SMPL files not found, loading pre-computed humanoid assets, only for demo purposes !!!!!!!")
+                asset_root = "./"
+                robot = None
                 
                 
 
@@ -802,16 +811,19 @@ class Humanoid(BaseTask):
                     self.humanoid_shapes.append(torch.from_numpy(gender_beta).float())
                     self.humanoid_assets.append(humanoid_asset)
                     self.skeleton_trees.append(sk_tree)
-
-                robot.remove_geoms()  # Clean up the geoms
+                if not robot is None:
+                    robot.remove_geoms()  # Clean up the geoms
+                    
                 self.humanoid_shapes = torch.vstack(self.humanoid_shapes).to(self.device)
             else:
                 gender_beta, asset_file_real = self._create_smpl_humanoid_xml([0], robot, None, 0)[0]
                 sk_tree = SkeletonTree.from_mjcf(asset_file_real)
+                
 
                 humanoid_asset = self.gym.load_asset(self.sim, asset_root, asset_file_real, asset_options)
                 actuator_props = self.gym.get_asset_actuator_properties(humanoid_asset)
                 motor_efforts = [prop.motor_effort for prop in actuator_props]
+                
 
                 # create force sensors at the feet
                 right_foot_idx = self.gym.find_asset_rigid_body_index(humanoid_asset, "right_foot")
