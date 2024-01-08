@@ -2445,6 +2445,7 @@ if __name__ == "__main__":
     smpl_robot.write_xml(f"phc/data/assets/mjcf/smpl_humanoid.xml")
     m = mujoco.MjModel.from_xml_path(f"phc/data/assets/mjcf/smpl_humanoid.xml")
     d = mujoco.MjData(m)
+    d.qpos[2] = 0.95
     # model = load_model_from_path(f"phc/data/assets/mjcf/amp_humanoid.xml")
 
     with mujoco.viewer.launch_passive(m, d) as viewer:

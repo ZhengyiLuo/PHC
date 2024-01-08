@@ -356,7 +356,7 @@ class Skeleton:
             else:
                 size[1] = hull_params['volume'] / (size[2] * size[0])
             size /= 2
-
+            
             if bone.name == "L_Toe" or bone.name == "R_Toe":
                 if self.upright_start:
                     pos[2] = -bone.pos[2] / 2 - self.size_buffer[bone.parent.name][2] + size[2]  # To get toe to be at the same height as the parent

@@ -87,7 +87,7 @@ To create the environment, follow the following instructions:
 ```
 conda create -n isaac python=3.8
 conda install pytorch torchvision torchaudio pytorch-cuda=11.6 -c pytorch -c nvidia
-pip install -r requirements.txt
+pip install -r requirement.txt
 ```
 
 2. Download and setup [Isaac Gym](https://developer.nvidia.com/isaac-gym). 
@@ -199,6 +199,13 @@ python phc/run.py --task HumanoidImMCPDemo --cfg_env phc/data/cfg/phc_kp_mcp_icc
 
 ```
 
+
+See [Language-to-motion Demo](docs/language_to_control_demo.md)
+
+```
+python phc/run.py --task HumanoidImMCPDemo --cfg_env phc/data/cfg/phc_kp_mcp_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_mcp.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_kp_mcp_iccv --test --num_envs 1 --epoch -1  --no_virtual_display
+
+```
 
 ### VR Controller Tracking
 

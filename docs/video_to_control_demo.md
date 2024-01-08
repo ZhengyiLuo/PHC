@@ -3,7 +3,7 @@
 To run the video demo, we need to run [Metrabs](https://istvansarandi.com/eccv22_demo/) for pose estimation, which requires tensorflow. 
 
 
-To install dependency (upon the already existing ones):
+To install dependency (in addition the already existing ones):
 ```
 conda create -n metrabs python=3.8
 conda activate metrabs
