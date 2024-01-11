@@ -242,7 +242,7 @@ if __name__ == "__main__":
 
     np.random.seed(0)
     flags.debug = args.debug
-    take_num = "copycat_take5"
+    take_num = "copycat_take6"
     amass_seq_data = {}
     seq_length = -1
 

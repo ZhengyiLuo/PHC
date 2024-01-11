@@ -29,6 +29,8 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
+[January 8, 2024] Support for running inference without SMPL model. 
+
 [January 7, 2024] Release language-to-control demo (based on MDM). 
 
 [December 19, 2023] Release VR controller tracking code. 
@@ -114,6 +116,8 @@ Make sure you have the SMPL paramters properly setup by running the following sc
 python uhc/smpllib/smpl_local_robot.py
 python scripts/joint_monkey_smpl.py
 ```
+
+The SMPL model is used to adjust the height the humanoid robot to avoid penetnration with the ground during data loading. 
 
 4. Use the following script to download trained models and sample data.
 
