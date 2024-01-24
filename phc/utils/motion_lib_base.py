@@ -21,6 +21,12 @@ from scipy.spatial.transform import Rotation as sRot
 import random
 from phc.utils.flags import flags
 from enum import Enum
+
+import resource
+rlimit = resource.getrlimit(resource.RLIMIT_NOFILE)
+resource.setrlimit(resource.RLIMIT_NOFILE, (2048, rlimit[1]))
+
+
 USE_CACHE = False
 print("MOVING MOTION DATA TO GPU, USING CACHE:", USE_CACHE)
 
@@ -226,9 +232,10 @@ class MotionLibBase():
 
         motion_data_list = self._motion_data_list[sample_idxes.cpu().numpy()]
         mp.set_sharing_strategy('file_descriptor')
+        # mp.set_sharing_strategy('file_system')
 
         manager = mp.Manager()
-        queue = manager.Queue()
+        queue = manager.Queue(maxsize=1)
         num_jobs = min(mp.cpu_count(), 64)
 
         if num_jobs <= 8 or not self.multi_thread:
