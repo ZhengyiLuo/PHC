@@ -31,7 +31,6 @@ import numpy as np
 import os
 
 import torch
-import multiprocessing
 
 from isaacgym import gymtorch
 from isaacgym import gymapi
@@ -48,6 +47,7 @@ from collections import defaultdict
 from poselib.poselib.skeleton.skeleton3d import SkeletonMotion, SkeletonState
 from scipy.spatial.transform import Rotation as sRot
 import gc
+import torch.multiprocessing as mp
 from phc.utils.draw_utils import agt_color, get_color_gradient
 
 ENABLE_MAX_COORD_OBS = True
@@ -769,8 +769,8 @@ class Humanoid(BaseTask):
             asset_options.default_dof_drive_mode = gymapi.DOF_MODE_NONE
 
             if self.has_shape_variation:
-                queue = multiprocessing.Queue()
-                num_jobs = multiprocessing.cpu_count()
+                queue = mp.Queue()
+                num_jobs = min(mp.cpu_count(), 64)
                 if num_jobs <= 8:
                     num_jobs = 1
                 if flags.debug:
@@ -783,7 +783,7 @@ class Humanoid(BaseTask):
 
                 for i in range(1, len(jobs)):
                     worker_args = (job_args[i], robot, queue, i)
-                    worker = multiprocessing.Process(target=self._create_smpl_humanoid_xml, args=worker_args)
+                    worker = mp.Process(target=self._create_smpl_humanoid_xml, args=worker_args)
                     worker.start()
                 res_acc.update(self._create_smpl_humanoid_xml(jobs[0], robot, None, 0))
                 for i in tqdm(range(len(jobs) - 1)):
