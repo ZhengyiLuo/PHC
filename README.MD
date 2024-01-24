@@ -24,6 +24,8 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 * [Training](#training)
     * [Data Processing AMASS](#data-processing-amass)
     * [Training PHC](#training-phc)
+* [Trouble Shooting](#trouble-shooting)
+    * [Multiprocessing Issues](#multiprocessing-issues)
 * [Citation](#citation)
 * [References](#references)
 
@@ -304,7 +306,21 @@ You can also just train one model for imitation (no PNN):
 python phc/run.py --task HumanoidIm --cfg_env phc/data/cfg/phc_prim_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im.yaml --motion_file data/amass/pkls/amass_isaac_im_train_take6_upright_slim.pkl --network_path output/phc_prim_iccv --headless --has_eval
 ```
 
+## Trouble Shooting
 
+
+### Multiprocessing Issues
+See [this issue](https://github.com/ZhengyiLuo/PerpetualHumanoidControl/issues/17) for some discusssions. 
+
+For the data loading part, try use 
+
+at [this line](https://github.com/ZhengyiLuo/PerpetualHumanoidControl/blob/8e01930fbcaa3efb9fb8b4752f2cf52f41dfe260/phc/utils/motion_lib_base.py#L235), bascially, uncomment: 
+
+```
+mp.set_sharing_strategy('file_system')
+```
+
+which should fix the issue. Though using file_system has caused me problems before as well.
 
 ## Citation
 If you find this work useful for your research, please cite our paper:
