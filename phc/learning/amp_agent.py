@@ -922,8 +922,8 @@ class AMPAgent(common_agent.CommonAgent):
         if "mb_rewards" in train_info:
             train_info_dict['mb_rewards'] = train_info['mb_rewards'].mean().item()
         
-        if 'terminated_flags' in train_info:
-            train_info_dict["success_rate"] =  1 - torch.mean((train_info['terminated_flags'] > 0).float()).item()
+        # if 'terminated_flags' in train_info:
+        #     train_info_dict["success_rate"] =  1 - torch.mean((train_info['terminated_flags'] > 0).float()).item()
         
         if "reward_raw" in train_info:
             for idx, v in enumerate(train_info['reward_raw'].cpu().numpy().tolist()):
