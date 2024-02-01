@@ -1,0 +1,47 @@
+defaults:
+  - _self_
+  - env: env_im
+  - robot: smpl_humanoid
+  - learning: im
+  - sim: default_sim
+
+project_name: "PHC"
+notes: "Default Notes"
+exp_name: &exp_name humanoid_smpl
+headless: True
+seed: 0
+no_log: False
+resume_str: null
+num_threads: 64
+test: False 
+output_path: output/HumanoidIm/${exp_name}
+torch_deterministic: False
+epoch: 0
+im_eval: False
+horovod: False # Use horovod for multi-gpu training, have effect only with rl_games RL library
+rl_device: "cuda:0"
+device: "cuda"
+device_id: 0
+metadata: false
+play: ${test}
+train: True
+
+
+####### Testing Configs. ########
+server_mode: False
+has_eval: True
+no_virtual_display: False
+render_o3d: False
+debug: False
+follow: False
+add_proj: False
+real_traj: False
+
+hydra:
+  job:
+    name: ${exp_name}
+    env_set:
+      OMP_NUM_THREADS: 1
+  run:
+    dir: output/HumanoidIm/${exp_name}
+

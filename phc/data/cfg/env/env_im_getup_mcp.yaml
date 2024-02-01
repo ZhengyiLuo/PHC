@@ -1,0 +1,96 @@
+# if given, will override the device setting in gym. 
+task: HumanoidImMCPGetup
+project_name: "PHC"
+notes:  "Progressive MCP without softmax, zero out far"
+
+motion_file: ""
+num_envs: 1024
+env_spacing: 2
+episode_length: 300
+is_flag_run: False
+enable_debug_vis: False
+
+sym_loss_coef: 1
+fut_tracks: False
+obs_v: 6
+
+######## PNN Configs ########
+has_pnn: True
+fitting: True
+num_prim: 4
+training_prim: 0
+actors_to_load: 4
+has_lateral: False
+models: []
+
+######## Getup Configs ########
+zero_out_far: True
+zero_out_far_train: False
+cycle_motion: False
+getup_udpate_epoch: 78750
+
+getup_schedule: True
+recoverySteps: 90
+zero_out_far_steps: 90
+recoveryEpisodeProb: 0.5
+fallInitProb: 0.3
+hard_negative: False
+
+z_activation: "silu"
+
+kp_scale: 1
+
+power_reward: True
+power_coefficient: 0.00005
+
+has_shape_obs: True
+has_shape_obs_disc: True
+has_shape_variation: True
+shape_resampling_interval: 500
+
+control_mode: "isaac_pd"
+power_scale: 1.0
+controlFrequencyInv: 2 # 30 Hz
+stateInit: "Random"  
+hybridInitProb: 0.5
+numAMPObsSteps: 10
+
+local_root_obs: True
+root_height_obs: True
+keyBodies: ["R_Ankle", "L_Ankle", "R_Wrist",  "L_Wrist"]
+contact_bodies: ["R_Ankle", "L_Ankle", "R_Toe", "L_Toe"]
+resetBodies: ['Pelvis', 'L_Hip', 'L_Knee', 'R_Hip', 'R_Knee', 'Torso', 'Spine', 'Chest', 'Neck', 'Head', 'L_Thorax', 'L_Shoulder', 'L_Elbow', 'L_Wrist', 'L_Hand', 'R_Thorax', 'R_Shoulder', 'R_Elbow', 'R_Wrist', 'R_Hand']
+terminationHeight: 0.15
+enableEarlyTermination: True
+terminationDistance: 0.25
+
+### Fut config
+numTrajSamples: 3
+trajSampleTimestepInv: 3
+enableTaskObs: True
+
+asset:
+  assetRoot: "/"
+  assetFileName: "mjcf/smpl_humanoid.xml"
+
+plane:
+  staticFriction: 1.0
+  dynamicFriction: 1.0
+  restitution: 0.0
+
+sim:
+substeps: 2
+physx:
+  num_threads: 4
+  solver_type: 1  # 0: pgs, 1: tgs
+  num_position_iterations: 4
+  num_velocity_iterations: 0
+  contact_offset: 0.02
+  rest_offset: 0.0
+  bounce_threshold_velocity: 0.2
+  max_depenetration_velocity: 10.0
+  default_buffer_size_multiplier: 10.0
+
+flex:
+  num_inner_iterations: 10
+  warm_start: 0.25

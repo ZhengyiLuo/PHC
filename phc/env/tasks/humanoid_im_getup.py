@@ -52,8 +52,8 @@ class HumanoidImGetup(HumanoidIm):
 
         self._reset_fall_env_ids = []
 
-        self.availalbe_fall_states = torch.zeros(cfg["env"]['numEnvs']).long().to(device_id)
-        self.fall_id_assignments = torch.zeros(cfg["env"]['numEnvs']).long().to(device_id)
+        self.availalbe_fall_states = torch.zeros(cfg["env"]['num_envs']).long().to(device_id)
+        self.fall_id_assignments = torch.zeros(cfg["env"]['num_envs']).long().to(device_id)
         self.getup_udpate_epoch = cfg['env'].get("getup_udpate_epoch", 10000)
 
         super().__init__(cfg=cfg, sim_params=sim_params, physics_engine=physics_engine, device_type=device_type, device_id=device_id, headless=headless)

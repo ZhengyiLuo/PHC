@@ -8,6 +8,8 @@ from phc.utils.torch_utils import quat_to_tan_norm
 import phc.env.tasks.humanoid_amp_task as humanoid_amp_task
 from phc.env.tasks.humanoid_amp import HumanoidAMP, remove_base_rot
 from phc.utils.motion_lib_smpl import MotionLibSMPL
+from phc.utils.motion_lib_base import FixHeightMode
+from easydict import EasyDict
 
 from phc.utils import torch_utils
 
@@ -45,7 +47,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
 
         self.load_humanoid_configs(cfg)
         self.cfg = cfg
-        self.num_envs = cfg["env"]["numEnvs"]
+        self.num_envs = cfg["env"]["num_envs"]
         self.device_type = cfg.get("device_type", "cuda")
         self.device_id = cfg.get("device_id", 0)
         self.headless = cfg["headless"]
@@ -141,14 +143,21 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             box.vertex_colors = o3d.utility.Vector3dVector(np.array([[0.1, 0.1, 0.1]]).repeat(8, axis=0))
             
             
-            if self.smpl_humanoid:
-                from uhc.smpllib.smpl_mujoco import SMPL_BONE_ORDER_NAMES as joint_names
-                mujoco_joint_names = ['Pelvis', 'L_Hip', 'L_Knee', 'L_Ankle', 'L_Toe', 'R_Hip', 'R_Knee', 'R_Ankle', 'R_Toe', 'Torso', 'Spine', 'Chest', 'Neck', 'Head', 'L_Thorax', 'L_Shoulder', 'L_Elbow', 'L_Wrist', 'L_Hand', 'R_Thorax', 'R_Shoulder', 'R_Elbow', 'R_Wrist', 'R_Hand']
-                self.mujoco_2_smpl = [mujoco_joint_names.index(q) for q in joint_names if q in mujoco_joint_names]
+            if self.humanoid_type in ["smpl", "smplh", "smplx"]:
+                from uhc.smpllib.smpl_joint_names import SMPL_BONE_ORDER_NAMES, SMPLX_BONE_ORDER_NAMES, SMPLH_BONE_ORDER_NAMES, SMPL_MUJOCO_NAMES, SMPLH_MUJOCO_NAMES
+                
+                if self.humanoid_type == "smpl":
+                    self.mujoco_2_smpl = [self._body_names_orig.index(q) for q in SMPL_BONE_ORDER_NAMES if q in self._body_names_orig]
+                elif self.humanoid_type in ["smplh", "smplx"]:
+                    self.mujoco_2_smpl = [self._body_names_orig.index(q) for q in SMPLH_BONE_ORDER_NAMES if q in self._body_names_orig]
+
                 with torch.no_grad():
-                    verts, joints = self._motion_lib.mesh_parsers[0].get_joints_verts(pose = torch.zeros(1, 72))
+                    verts, joints = self._motion_lib.mesh_parsers[0].get_joints_verts(pose = torch.zeros(1, len(self._body_names_orig) * 3))
                     np_triangles = self._motion_lib.mesh_parsers[0].faces
-                self.pre_rot = sRot.from_quat([0.5, 0.5, 0.5, 0.5])
+                if self._has_upright_start:
+                    self.pre_rot = sRot.from_quat([0.5, 0.5, 0.5, 0.5])
+                else:
+                    self.pre_rot = sRot.identity()
                 box.rotate(sRot.from_euler("xyz", [np.pi / 2, 0, 0]).as_matrix())
                 self.mesh_parser = copy.deepcopy(self._motion_lib.mesh_parsers[0])
                 self.mesh_parser = self.mesh_parser.cuda()
@@ -178,7 +187,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             self._video_path_o3d = osp.join("output", "renderings", f"{self.cfg_name}-%s-o3d.mp4")
             self.recording_state_change_o3d = False
             
-            # if self.smpl_humanoid:
+            # if self.humanoid_type in ["smpl", "smplh", "smplx"]:
             #     self.control = control = self.o3d_vis.get_view_control()
             #     control.unset_constant_z_far()
             #     control.unset_constant_z_near()
@@ -187,41 +196,55 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             #     control.set_zoom(0.001)
 
 
-    def _physics_step(self):
-        for i in range(self.control_freq_inv):
-            self.render(i = i)
-
-            if not self.paused and self.enable_viewer_sync:
-                self.gym.simulate(self.sim)
-        return
-
-    def render(self, sync_frame_time = False, i = 0):
+    def render(self, sync_frame_time = False):
         super().render(sync_frame_time=sync_frame_time)
         
-        if self.viewer_o3d and i == 0:
-            if self.smpl_humanoid:
+        if self.viewer_o3d and self.control_i == 0:
+            if self.humanoid_type in ["smpl", "smplh", "smplx"]:
                 assert(self._rigid_body_rot.shape[0] == 1)
-                body_quat = self._rigid_body_rot
-                root_trans = self._rigid_body_pos[:, 0, :]
-                
-                if self.vis_ref and len(self.ref_motion_cache['dof_pos']) == self.num_envs:
-                    ref_body_quat = self.ref_motion_cache['rb_rot']
-                    ref_root_trans = self.ref_motion_cache['root_pos']
+                if self._has_upright_start:
+                    body_quat = self._rigid_body_rot
+                    root_trans = self._rigid_body_pos[:, 0, :]
                     
-                    body_quat = torch.cat([body_quat, ref_body_quat])
-                    root_trans = torch.cat([root_trans, ref_root_trans])
+                    if self.vis_ref and len(self.ref_motion_cache['dof_pos']) == self.num_envs:
+                        ref_body_quat = self.ref_motion_cache['rb_rot']
+                        ref_root_trans = self.ref_motion_cache['root_pos']
+                        
+                        body_quat = torch.cat([body_quat, ref_body_quat])
+                        root_trans = torch.cat([root_trans, ref_root_trans])
+                        
+                    N = body_quat.shape[0]
+                    offset = self.skeleton_trees[0].local_translation[0].cuda()
+                    root_trans_offset = root_trans - offset
                     
-                N = body_quat.shape[0]
-                offset = self.skeleton_trees[0].local_translation[0].cuda()
-                root_trans_offset = root_trans - offset
-                
-                pose_quat = (sRot.from_quat(body_quat.reshape(-1, 4).numpy()) * self.pre_rot).as_quat().reshape(N, -1, 4)
-                new_sk_state = SkeletonState.from_rotation_and_root_translation(self.skeleton_trees[0], torch.from_numpy(pose_quat), root_trans.cpu(), is_local=False)
-                local_rot = new_sk_state.local_rotation
-                pose_aa = sRot.from_quat(local_rot.reshape(-1, 4).numpy()).as_rotvec().reshape(N, -1, 3)
-                pose_aa = pose_aa[:, self.mujoco_2_smpl, :].reshape(N, -1)
+                    pose_quat = (sRot.from_quat(body_quat.reshape(-1, 4).numpy()) * self.pre_rot).as_quat().reshape(N, -1, 4)
+                    new_sk_state = SkeletonState.from_rotation_and_root_translation(self.skeleton_trees[0], torch.from_numpy(pose_quat), root_trans.cpu(), is_local=False)
+                    local_rot = new_sk_state.local_rotation
+                    pose_aa = sRot.from_quat(local_rot.reshape(-1, 4).numpy()).as_rotvec().reshape(N, -1, 3)
+                    pose_aa = torch.from_numpy(pose_aa[:, self.mujoco_2_smpl, :].reshape(N, -1)).cuda()
+                else:
+                    dof_pos = self._dof_pos
+                    root_trans = self._rigid_body_pos[:, 0, :]
+                    root_rot = self._rigid_body_rot[:, 0, :]
+                    pose_aa = torch.cat([torch_utils.quat_to_exp_map(root_rot), dof_pos], dim=1).reshape(1, -1)
+
+                    if self.vis_ref and len(self.ref_motion_cache['dof_pos']) == self.num_envs:
+                        ref_dof_pos = self.ref_motion_cache['dof_pos']
+                        ref_root_rot = self.ref_motion_cache['rb_rot'][:, 0, :]
+                        ref_root_trans = self.ref_motion_cache['root_pos']
+                        
+                        ref_pose_aa = torch.cat([torch_utils.quat_to_exp_map(ref_root_rot), ref_dof_pos], dim=1)
+                        
+                        pose_aa = torch.cat([pose_aa, ref_pose_aa])
+                        root_trans = torch.cat([root_trans, ref_root_trans])
+                    N = pose_aa.shape[0]
+                    offset = self.skeleton_trees[0].local_translation[0].cuda()
+                    root_trans_offset = root_trans - offset
+                    pose_aa = pose_aa.view(N, -1, 3)[:, self.mujoco_2_smpl, :]
+
+
                 with torch.no_grad():
-                    verts, joints = self.mesh_parser.get_joints_verts(pose=torch.from_numpy(pose_aa).cuda(), th_trans=root_trans_offset.cuda())
+                    verts, joints = self.mesh_parser.get_joints_verts(pose=pose_aa, th_trans=root_trans_offset.cuda())
                     
             sim_verts = verts.numpy()[0]
             self.sim_mesh.vertices = o3d.utility.Vector3dVector(sim_verts)
@@ -283,11 +306,23 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
     def _load_motion(self, motion_train_file, motion_test_file=[]):
         assert (self._dof_offsets[-1] == self.num_dof)
 
-       
-        if self.smpl_humanoid:
+        if self.humanoid_type in ["smpl", "smplh", "smplx"]:
+            motion_lib_cfg = EasyDict({
+                "motion_file": motion_train_file,
+                "device": torch.device("cpu"),
+                "fix_height": FixHeightMode.full_fix,
+                "min_length": self._min_motion_len,
+                "max_length": -1,
+                "im_eval": flags.im_eval,
+                "multi_thread": True ,
+                "smpl_type": self.humanoid_type,
+                "randomrize_heading": True,
+                "device": self.device,
+            })
             motion_eval_file = motion_train_file
-            self._motion_train_lib = MotionLibSMPL(motion_file=motion_train_file, device=self.device, masterfoot_conifg=self._masterfoot_config, min_length=self._min_motion_len, im_eval=flags.im_eval)
-            self._motion_eval_lib = MotionLibSMPL(motion_file=motion_eval_file, device=self.device, masterfoot_conifg=self._masterfoot_config, min_length=self._min_motion_len, im_eval=True)
+            self._motion_train_lib = MotionLibSMPL(motion_lib_cfg)
+            motion_lib_cfg.im_eval = True
+            self._motion_eval_lib = MotionLibSMPL(motion_lib_cfg)
 
             self._motion_lib = self._motion_train_lib
             self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(), limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=(not flags.test) and (not self.seq_motions), max_len=-1 if flags.test else self.max_len)
@@ -489,8 +524,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         return
 
     def _load_marker_asset(self):
-        asset_root = "phc/data/assets/mjcf/"
-        asset_file = "traj_marker.urdf"
+        asset_root = "phc/data/assets/urdf/"
 
         asset_options = gymapi.AssetOptions()
         asset_options.angular_damping = 0.0
@@ -500,7 +534,9 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         asset_options.fix_base_link = True
         asset_options.default_dof_drive_mode = gymapi.DOF_MODE_NONE
 
-        self._marker_asset = self.gym.load_asset(self.sim, asset_root, asset_file, asset_options)
+        self._marker_asset = self.gym.load_asset(self.sim, asset_root, "traj_marker.urdf", asset_options)
+        
+        self._marker_asset_small = self.gym.load_asset(self.sim, asset_root, "traj_marker_small.urdf", asset_options)
 
         return
 
@@ -549,13 +585,17 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         # ######### Heading debug #######
 
         self.gym.set_actor_root_state_tensor_indexed(self.sim, gymtorch.unwrap_tensor(self._root_states), gymtorch.unwrap_tensor(self._marker_actor_ids), len(self._marker_actor_ids))
-
         return
 
     def _build_marker(self, env_id, env_ptr):
         default_pose = gymapi.Transform()
         for i in range(self._num_joints):
-            marker_handle = self.gym.create_actor(env_ptr, self._marker_asset, default_pose, "marker", self.num_envs + 10, 1, 0)
+            # Giving hands smaller balls to indicate positions
+            if self.humanoid_type in ['smplx'] and self._body_names_orig[i] in ["L_Wrist", "R_Wrist", "L_Index1", "L_Index2", "L_Index3","L_Middle1","L_Middle2","L_Middle3","L_Pinky1","L_Pinky2", "L_Pinky3", "L_Ring1", "L_Ring2", "L_Ring3", "L_Thumb1", "L_Thumb2", "L_Thumb3", "R_Index1", "R_Index2", "R_Index3", "R_Middle1", "R_Middle2", "R_Middle3", "R_Pinky1", "R_Pinky2", "R_Pinky3", "R_Ring1", "R_Ring2", "R_Ring3", "R_Thumb1", "R_Thumb2", "R_Thumb3",]:
+                marker_handle = self.gym.create_actor(env_ptr, self._marker_asset_small, default_pose, "marker", self.num_envs + 10, 1, 0)    
+            else:
+                marker_handle = self.gym.create_actor(env_ptr, self._marker_asset, default_pose, "marker", self.num_envs + 10, 1, 0)
+            
             if i in self._track_bodies_id:
                 self.gym.set_rigid_body_color(env_ptr, marker_handle, 0, gymapi.MESH_VISUAL, gymapi.Vec3(0.8, 0.0, 0.0))
             else:
@@ -880,6 +920,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             self.ref_motion_cache['offset'] = offset.clone() if not offset is None else None
         else:
             return self.ref_motion_cache
+        
         motion_res = self._motion_lib.get_motion_state(motion_ids, motion_times, offset=offset)
 
         self.ref_motion_cache.update(motion_res)
@@ -899,7 +940,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         if flags.test:
             motion_times[:] = 0
         
-        if self.smpl_humanoid :
+        if self.humanoid_type in ["smpl", "smplh", "smplx"] :
             motion_res = self._get_state_from_motionlib_cache(self._sampled_motion_ids[env_ids], motion_times, self._global_offset[env_ids])
             root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel, smpl_params, limb_weights, pose_aa, ref_rb_pos, ref_rb_rot, ref_body_vel, ref_body_ang_vel = \
                 motion_res["root_pos"], motion_res["root_rot"], motion_res["dof_pos"], motion_res["root_vel"], motion_res["root_ang_vel"], motion_res["dof_vel"], \
@@ -921,7 +962,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         motion_ids = torch.from_numpy(motion_ids).to(self.device)
         # motion_ids[:] = 2
         motion_times = self._hack_motion_time
-        if self.smpl_humanoid :
+        if self.humanoid_type in ["smpl", "smplh", "smplx"] :
             motion_res = self._get_state_from_motionlib_cache(motion_ids, motion_times, self._global_offset)
             root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel, smpl_params, limb_weights, pose_aa, rb_pos, rb_rot, body_vel, body_ang_vel = \
                 motion_res["root_pos"], motion_res["root_rot"], motion_res["dof_pos"], motion_res["root_vel"], motion_res["root_ang_vel"], motion_res["dof_vel"], \

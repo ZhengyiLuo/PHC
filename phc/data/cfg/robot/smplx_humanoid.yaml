@@ -1,0 +1,28 @@
+humanoid_type: smplx
+bias_offset: False
+has_self_collision: True
+has_mesh: False
+has_jt_limit: False
+has_dof_subset: True
+has_upright_start: False
+has_smpl_pd_offset: False
+remove_toe: False # For humanoid's geom toe
+motion_sym_loss: False
+sym_loss_coef: 1
+big_ankle: True
+
+has_shape_obs: false
+has_shape_obs_disc: false
+has_shape_variation: False
+
+masterfoot: False
+freeze_toe: false
+freeze_hand: False
+box_body: True
+real_weight: True
+real_weight_porpotion_capsules: True
+real_weight_porpotion_boxes: True
+
+asset:
+    assetRoot: "/"
+    assetFileName: "mjcf/smplx_humanoid.xml"
