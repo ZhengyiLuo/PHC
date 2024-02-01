@@ -45,18 +45,20 @@ if not USE_CACHE:
 
 class MotionLibSMPL(MotionLibBase):
 
-    def __init__(self, motion_file, device, fix_height=FixHeightMode.full_fix, masterfoot_conifg=None, min_length=-1, im_eval=False, multi_thread=True):
-        super().__init__(motion_file=motion_file, device=device, fix_height=fix_height, masterfoot_conifg=masterfoot_conifg, min_length=min_length, im_eval=im_eval, multi_thread=multi_thread)
+    def __init__(self, motion_lib_cfg):
+        super().__init__(motion_lib_cfg = motion_lib_cfg)
         
         data_dir = "data/smpl"
+        
         if osp.exists(data_dir):
-            smpl_parser_n = SMPL_Parser(model_path=data_dir, gender="neutral")
-            smpl_parser_m = SMPL_Parser(model_path=data_dir, gender="male")
-            smpl_parser_f = SMPL_Parser(model_path=data_dir, gender="female")
+            if motion_lib_cfg.smpl_type == "smpl":
+                smpl_parser_n = SMPL_Parser(model_path=data_dir, gender="neutral")
+                smpl_parser_m = SMPL_Parser(model_path=data_dir, gender="male")
+                smpl_parser_f = SMPL_Parser(model_path=data_dir, gender="female")
             self.mesh_parsers = {0: smpl_parser_n, 1: smpl_parser_m, 2: smpl_parser_f}
         else:
             self.mesh_parsers = None
-    
+        
         return
     
     @staticmethod
@@ -71,6 +73,7 @@ class MotionLibSMPL(MotionLibBase):
             mesh_parser = mesh_parsers[gender.item()]
             height_tolorance = 0.0
             vertices_curr, joints_curr = mesh_parser.get_joints_verts(pose_aa[:frame_check], betas[None,], trans[:frame_check])
+            
             offset = joints_curr[:, 0] - trans[:frame_check] # account for SMPL root offset. since the root trans we pass in has been processed, we have to "add it back".
             
             if fix_height_mode == FixHeightMode.ankle_fix:
@@ -88,8 +91,10 @@ class MotionLibSMPL(MotionLibBase):
             return trans, diff_fix
 
     @staticmethod
-    def load_motion_with_skeleton(ids, motion_data_list, skeleton_trees, gender_betas, fix_height, mesh_parsers, masterfoot_config, max_len, queue, pid):
+    def load_motion_with_skeleton(ids, motion_data_list, skeleton_trees, shape_params, mesh_parsers, config, queue, pid):
         # ZL: loading motion with the specified skeleton. Perfoming forward kinematics to get the joint positions
+        max_len = config.max_length
+        fix_height = config.fix_height
         np.random.seed(np.random.randint(5000)* pid)
         res = {}
         assert (len(ids) == len(motion_data_list))
@@ -99,7 +104,7 @@ class MotionLibSMPL(MotionLibBase):
             if not isinstance(curr_file, dict) and osp.isfile(curr_file):
                 key = motion_data_list[f].split("/")[-1].split(".")[0]
                 curr_file = joblib.load(curr_file)[key]
-            curr_gender_beta = gender_betas[f]
+            curr_gender_beta = shape_params[f]
 
             seq_len = curr_file['root_trans_offset'].shape[0]
             if max_len == -1 or seq_len < max_len:
@@ -111,6 +116,7 @@ class MotionLibSMPL(MotionLibBase):
             trans = curr_file['root_trans_offset'].clone()[start:end]
             pose_aa = to_torch(curr_file['pose_aa'][start:end])
             pose_quat_global = curr_file['pose_quat_global'][start:end]
+            
 
             B, J, N = pose_quat_global.shape
 
@@ -129,19 +135,6 @@ class MotionLibSMPL(MotionLibBase):
                 trans, trans_fix = MotionLibSMPL.fix_trans_height(pose_aa, trans, curr_gender_beta, mesh_parsers, fix_height_mode = fix_height)
             else:
                 trans_fix = 0
-                
-
-            if not masterfoot_config is None:
-                num_bodies = len(masterfoot_config['body_names'])
-                pose_quat_holder = np.zeros([B, num_bodies, N])
-                pose_quat_holder[..., -1] = 1
-                pose_quat_holder[...,masterfoot_config['body_to_orig_without_toe'], :] \
-                    = pose_quat_global[..., masterfoot_config['orig_to_orig_without_toe'], :]
-
-                pose_quat_holder[..., [masterfoot_config['body_names'].index(name) for name in ["L_Toe", "L_Toe_1", "L_Toe_1_1", "L_Toe_2"]], :] = pose_quat_holder[..., [masterfoot_config['body_names'].index(name) for name in ["L_Ankle"]], :]
-                pose_quat_holder[..., [masterfoot_config['body_names'].index(name) for name in ["R_Toe", "R_Toe_1", "R_Toe_1_1", "R_Toe_2"]], :] = pose_quat_holder[..., [masterfoot_config['body_names'].index(name) for name in ["R_Ankle"]], :]
-
-                pose_quat_global = pose_quat_holder
 
             pose_quat_global = to_torch(pose_quat_global)
             sk_state = SkeletonState.from_rotation_and_root_translation(skeleton_trees[f], pose_quat_global, trans, is_local=False)

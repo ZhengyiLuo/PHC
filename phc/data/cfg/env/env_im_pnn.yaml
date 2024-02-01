@@ -1,0 +1,65 @@
+# if given, will override the device setting in gym. 
+task: HumanoidIm
+project_name: "PHC"
+notes:  " "
+motion_file: ""
+num_envs: 3072
+env_spacing: 5
+episode_length: 300
+is_flag_run: False
+enable_debug_vis: False
+
+fut_tracks: False
+self_obs_v: 1
+obs_v: 6
+auto_pmcp: False
+auto_pmcp_soft: True
+
+
+has_pnn: True
+fitting: False
+num_prim: 3
+training_prim: 0
+actors_to_load: 0
+has_lateral: False
+models: []
+
+######## Getup Configs ########
+# zero_out_far: True
+# zero_out_far_train: False
+# getup_udpate_epoch: 78750
+# cycle_motion: True
+# hard_negative: False
+# min_length: 5
+
+kp_scale: 1
+power_reward: True
+
+shape_resampling_interval: 500
+
+control_mode: "isaac_pd"
+power_scale: 1.0
+controlFrequencyInv: 2 # 30 Hz
+stateInit: "Random"  
+hybridInitProb: 0.5
+numAMPObsSteps: 10
+
+local_root_obs: True
+root_height_obs: True
+keyBodies: ["R_Ankle", "L_Ankle", "R_Wrist",  "L_Wrist"]
+contact_bodies: ["R_Ankle", "L_Ankle", "R_Toe", "L_Toe"]
+resetBodies: ['Pelvis', 'L_Hip', 'L_Knee', 'R_Hip', 'R_Knee', 'Torso', 'Spine', 'Chest', 'Neck', 'Head', 'L_Thorax', 'L_Shoulder', 'L_Elbow', 'L_Wrist', 'L_Hand', 'R_Thorax', 'R_Shoulder', 'R_Elbow', 'R_Wrist', 'R_Hand']
+terminationHeight: 0.15
+enableEarlyTermination: True
+terminationDistance: 0.25
+
+### Fut config
+numTrajSamples: 3
+trajSampleTimestepInv: 3
+enableTaskObs: True
+
+
+plane:
+  staticFriction: 1.0
+  dynamicFriction: 1.0
+  restitution: 0.0

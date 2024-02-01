@@ -63,7 +63,7 @@ class BaseTask():
         self.headless = cfg["headless"]
         if self.headless == False and not flags.no_virtual_display:
             from pyvirtualdisplay.smartdisplay import SmartDisplay
-            self.virtual_display = SmartDisplay(size=(1920, 1000), visible=True)
+            self.virtual_display = SmartDisplay(size=(1800, 990), visible=True)
             self.virtual_display.start()
 
         self.gym = gymapi.acquire_gym()
@@ -83,7 +83,7 @@ class BaseTask():
         # if flags.server_mode:
         # self.graphics_device_id = self.device_id
 
-        self.num_envs = cfg["env"]["numEnvs"]
+        self.num_envs = cfg["env"]["num_envs"]
         self.num_obs = cfg["env"]["numObservations"]
         self.num_states = cfg["env"].get("numStates", 0)
         self.num_actions = cfg["env"]["numActions"]
@@ -190,7 +190,7 @@ class BaseTask():
         states_out = osp.join("output", "states")
         os.makedirs(rendering_out, exist_ok=True)
         os.makedirs(states_out, exist_ok=True)
-        self.cfg_name = self.cfg['args'].cfg_env.split("/")[-1].split(".")[0]
+        self.cfg_name = self.cfg.exp_name
         self._video_path = osp.join(rendering_out, f"{self.cfg_name}-%s.mp4")
         self._states_path = osp.join(states_out, f"{self.cfg_name}-%s.pkl")
         # self.gym.draw_env_rigid_contacts(self.viewer, self.envs[1], gymapi.Vec3(0.9, 0.3, 0.3), 1.0, True)
@@ -425,7 +425,7 @@ class BaseTask():
                         img = self.virtual_display.grab()
                         self.color_image = np.array(img)
                         H, W, C = self.color_image.shape
-                        self.color_image = self.color_image[:(H - H % 2), :, :]
+                        self.color_image = self.color_image[:(H - H % 2), :(W - W % 2), :]
 
                 if not flags.server_mode:
                     if not "writer" in self.__dict__:
@@ -435,6 +435,7 @@ class BaseTask():
                         if not flags.server_mode:
                             self.writer = imageio.get_writer(self.curr_video_file_name, fps=60, macro_block_size=None)
                     self.writer.append_data(self.color_image)
+                    
                     
                 self._record_states()
 
@@ -700,7 +701,6 @@ class BaseTask():
 
             if not self.paused and self.enable_viewer_sync:
                 self.gym.simulate(self.sim)
-
         return
 
     def post_physics_step(self):

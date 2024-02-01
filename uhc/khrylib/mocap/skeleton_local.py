@@ -286,7 +286,7 @@ class Skeleton:
         if not self.freeze_hand:
             GEOM_TYPES['L_Hand'] = 'box'
             GEOM_TYPES['R_Hand'] = 'box'
-        
+
         if self.box_body:
             GEOM_TYPES['Head'] = 'box'
             GEOM_TYPES['Pelvis'] = 'box'

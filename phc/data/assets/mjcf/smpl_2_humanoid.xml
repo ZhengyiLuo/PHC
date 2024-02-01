@@ -26,7 +26,7 @@
     <geom conaffinity="1" condim="3" name="floor" pos="0 0 0" rgba="0.8 0.9 0.8 1" size="100 100 .2" type="plane" material="MatPlane"/>
     <body name="Pelvis" pos="-0.0009 -0.2114 0.0278">
       <freejoint name="Pelvis"/>
-      <geom type="sphere" contype="1" conaffinity="1" density="4629.6296296296305" size="0.0926" pos="0.0000 0.0000 0.0000"/>
+      <geom type="box" pos="-0.0042 0.0001 -0.0160" size="0.082 0.1095 0.0713" quat="1.0000 0.0000 0.0000 0.0000" density="3010.216059"/>
       <body name="L_Hip" pos="-0.008 0.0714 -0.0896">
         <joint name="L_Hip_x" type="hinge" pos="0 0 0" axis="1 0 0" stiffness="800" damping="80" armature="0.02" range="-180.0000 180.0000"/>
         <joint name="L_Hip_y" type="hinge" pos="0 0 0" axis="0 1 0" stiffness="800" damping="80" armature="0.02" range="-180.0000 180.0000"/>
@@ -41,12 +41,12 @@
             <joint name="L_Ankle_x" type="hinge" pos="0 0 0" axis="1 0 0" stiffness="800" damping="80" armature="0.02" range="-180.0000 180.0000"/>
             <joint name="L_Ankle_y" type="hinge" pos="0 0 0" axis="0 1 0" stiffness="800" damping="80" armature="0.02" range="-180.0000 180.0000"/>
             <joint name="L_Ankle_z" type="hinge" pos="0 0 0" axis="0 0 1" stiffness="800" damping="80" armature="0.02" range="-180.0000 180.0000"/>
-            <geom type="box" pos="0.0232 0.0206 -0.0237" size="0.082 0.0455 0.0449" quat="1.0000 0.0000 0.0000 0.0000" density="1000"/>
+            <geom type="box" pos="0.0232 0.0206 -0.0237" size="0.082 0.0455 0.0449" quat="1.0000 0.0000 0.0000 0.0000" density="447.171219"/>
             <body name="L_Toe" pos="0.1144 0.0233 -0.0546">
               <joint name="L_Toe_x" type="hinge" pos="0 0 0" axis="1 0 0" stiffness="500" damping="50" armature="0.02" range="-180.0000 180.0000"/>
               <joint name="L_Toe_y" type="hinge" pos="0 0 0" axis="0 1 0" stiffness="500" damping="50" armature="0.02" range="-180.0000 180.0000"/>
               <joint name="L_Toe_z" type="hinge" pos="0 0 0" axis="0 0 1" stiffness="500" damping="50" armature="0.02" range="-180.0000 180.0000"/>
-              <geom type="box" pos="0.0239 -0.0027 0.0055" size="0.048 0.0458 0.0195" quat="1.0000 0.0000 0.0000 0.0000" density="1000"/>
+              <geom type="box" pos="0.0239 -0.0027 0.0055" size="0.048 0.0458 0.0195" quat="1.0000 0.0000 0.0000 0.0000" density="413.943028"/>
             </body>
           </body>
         </body>
@@ -65,12 +65,12 @@
             <joint name="R_Ankle_x" type="hinge" pos="0 0 0" axis="1 0 0" stiffness="800" damping="80" armature="0.02" range="-180.0000 180.0000"/>
             <joint name="R_Ankle_y" type="hinge" pos="0 0 0" axis="0 1 0" stiffness="800" damping="80" armature="0.02" range="-180.0000 180.0000"/>
             <joint name="R_Ankle_z" type="hinge" pos="0 0 0" axis="0 0 1" stiffness="800" damping="80" armature="0.02" range="-180.0000 180.0000"/>
-            <geom type="box" pos="0.0245 -0.0181 -0.0169" size="0.083 0.046 0.0458" quat="1.0000 0.0000 0.0000 0.0000" density="1000"/>
+            <geom type="box" pos="0.0245 -0.0181 -0.0169" size="0.083 0.046 0.0458" quat="1.0000 0.0000 0.0000 0.0000" density="432.719457"/>
             <body name="R_Toe" pos="0.1179 -0.022 -0.0464">
               <joint name="R_Toe_x" type="hinge" pos="0 0 0" axis="1 0 0" stiffness="500" damping="50" armature="0.02" range="-180.0000 180.0000"/>
               <joint name="R_Toe_y" type="hinge" pos="0 0 0" axis="0 1 0" stiffness="500" damping="50" armature="0.02" range="-180.0000 180.0000"/>
               <joint name="R_Toe_z" type="hinge" pos="0 0 0" axis="0 0 1" stiffness="500" damping="50" armature="0.02" range="-180.0000 180.0000"/>
-              <geom type="box" pos="0.0218 0.0039 0.0054" size="0.047 0.0457 0.0217" quat="1.0000 0.0000 0.0000 0.0000" density="1000"/>
+              <geom type="box" pos="0.0218 0.0039 0.0054" size="0.047 0.0457 0.0217" quat="1.0000 0.0000 0.0000 0.0000" density="384.241938"/>
             </body>
           </body>
         </body>
@@ -99,7 +99,7 @@
                 <joint name="Head_x" type="hinge" pos="0 0 0" axis="1 0 0" stiffness="500" damping="50" armature="0.02" range="-180.0000 180.0000"/>
                 <joint name="Head_y" type="hinge" pos="0 0 0" axis="0 1 0" stiffness="500" damping="50" armature="0.02" range="-180.0000 180.0000"/>
                 <joint name="Head_z" type="hinge" pos="0 0 0" axis="0 0 1" stiffness="500" damping="50" armature="0.02" range="-180.0000 180.0000"/>
-                <geom type="sphere" contype="1" conaffinity="1" density="1000" size="0.0982" pos="0.0000 0.0000 0.0000"/>
+                <geom type="box" pos="-0.0101 -0.0045 0.0859" size="0.0736 0.0584 0.1126" quat="1.0000 0.0000 0.0000 0.0000" density="1023.9051"/>
               </body>
             </body>
             <body name="L_Thorax" pos="-0.0369 0.0753 0.1178">
@@ -126,7 +126,7 @@
                       <joint name="L_Hand_x" type="hinge" pos="0 0 0" axis="1 0 0" stiffness="300" damping="30" armature="0.02" range="-180.0000 180.0000"/>
                       <joint name="L_Hand_y" type="hinge" pos="0 0 0" axis="0 1 0" stiffness="300" damping="30" armature="0.02" range="-180.0000 180.0000"/>
                       <joint name="L_Hand_z" type="hinge" pos="0 0 0" axis="0 0 1" stiffness="300" damping="30" armature="0.02" range="-180.0000 180.0000"/>
-                      <geom type="sphere" contype="1" conaffinity="1" density="1000" size="0.0321" pos="0.0000 0.0000 0.0000"/>
+                      <geom type="box" pos="-0.0064 0.0474 0.0008" size="0.0513 0.0564 0.0153" quat="1.0000 0.0000 0.0000 0.0000" density="393.023524"/>
                     </body>
                   </body>
                 </body>
@@ -156,7 +156,7 @@
                       <joint name="R_Hand_x" type="hinge" pos="0 0 0" axis="1 0 0" stiffness="300" damping="30" armature="0.02" range="-180.0000 180.0000"/>
                       <joint name="R_Hand_y" type="hinge" pos="0 0 0" axis="0 1 0" stiffness="300" damping="30" armature="0.02" range="-180.0000 180.0000"/>
                       <joint name="R_Hand_z" type="hinge" pos="0 0 0" axis="0 0 1" stiffness="300" damping="30" armature="0.02" range="-180.0000 180.0000"/>
-                      <geom type="sphere" contype="1" conaffinity="1" density="1000" size="0.0323" pos="0.0000 0.0000 0.0000"/>
+                      <geom type="box" pos="-0.0080 -0.0444 -0.0009" size="0.052 0.0549 0.0156" quat="1.0000 0.0000 0.0000 0.0000" density="397.461522"/>
                     </body>
                   </body>
                 </body>
