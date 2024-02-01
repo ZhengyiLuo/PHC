@@ -291,9 +291,6 @@ fitting: True # Fitting flag freezes the running mean and std. This is very impo
 python phc/run_hydra.py learning=im_pnn exp_name=phc_shape_pnn_iccv env=env_im_pnn robot=smpl_humanoid_shape env.motion_file=sample_data/amass_isaac_standing_upright_slim.pkl epoch=[include epoch+1 from previous step] env.fitting=True env.training_prim=1
 ```
 
-Then, to train the fail-state recovery primitive on simple locomotion data, change the following flags: 
-```
-
 Repeat this process until no hard sequences are left. Then, to train the fail-state recovery primitive on simple locomotion data. 
 
 
