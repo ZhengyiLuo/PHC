@@ -213,9 +213,6 @@ python scripts/demo/video_to_pose_server.py
 then
 
 ```
-python phc/run.py --task HumanoidImMCPDemo --cfg_env phc/data/cfg/phc_kp_mcp_iccv.yaml --cfg_train phc/data/cfg/train/rlg/im_mcp.yaml --motion_file sample_data/amass_isaac_standing_upright_slim.pkl --network_path output/phc_kp_mcp_iccv --test --num_envs 1 --epoch -1  --no_virtual_display
-
-
 python phc/run_hydra.py learning=im_mcp exp_name=phc_kp_mcp_iccv env=env_im_getup_mcp env.task=HumanoidImMCPDemo robot=smpl_humanoid robot.freeze_hand=True robot.box_body=False env.z_activation=silu env.motion_file=sample_data/amass_isaac_standing_upright_slim.pkl env.models=['output/HumanoidIm/phc_kp_pnn_iccv/Humanoid.pth'] env.num_envs=1 env.obs_v=7 headless=False epoch=-1 test=True no_virtual_display=True
 
 ```
@@ -297,11 +294,7 @@ python phc/run_hydra.py learning=im_pnn exp_name=phc_shape_pnn_iccv env=env_im_p
 Then, to train the fail-state recovery primitive on simple locomotion data, change the following flags: 
 ```
 
-Repeat this process until no hard sequences are left. Then, to train the fail-state recovery primitive on simple locomotion data, change the following flags: 
-training_prim: ++1 # advancing the primitive to train. 
-zero_out_far: True
-zero_out_far_train: True
-getup_udpate_epoch: {epoch}
+Repeat this process until no hard sequences are left. Then, to train the fail-state recovery primitive on simple locomotion data. 
 
 
 ```
