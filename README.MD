@@ -284,9 +284,7 @@ python scripts/pmcp/forward_pmcp.py --exp phc_shape_mcp_iccv --epoch {} --idx {i
 ```
 The above script will dump two files: one is the next hard sequences to learn, and anothere one is the checkpoint to resume with the copied primitive. 
 
-training_prim: 1 # advancing the primitive to train. 
-fitting: True # Fitting flag freezes the running mean and std. This is very important for resuable primitives. 
-
+To train the next primitive, run teh following script:
 ```
 python phc/run_hydra.py learning=im_pnn exp_name=phc_shape_pnn_iccv env=env_im_pnn robot=smpl_humanoid_shape env.motion_file=sample_data/amass_isaac_standing_upright_slim.pkl epoch=[include epoch+1 from previous step] env.fitting=True env.training_prim=1
 ```
