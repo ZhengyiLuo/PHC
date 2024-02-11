@@ -53,9 +53,9 @@ env:
   
   localRootObs: True
   rootHeightObs: True
-  keyBodies: ["R_Ankle", "L_Ankle", "R_Wrist",  "L_Wrist"]
+  key_bodies: ["R_Ankle", "L_Ankle", "R_Wrist",  "L_Wrist"]
   contactBodies: ["R_Ankle", "L_Ankle", "R_Toe", "L_Toe"]
-  resetBodies: ["Head", "L_Hand", "R_Hand"]
+  reset_bodies: ["Head", "L_Hand", "R_Hand"]
   trackBodies: ["Head", "L_Hand", "R_Hand"]
   terminationHeight: 0.15
   enableEarlyTermination: True

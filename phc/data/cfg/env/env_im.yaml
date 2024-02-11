@@ -33,9 +33,9 @@ numAMPObsSteps: 10
 
 local_root_obs: True
 root_height_obs: True
-keyBodies: ["R_Ankle", "L_Ankle", "R_Wrist",  "L_Wrist"]
+key_bodies: ["R_Ankle", "L_Ankle", "R_Wrist",  "L_Wrist"]
 contact_bodies: ["R_Ankle", "L_Ankle", "R_Toe", "L_Toe"]
-resetBodies: ['Pelvis', 'L_Hip', 'L_Knee', 'R_Hip', 'R_Knee', 'Torso', 'Spine', 'Chest', 'Neck', 'Head', 'L_Thorax', 'L_Shoulder', 'L_Elbow', 'L_Wrist', 'L_Hand', 'R_Thorax', 'R_Shoulder', 'R_Elbow', 'R_Wrist', 'R_Hand']
+reset_bodies: ['Pelvis', 'L_Hip', 'L_Knee', 'R_Hip', 'R_Knee', 'Torso', 'Spine', 'Chest', 'Neck', 'Head', 'L_Thorax', 'L_Shoulder', 'L_Elbow', 'L_Wrist', 'L_Hand', 'R_Thorax', 'R_Shoulder', 'R_Elbow', 'R_Wrist', 'R_Hand']
 terminationHeight: 0.15
 enableEarlyTermination: True
 terminationDistance: 0.25

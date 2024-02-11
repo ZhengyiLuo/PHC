@@ -180,10 +180,6 @@ class Skeleton:
         for bone in self.bones:
             if len(bone.child) == 0:
                 bone.end = bone.pos.copy() + 0.002
-                for c_bone, p_bone in parents.items():
-                    if p_bone == bone.name:
-                        bone.end += np.array(offsets[c_bone]) * self.len_scale
-                        break
             else:
                 bone.end = sum([bone_c.pos for bone_c in bone.child]) / len(bone.child)
 

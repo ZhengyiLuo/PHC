@@ -323,6 +323,7 @@ def main(cfg_hydra: DictConfig) -> None:
             cfg_train["params"]["load_path"] = path
             cfg_train["params"]["load_checkpoint"] = True
         else:
+            print(path)
             raise Exception("no file to resume!!!!")
 
     
