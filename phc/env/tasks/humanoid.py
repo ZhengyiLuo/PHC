@@ -106,7 +106,7 @@ class Humanoid(BaseTask):
         self.partial_running_mean = self.cfg["env"].get("partial_running_mean", False)
         self.self_obs_v = self.cfg["env"].get("self_obs_v", 1)
 
-        self.key_bodies = self.cfg["env"]["keyBodies"]
+        self.key_bodies = self.cfg["env"]["key_bodies"]
         
         self._setup_character_props(self.key_bodies)
 
