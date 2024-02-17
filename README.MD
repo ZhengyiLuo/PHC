@@ -32,6 +32,8 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
+[Feburary 17, 2024] Fixed a bug when overhauling the system to Hydra. Please pull the newest version :). 
+
 [Feburary 1, 2024] Overhauling the config system to Hydra. 
 
 [January 8, 2024] Support for running inference without SMPL model. 
