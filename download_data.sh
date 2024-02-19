@@ -9,3 +9,5 @@ gdown https://drive.google.com/uc?id=1eGTO1hm74FIip9m6WzN8a7AWXeTX3SM9 -O  outpu
 gdown https://drive.google.com/uc?id=1_B0HgLQElEZhEWkhmg5nweoWKnQB6VYr -O  output/HumanoidIm/phc_shape_pnn_iccv/
 gdown https://drive.google.com/uc?id=1g1uXLYPev_2RBUQmP3-uYdtXbN9LKbSL -O  output/HumanoidIm/phc_shape_mcp_iccv/
 gdown https://drive.google.com/uc?id=10Y8ZZBi7kQgRjNKRaddDEj8SebPCH7sj -O  output/HumanoidIm/phc_prim_vr/
+gdown https://drive.google.com/uc?id=1JbK9Vzo1bEY8Pig6D92yAUv8l-1rKWo3 -O  output/HumanoidIm/phc_comp_3
+gdown https://drive.google.com/uc?id=1pS1bRUbKFDp6o6ZJ9XSFaBlXv6_PrhNc -O  output/HumanoidIm/phc_3/
