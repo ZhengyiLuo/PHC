@@ -32,6 +32,8 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
+[Feburary 19, 2024] Releasing PHC+ model (100% success rate on AMASS) used in [PULSE](https://zhengyiluo.github.io/PULSE/).
+
 [Feburary 17, 2024] Fixed a bug when overhauling the system to Hydra. Please pull the newest version :). 
 
 [Feburary 1, 2024] Overhauling the config system to Hydra. 
@@ -165,6 +167,16 @@ You can use the `--render_o3d --no_virtual_display` flag to render the SMPL mesh
 to do the above visulaization, press m (to cancel termination based on imitation), and then press j (to apply a large force to the humanoid). 
 
 ### Imitation 
+
+🎇🎇🎇 New (keypoint model, can getup from the ground and walk back) | Best model for video/language model
+```
+python phc/run_hydra.py learning=im_big learning.params.network.ending_act=False exp_name=phc_comp_kp_2 env.obs_v=7 env=env_im_getup_mcp robot=smpl_humanoid robot.real_weight_porpotion_boxes=False env.motion_file=sample_data/amass_isaac_standing_upright_slim.pkl env.models=['output/HumanoidIm/phc_kp_2/Humanoid.pth'] env.num_prim=3 env.num_envs=1  headless=False epoch=-1 test=True
+```
+
+🎇🎇🎇 New (rotation + keypoint model, can getup from the ground but not walk back -- model used in PULSE due to time constraint)
+```
+python phc/run_hydra.py learning=im_mcp_big  exp_name=phc_comp_3 env=env_im_getup_mcp robot=smpl_humanoid env.zero_out_far=False robot.real_weight_porpotion_boxes=False env.num_prim=3 env.motion_file=sample_data/amass_isaac_standing_upright_slim.pkl env.models=['output/HumanoidIm/phc_3/Humanoid.pth'] env.num_envs=1  headless=False epoch=-1 test=True
+```
 
 Evaluate full model:
 

@@ -65,7 +65,7 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
                 x_all = torch.stack([net(curr_obs) for net in self.actors], dim=1)
             # print(weights)
             actions = torch.sum(weights[:, :, None] * x_all, dim=1)
-                
+        
         # actions = x_all[:, 3]  # Debugging
         # apply actions
         self.pre_physics_step(actions)

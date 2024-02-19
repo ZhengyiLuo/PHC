@@ -31,6 +31,7 @@ class AMPMCPBuilder(AMPBuilder):
             self.num_traj_samples = self.task_obs_size_detail['num_traj_samples']
             self.track_bodies = self.task_obs_size_detail['track_bodies']
             self.has_softmax = params.get("has_softmax", True)
+            self.ending_act = params.get("ending_act", True)
 
             kwargs['input_shape'] = (self.self_obs_size + self.task_obs_size,)  #
 
@@ -53,6 +54,9 @@ class AMPMCPBuilder(AMPBuilder):
             if self.has_softmax:
                 print("!!!Has softmax!!!")
                 self.composer.append(nn.Softmax(dim=1))
+                
+            if not self.ending_act:
+                self.composer = self.composer[:-1] # remove the ending activaction
 
             self.running_mean = kwargs['mean_std'].running_mean
             self.running_var = kwargs['mean_std'].running_var

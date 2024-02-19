@@ -10,10 +10,10 @@ params:
 
   network:
     name: amp_mcp
-    separate: True
+    separate: true
     discrete: false
-    has_softmax: False
-    ending_act: False
+    has_softmax: false
+    ending_act: true # default to true
 
     space:
       continuous:
