@@ -125,6 +125,10 @@ class IMAmpAgent(amp_agent.AMPAgent):
             
     def update_training_data(self, failed_keys):
         humanoid_env = self.vec_env.env.task
+        if humanoid_env.auto_pmcp:
+            humanoid_env._motion_lib.update_hard_sampling_weight(failed_keys)
+        elif humanoid_env.auto_pmcp_soft:
+            humanoid_env._motion_lib.update_soft_sampling_weight(failed_keys)
         joblib.dump({"failed_keys": failed_keys, "termination_history": humanoid_env._motion_lib._termination_history}, osp.join(self.network_path, f"failed_{self.epoch_num:010d}.pkl"))
         
         
