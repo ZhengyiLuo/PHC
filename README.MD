@@ -32,6 +32,8 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
+[Feburary 28, 2024] Releasing Auto-PMCP procedure to train single primitives; this procedure can lead to very high-performant imiatators without PNN, though it wouldn't have the failure state recovery capability. See the `auto_pmcp_soft` flag. 
+
 [Feburary 19, 2024] Releasing PHC+ model (100% success rate on AMASS) used in [PULSE](https://zhengyiluo.github.io/PULSE/).
 
 [Feburary 17, 2024] Fixed a bug when overhauling the system to Hydra. Please pull the newest version :). 
@@ -282,7 +284,15 @@ You can also directly using the script `python scripts/data_process/convert_amas
 
 ### Training PHC
 
-[This section is still under contruction. Proceed with caution.]
+#### Train single primitive
+
+```
+python phc/run_hydra.py learning=im_big exp_name=phc_prim env=env_im robot=smpl_humanoid env.motion_file=sample_data/amass_isaac_standing_upright_slim.pkl  
+```
+
+
+#### Train full PNN model 
+
 
 Training PHC is not super automated yet, so it requires some (a lot of) manual steps, and invovles changing the config file a couple of times during training based on the training phase. The `phc_shape_pnn_train_iccv.yaml` config file provides a starting point for training primitives. 
 
