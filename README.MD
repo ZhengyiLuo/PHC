@@ -76,6 +76,8 @@ We present a physics-based humanoid controller that achieves high-fidelity motio
 
 > ❗️❗️❗️Notice that the current released models used a different coordinate system as SMPL (with negative z as gravity direction), and the humanoid is modifed in a way such that it is facing positive x direction (instead of the original SMPL facing). This is reflected in a "up_right_start" flag in the humanoid robot (`smpl_local_robot.py`) configuration. This is done to make the humanoid's heading to be eailerly defined and flipping left and right easier, but would require further modification for converting back to SMPL (which is provided in the code). In the future I am working towards removing this modification. 
 
+> ❗️❗️❗️ Another notice is that while the MCP/Mixture of expert model is great for achieving high success rate, it is not absolutely necessary for the PHC to work. The PHC can work with a single primitive model and achieves high success rate; though it wouldn't have the failure state recovery capability.
+
 ### Docs 
 - [Docs on SMPL_Robot](docs/smpl_robot_instruction.MD)
 - [Docker Instructions](docs/docker_instruction.MD) (from [@kexul](https://github.com/kexul))
