@@ -507,7 +507,7 @@ class AMPAgent(common_agent.CommonAgent):
     def pre_epoch(self, epoch_num):
         # print("freeze running mean/std")
 
-        if self.vec_env.env.task.smpl_humanoid:
+        if self.vec_env.env.task.humanoid_type in ["smpl", "smplh", "smplx"]:
             humanoid_env = self.vec_env.env.task
             if (epoch_num > 1) and epoch_num % humanoid_env.shape_resampling_interval == 1: # + 1 to evade the evaluations. 
             # if (epoch_num > 0) and epoch_num % humanoid_env.shape_resampling_interval == 0 and not (epoch_num % (self.save_freq)): # Remove the resampling for this. 
