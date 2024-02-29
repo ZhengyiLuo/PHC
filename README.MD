@@ -55,7 +55,7 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 - [ ] Add support for smplx/h (fingers!!!).
 
-- [ ] Release PHC+ model (100% success rate on AMASS) used in [PULSE](https://zhengyiluo.github.io/PULSE/). 
+- [x] Release PHC+ model (100% success rate on AMASS) used in [PULSE](https://zhengyiluo.github.io/PULSE/). 
 
 - [x] Release language-based demo code.  
 
@@ -89,6 +89,7 @@ All evaluation is done using the mean SMPL body pose and adjust the height, usin
 | PHC           | 98.9% |     37.5     | 3.3 |
 | PHC-KP          | 98.7% |     40.7     | 3.5 |
 | PHC+ [in Pulse](https://zhengyiluo.github.io/PULSE/)  | 100% |     26.6     | 2.7 |
+| PHC-Prim (single primitive) | 99.9% |     21.3     | 2.3 |
 | PHC-Fut (using future) | 100% |     25.3     | 2.5 |
 
 ### Dependencies
