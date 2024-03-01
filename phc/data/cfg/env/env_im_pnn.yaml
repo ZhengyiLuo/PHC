@@ -25,12 +25,12 @@ has_lateral: False
 models: []
 
 ######## Getup Configs ########
-# zero_out_far: True
-# zero_out_far_train: False
-# getup_udpate_epoch: 78750
-# cycle_motion: True
-# hard_negative: False
-# min_length: 5
+zero_out_far: False
+zero_out_far_train: False
+getup_udpate_epoch: 78750
+cycle_motion: False
+hard_negative: False
+min_length: 5
 
 kp_scale: 1
 power_reward: True
