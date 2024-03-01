@@ -301,32 +301,32 @@ Training PHC is not super automated yet, so it requires some (a lot of) manual s
 First, we will train one primitive, and keep an eye on its performance (--has_eval) flag. In the config, the "training_prim" is the primitive that is being trained. This need to be updated accordingly. 
 
 ```
-python phc/run_hydra.py learning=im_pnn exp_name=phc_shape_pnn_iccv env=env_im_pnn robot=smpl_humanoid_shape env.motion_file=sample_data/amass_isaac_standing_upright_slim.pkl  
+python phc/run_hydra.py learning=im_pnn_big env=env_im_pnn robot=smpl_humanoid env.motion_file=[motion_file] exp_name=[exp_name] 
 ```
 
 After the performance plateaus, we will dump the most recent sequences that the primitives has failed on, and use them to train the next primitive. Here idx is the primitive that should be trained. 
 
 ```
-python scripts/pmcp/forward_pmcp.py --exp phc_shape_mcp_iccv --epoch {} --idx {idx}
+python scripts/pmcp/forward_pmcp.py --exp [exp_name] --epoch [epoch] --idx {idx}
 ```
 The above script will dump two files: one is the next hard sequences to learn, and anothere one is the checkpoint to resume with the copied primitive. 
 
 To train the next primitive, run teh following script:
 ```
-python phc/run_hydra.py learning=im_pnn exp_name=phc_shape_pnn_iccv env=env_im_pnn robot=smpl_humanoid_shape env.motion_file=sample_data/amass_isaac_standing_upright_slim.pkl epoch=[include epoch+1 from previous step] env.fitting=True env.training_prim=1
+python phc/run_hydra.py learning=im_pnn_big env=env_im_pnn robot=smpl_humanoid env.motion_file=[motion_file] epoch=[include epoch+1 from previous step] env.fitting=True env.training_prim=1
 ```
 
 Repeat this process until no hard sequences are left. Then, to train the fail-state recovery primitive on simple locomotion data. 
 
 
 ```
-python phc/run_hydra.py learning=im_pnn exp_name=phc_shape_pnn_iccv env=env_im_pnn robot=smpl_humanoid_shape env.motion_file=sample_data/amass_isaac_standing_upright_slim.pkl epoch=[include current epoch] env.fitting=True env.training_prim=3 zero_out_far=True zero_out_far_train=True getup_udpate_epoch={epoch}
+python phc/run_hydra.py learning=im_pnn_big exp_name=phc_shape_pnn_iccv env=env_im_pnn robot=smpl_humanoid env.motion_file=[motion_file] epoch=[include current epoch + 1 from the forward_pmcp step] env.fitting=True env.training_prim=[+1] env.zero_out_far=True env.zero_out_far_train=True env.getup_udpate_epoch={epoch}
 ```
 
 After all primitives are trained, train the composer: 
 
 ```
-python phc/run_hydra.py learning=im_mcp exp_name=phc_shape_mcp_iccv test=True env=env_im_getup_mcp robot=smpl_humanoid_shape env.z_activation=relu env.motion_file=sample_data/amass_isaac_standing_upright_slim.pkl env.models=['output/HumanoidIm/{exp_name}/Humanoid.pth']
+python phc/run_hydra.py learning=im_mcp_big exp_name=[] env=env_im_getup_mcp robot=smpl_humanoid env.motion_file=[motion_file] env.models=['output/HumanoidIm/{exp_name}/Humanoid.pth']
 ```
 
 When training the composer, you can repeat the process above (progressive mining hard sequences) to improve performance. 
