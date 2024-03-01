@@ -355,7 +355,7 @@ which should fix the issue. Though using file_system has caused me problems befo
 
 
 ### Success Rate
-The success rate is reported as "eval_success_rate" in the wandb logging, not the "success_rate", which is 
+The success rate is reported as "eval_success_rate" in the wandb logging, not the "success_rate", which is a episodic success rate used during training. 
 
 
 ## Citation
