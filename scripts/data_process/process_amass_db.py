@@ -224,7 +224,7 @@ def process_qpos_list(qpos_list):
 
 
 amass_splits = {
-    'vald': ['HumanEva', 'MPI_HDM05', 'SFU', 'MPI_mosh'],
+    'valid': ['HumanEva', 'MPI_HDM05', 'SFU', 'MPI_mosh'],
     'test': ['Transitions_mocap', 'SSM_synced'],
     'train': ['CMU', 'MPI_Limits', 'TotalCapture', 'Eyes_Japan_Dataset', 'KIT', 'BML', 'EKUT', 'TCD_handMocap', "BMLhandball", "DanceDB", "ACCAD", "BMLmovi", "BioMotionLab", "Eyes", "DFaust"]  # Adding ACCAD
 }
