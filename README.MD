@@ -343,7 +343,7 @@ python phc/run_hydra.py learning=im exp_name=phc_prim_iccv  env=env_im robot=smp
 ### Multiprocessing Issues
 See [this issue](https://github.com/ZhengyiLuo/PerpetualHumanoidControl/issues/17) for some discusssions. 
 
-For the data loading part, try use 
+For the data loading part, try use: 
 
 at [this line](https://github.com/ZhengyiLuo/PerpetualHumanoidControl/blob/8e01930fbcaa3efb9fb8b4752f2cf52f41dfe260/phc/utils/motion_lib_base.py#L235), bascially, uncomment: 
 
