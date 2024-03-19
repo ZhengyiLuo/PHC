@@ -17,6 +17,7 @@ wandb
 scikit-image
 gym
 git+https://github.com/ZhengyiLuo/smplx.git@master
+git+https://github.com/ZhengyiLuo/SMPLSim.git@master
 lxml
 human_body_prior
 autograd
