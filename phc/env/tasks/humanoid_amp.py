@@ -52,7 +52,7 @@ from easydict import EasyDict
 from isaacgym.torch_utils import *
 from phc.utils import torch_utils
 
-from uhc.smpllib.smpl_parser import (
+from smpl_sim.smpllib.smpl_parser import (
     SMPL_Parser,
     SMPLH_Parser,
     SMPLX_Parser,

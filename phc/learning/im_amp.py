@@ -32,7 +32,7 @@ from rl_games.algos_torch.players import rescale_actions
 from tensorboardX import SummaryWriter
 import joblib
 import gc
-from uhc.smpllib.smpl_eval import compute_metrics_lite
+from smpl_sim.smpllib.smpl_eval import compute_metrics_lite
 from tqdm import tqdm
 
 

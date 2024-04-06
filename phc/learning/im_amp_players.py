@@ -18,7 +18,7 @@ import learning.amp_players as amp_players
 from tqdm import tqdm
 import joblib
 import time
-from uhc.smpllib.smpl_eval import compute_metrics_lite
+from smpl_sim.smpllib.smpl_eval import compute_metrics_lite
 from rl_games.common.tr_helpers import unsqueeze_obs
 
 COLLECT_Z = False

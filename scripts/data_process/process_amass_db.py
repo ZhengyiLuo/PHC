@@ -13,7 +13,7 @@ import torch
 import argparse
 
 from tqdm import tqdm
-from uhc.utils.transform_utils import (
+from smpl_sim.utils.transform_utils import (
     convert_aa_to_orth6d,
     convert_orth_6d_to_aa,
     vertizalize_smpl_root,
@@ -21,8 +21,8 @@ from uhc.utils.transform_utils import (
     rot6d_to_rotmat,
 )
 from scipy.spatial.transform import Rotation as sRot
-from uhc.smpllib.smpl_parser import SMPL_Parser
-from uhc.utils.flags import flags
+from smpl_sim.smpllib.smpl_parser import SMPL_Parser
+from smpl_sim.utils.flags import flags
 
 np.random.seed(1)
 left_right_idx = [

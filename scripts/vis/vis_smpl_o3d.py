@@ -14,14 +14,14 @@ import joblib
 import numpy as np
 import torch
 
-from uhc.smpllib.smpl_parser import (
+from smpl_sim.smpllib.smpl_parser import (
     SMPL_Parser,
     SMPLH_Parser,
     SMPLX_Parser,
 )
 import random
 
-from uhc.smpllib.smpl_mujoco import SMPL_BONE_ORDER_NAMES as joint_names
+from smpl_sim.smpllib.smpl_mujoco import SMPL_BONE_ORDER_NAMES as joint_names
 from poselib.poselib.skeleton.skeleton3d import SkeletonTree, SkeletonMotion, SkeletonState
 from scipy.spatial.transform import Rotation as sRot
 import matplotlib.pyplot as plt

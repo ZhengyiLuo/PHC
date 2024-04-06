@@ -25,7 +25,7 @@ import aiohttp, cv2, asyncio, json
 import requests
 from collections import deque
 import scipy.ndimage.filters as filters
-from uhc.utils.transform_utils import quat_correct_two_batch
+from smpl_sim.utils.transform_utils import quat_correct_two_batch
 import subprocess
 
 SERVER = "0.0.0.0"

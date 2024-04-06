@@ -39,8 +39,8 @@ from isaacgym.torch_utils import *
 import joblib
 from phc.utils import torch_utils
 
-from uhc.smpllib.smpl_joint_names import SMPL_MUJOCO_NAMES, SMPLH_MUJOCO_NAMES
-from uhc.smpllib.smpl_local_robot import SMPL_Robot
+from smpl_sim.smpllib.smpl_joint_names import SMPL_MUJOCO_NAMES, SMPLH_MUJOCO_NAMES
+from smpl_sim.smpllib.smpl_local_robot import SMPL_Robot
 
 from phc.utils.flags import flags
 from phc.env.tasks.base_task import BaseTask
