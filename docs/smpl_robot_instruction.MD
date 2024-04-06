@@ -5,7 +5,7 @@ The SMPL robot, an adaption of Robot class from [Transform2Act](https://github.c
 To generate Isaac Gym comptialbe humanoid models, use:
 
 ```
-python uhc/smpllib/smpl_local_robot.py 
+python scripts/vis/vis_motion_mj.py
 ```
 
 This model supports mesh and non-mesh based humanoid used in [Trace & Pace](https://research.nvidia.com/labs/toronto-ai/trace-pace/). There is a number of setting you can play with like "upright_start", which generates a humanoid that that starts in an upright position facing x-direcation (default SMPL faces upward). 

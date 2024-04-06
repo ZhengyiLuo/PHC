@@ -4,3 +4,6 @@ WARNING: mju_openResource: unknown file 'egoquest/data/assets/mjcf/smpl_humanoid
 Sun Jan 28 12:57:59 2024
 ERROR: could not initialize GLFW
 
+Fri Apr  5 22:13:00 2024
+ERROR: could not initialize GLFW
+
