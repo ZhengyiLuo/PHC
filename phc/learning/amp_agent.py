@@ -22,7 +22,7 @@ import copy
 from phc.utils.torch_utils import project_to_norm
 import learning.amp_datasets as amp_datasets
 from phc.learning.loss_functions import kl_multi
-from uhc.utils.math_utils import LinearAnneal
+from smpl_sim.utils.math_utils import LinearAnneal
 
 def load_my_state_dict(target, saved_dict):
     for name, param in saved_dict.items():

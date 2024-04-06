@@ -13,7 +13,7 @@ from poselib.poselib.skeleton.skeleton3d import SkeletonMotion, SkeletonState
 import torch.multiprocessing as mp
 import copy
 import gc
-from uhc.smpllib.smpl_parser import (
+from smpl_sim.smpllib.smpl_parser import (
     SMPL_Parser,
     SMPLH_Parser,
     SMPLX_Parser,
@@ -22,7 +22,7 @@ from scipy.spatial.transform import Rotation as sRot
 import random
 from phc.utils.flags import flags
 from phc.utils.motion_lib_base import MotionLibBase, DeviceCache, compute_motion_dof_vels, FixHeightMode
-from uhc.utils.torch_ext import to_torch
+from smpl_sim.utils.torch_ext import to_torch
 
 USE_CACHE = False
 print("MOVING MOTION DATA TO GPU, USING CACHE:", USE_CACHE)

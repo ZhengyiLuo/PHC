@@ -13,11 +13,11 @@ import os.path as osp
 
 sys.path.append(os.getcwd())
 
-from uhc.utils.config_utils.copycat_config import Config as CC_Config
-from uhc.khrylib.utils import get_body_qposaddr
-from uhc.smpllib.smpl_mujoco import SMPL_BONE_ORDER_NAMES as joint_names
-from uhc.smpllib.smpl_robot import Robot
-from uhc.smpllib.smpl_local_robot import SMPL_Robot as LocalRobot
+from smpl_sim.utils.config_utils.copycat_config import Config as CC_Config
+from smpl_sim.khrylib.utils import get_body_qposaddr
+from smpl_sim.smpllib.smpl_mujoco import SMPL_BONE_ORDER_NAMES as joint_names
+from smpl_sim.smpllib.smpl_robot import Robot
+from smpl_sim.smpllib.smpl_local_robot import SMPL_Robot as LocalRobot
 import scipy.ndimage.filters as filters
 from typing import List, Optional
 from tqdm import tqdm
@@ -127,7 +127,7 @@ for key_name in tqdm(amass_data.keys()):
 
         print("############### filtering!!! ###############")
         import scipy.ndimage.filters as filters
-        from uhc.utils.transform_utils import quat_correct
+        from smpl_sim.utils.transform_utils import quat_correct
         root_trans_offset = filters.gaussian_filter1d(root_trans_offset, 3, axis=0, mode="nearest")
         root_trans_offset = torch.from_numpy(root_trans_offset)
         pose_quat_global = np.stack([quat_correct(pose_quat_global[:, i]) for i in range(pose_quat_global.shape[1])], axis=1)
