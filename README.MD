@@ -162,9 +162,9 @@ To evaluate with your own SMPL data, see the script `scripts/data_process/conver
 
 ... more shortcut can be found in `phc/env/tasks/base_task.py`
 
-Notes on rendering: I am using pyvirtualdisplay to record the video such that you can see all humanoids at the same time (default function will only capture the first environment). You can disable it using the flag `--no_virtual_display`. 
+Notes on rendering: I am using pyvirtualdisplay to record the video such that you can see all humanoids at the same time (default function will only capture the first environment). You can disable it using the flag `no_virtual_display=True`. 
 
-You can use the `--render_o3d --no_virtual_display` flag to render the SMPL mesh together with your Isaac Gym simulation in real time like this: 
+You can use the `render_o3d=True no_virtual_display=True` flag to render the SMPL mesh together with your Isaac Gym simulation in real time like this: 
 <div float="center">
   <img src="assets/open3d.gif" />
 </div>
