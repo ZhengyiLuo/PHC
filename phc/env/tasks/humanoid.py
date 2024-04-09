@@ -737,7 +737,8 @@ class Humanoid(BaseTask):
                 "joint_params": {},
                 "geom_params": {},
                 "actuator_params": {},
-                "model": self.humanoid_type
+                "model": self.humanoid_type,
+                "sim": "isaacgym"
             }
             if os.path.exists("data/smpl"):
                 robot = SMPL_Robot(
