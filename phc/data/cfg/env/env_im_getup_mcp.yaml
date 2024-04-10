@@ -26,8 +26,8 @@ models: []
 ######## Getup Configs ########
 zero_out_far: True
 zero_out_far_train: False
-cycle_motion: False
-getup_udpate_epoch: 78750
+cycle_motion: True
+getup_udpate_epoch: 1000
 
 getup_schedule: True
 recoverySteps: 90
