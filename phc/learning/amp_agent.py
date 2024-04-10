@@ -58,11 +58,10 @@ class AMPAgent(common_agent.CommonAgent):
         # ZL Hack
         if self.vec_env.env.task.fitting:
             print("#################### Fitting and freezing!! ####################")
-            checkpoint = torch_ext.load_checkpoint(self.vec_env.env.task.models_path[0])
-            
-            self.set_stats_weights(checkpoint)  # loads mean std. essential for distilling knowledge. will not load if has a shape mismatch.
+            # checkpoint = torch_ext.load_checkpoint(self.vec_env.env.task.models_path[0])
+            # self.set_stats_weights(checkpoint)  # loads mean std. essential for distilling knowledge. will not load if has a shape mismatch.
             self.freeze_state_weights()  # freeze the mean stds.
-            load_my_state_dict(self.model.state_dict(), checkpoint['model'])  # loads everything (model, std, ect.). that can be load from the last model.
+            # load_my_state_dict(self.model.state_dict(), checkpoint['model'])  # loads everything (model, std, ect.). that can be load from the last model.
             # self.value_mean_std # not freezing value function though.
         
         return
