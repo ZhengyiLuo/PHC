@@ -1076,8 +1076,9 @@ class Humanoid(BaseTask):
             # ZL: Modified SMPL to give stronger knee
             self._pd_action_scale[self._L_knee_dof_idx] = 5
             self._pd_action_scale[self._R_knee_dof_idx] = 5
-
+            
             if self._has_smpl_pd_offset:
+                
                 if self._has_upright_start:
                     self._pd_action_offset[self._dof_names.index("L_Shoulder") * 3] = -np.pi / 2
                     self._pd_action_offset[self._dof_names.index("R_Shoulder") * 3] = np.pi / 2
