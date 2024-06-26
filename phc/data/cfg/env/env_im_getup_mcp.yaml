@@ -10,9 +10,12 @@ episode_length: 300
 is_flag_run: False
 enable_debug_vis: False
 
+
 sym_loss_coef: 1
 fut_tracks: False
 obs_v: 6
+auto_pmcp: False
+auto_pmcp_soft: True
 
 ######## PNN Configs ########
 has_pnn: True

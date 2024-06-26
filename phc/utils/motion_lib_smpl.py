@@ -57,6 +57,7 @@ class MotionLibSMPL(MotionLibBase):
                 smpl_parser_f = SMPL_Parser(model_path=data_dir, gender="female")
             self.mesh_parsers = {0: smpl_parser_n, 1: smpl_parser_m, 2: smpl_parser_f}
         else:
+            print("SMPL models not found, set mesh_parsers to None")
             self.mesh_parsers = None
         
         return
