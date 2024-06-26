@@ -46,9 +46,6 @@ kp_scale: 1
 power_reward: True
 power_coefficient: 0.00005
 
-has_shape_obs: True
-has_shape_obs_disc: True
-has_shape_variation: True
 shape_resampling_interval: 500
 
 control_mode: "isaac_pd"
