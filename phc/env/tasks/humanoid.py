@@ -965,13 +965,11 @@ class Humanoid(BaseTask):
         dof_prop = self.gym.get_asset_dof_properties(humanoid_asset)
         if self.has_shape_variation:
             pd_scale = humanoid_mass / self.cfg['env'].get('default_humanoid_mass', 77.0 if self._real_weight else 35.0)
-            self._kp_scale = pd_scale * self._kp_scale
-            self._kd_scale = pd_scale * self._kd_scale
             
         if (self.control_mode == "isaac_pd"):
             dof_prop["driveMode"][:] = gymapi.DOF_MODE_POS
-            dof_prop['stiffness'] *= self._kp_scale
-            dof_prop['damping'] *= self._kd_scale
+            dof_prop['stiffness'] *= pd_scale * self._kp_scale
+            dof_prop['damping'] *= pd_scale * self._kd_scale
         else:
             if self.control_mode == "pd":
                 # self.kp_gains = to_torch(self._kp_scale * dof_prop['stiffness'], device=self.device)
