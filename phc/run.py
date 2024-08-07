@@ -271,6 +271,7 @@ def main():
     if args.motion_file:
         cfg['env']['motion_file'] = args.motion_file
     flags.test = args.test
+    flags.dataset = args.dataset
 
     # Create default directories for weights and statistics
     cfg_train['params']['config']['network_path'] = args.network_path
