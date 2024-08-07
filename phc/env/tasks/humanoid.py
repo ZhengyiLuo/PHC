@@ -961,7 +961,7 @@ class Humanoid(BaseTask):
 
         for j in range(self.num_bodies):
             self.gym.set_rigid_body_color(env_ptr, humanoid_handle, j, gymapi.MESH_VISUAL, color_vec)
-
+        pd_scale = 1
         dof_prop = self.gym.get_asset_dof_properties(humanoid_asset)
         if self.has_shape_variation:
             pd_scale = humanoid_mass / self.cfg['env'].get('default_humanoid_mass', 77.0 if self._real_weight else 35.0)
