@@ -8,7 +8,7 @@ import joblib
 
 def load_model():
     from train import MLP
-    model = MLP(574,256,69)
+    model = MLP(574,2048,69)
     model.load_state_dict(torch.load('./bc_model/bc_model_10.pth'))
     obs = torch.zeros(1,574)
     action = model(obs)

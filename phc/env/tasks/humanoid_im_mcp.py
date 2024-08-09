@@ -9,6 +9,7 @@ import torch.nn as nn
 from phc.learning.pnn import PNN
 from collections import deque
 from phc.learning.network_loader import load_mcp_mlp, load_pnn
+from train import MLP
 
 class HumanoidImMCP(humanoid_im.HumanoidIm):
 
@@ -26,7 +27,12 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
             pnn_ck = torch_ext.load_checkpoint(self.models_path[0])
             self.pnn = load_pnn(pnn_ck, num_prim = self.num_prim, has_lateral = self.has_lateral, activation = self.z_activation, device = self.device)
             self.running_mean, self.running_var = pnn_ck['running_mean_std']['running_mean'], pnn_ck['running_mean_std']['running_var']
-        
+
+        if flags.dataset:
+            self.mlp_model = MLP(574, 2048, 69)
+            self.mlp_model.load_state_dict(torch.load('./bc_model/bc_model_86000.pth'))
+            self.mlp_model.to(self.device)
+
         self.fps = deque(maxlen=90)
         
         return
@@ -63,6 +69,11 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
                 x_all = torch.stack(actions, dim=1)
             else:
                 x_all = torch.stack([net(curr_obs) for net in self.actors], dim=1)
+
+            if flags.dataset:
+                mlp_action = self.mlp_model(curr_obs)
+                mlp_action = mlp_action.unsqueeze(1)
+                x_all = mlp_action.repeat(1, self.num_actions, 1)
             # print(weights)
             actions = torch.sum(weights[:, :, None] * x_all, dim=1)
         
