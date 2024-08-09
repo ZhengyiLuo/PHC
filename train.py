@@ -44,10 +44,14 @@ class MLP(nn.Module):
         x = self.layer3(x)
         return x
 
-def train_model(model, criterion, optimizer, data_loader, num_epochs):
+def train_model(model, device, criterion, optimizer, data_loader, num_epochs):
+    model.to(device)
     for epoch in range(num_epochs):
         for batch_obs, batch_actions in data_loader:
             # Forward pass
+            batch_obs = batch_obs.to(device)
+            batch_actions = batch_actions.to(device)
+
             outputs = model(batch_obs)
             loss = criterion(outputs, batch_actions)
 
@@ -56,9 +60,10 @@ def train_model(model, criterion, optimizer, data_loader, num_epochs):
             loss.backward()
             optimizer.step()
 
-        if (epoch + 1) % 100 == 0:
+        if (epoch + 1) % 10 == 0:
             print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
             # Save the model
+        if (epoch + 1) % 2000 == 0:
             torch.save(model.state_dict(), f'./bc_model/bc_model_{epoch+1}.pth')
 
 
@@ -67,15 +72,16 @@ def train_model(model, criterion, optimizer, data_loader, num_epochs):
 
 def main():
     # Hyperparameters
-
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    print("Device:", device)
     # Load your dataset here (replace with actual data loading)
     obs, actions, reset = joblib.load("output/HumanoidIm/phc_comp_kp_2/obs_actions_reset.pkl")
     input_size = obs[0].shape[1]  # Example input size (e.g., pose parameters + shape parameters + global orientation)
-    hidden_size = 256  # Example hidden layer size
+    hidden_size = 2048  # Example hidden layer size
     output_size = actions[0].shape[1]  # Example output size (e.g., joint angles)
-    batch_size = 2048
+    batch_size = 16384
     num_epochs = 1000000
-    learning_rate = 0.001
+    learning_rate = 2e-5
     min_episode_length = 16
     if len(obs)>11313:
         obs = obs[:11313]
@@ -104,7 +110,7 @@ def main():
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
     # Train the model
-    train_model(model, criterion, optimizer, data_loader, num_epochs)
+    train_model(model, device, criterion, optimizer, data_loader, num_epochs)
 
 
 if __name__ == "__main__":
