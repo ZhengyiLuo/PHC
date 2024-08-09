@@ -5,6 +5,8 @@ from torch.utils.data import DataLoader, Dataset
 import numpy as np
 import joblib
 import random
+import wandb
+wandb.login()
 
 def load_model():
     from train import MLP
@@ -60,7 +62,7 @@ def train_model(model, device, criterion, optimizer, data_loader, num_epochs):
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-
+        wandb.log({"loss": loss.item()})
         if (epoch + 1) % 10 == 0:
             print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
             # Save the model
@@ -84,6 +86,22 @@ def main():
     num_epochs = 1000000
     learning_rate = 2e-5
     min_episode_length = 16
+
+    run = wandb.init(
+        # Set the project where this run will be logged
+        project="train_bc",
+        # Track hyperparameters and run metadata
+        config={
+            "learning_rate": learning_rate,
+            "hidden_size": hidden_size,
+            "output_size": output_size,
+            "batch_size": batch_size,
+            "num_epochs": num_epochs,
+            "min_episode_length": min_episode_length,
+            "input_size": input_size,
+        },
+    )
+
     if len(obs)>11313:
         obs = obs[:11313]
         actions = actions[:11313]
