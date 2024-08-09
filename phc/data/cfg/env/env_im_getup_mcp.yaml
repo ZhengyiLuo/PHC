@@ -9,7 +9,7 @@ env_spacing: 2
 episode_length: 300
 is_flag_run: False
 enable_debug_vis: False
-
+add_obs_noise: False
 
 sym_loss_coef: 1
 fut_tracks: False

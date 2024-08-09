@@ -1,5 +1,4 @@
 
-
 import glob
 import os
 import sys
@@ -29,6 +28,10 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
 
         self.terminate_state = torch.zeros(self.env.task.num_envs, device=self.device)
         self.terminate_memory = []
+        if flags.dataset:
+            self.obs_buf, self.obs_buf_all = [], []
+            self.actions, self.actions_all = [], []
+            self.reset_buf, self.reset_buf_all = [], []
         self.mpjpe, self.mpjpe_all = [], []
         self.gt_pos, self.gt_pos_all = [], []
         self.pred_pos, self.pred_pos_all = [], []
@@ -84,6 +87,10 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
             else:
                 curr_max = humanoid_env._motion_lib.get_motion_num_steps().max()
 
+            if flags.dataset:
+                self.obs_buf.append(info['obs_buf'])
+                self.actions.append(info['actions'])
+                self.reset_buf.append(info['reset_buf'])
             self.mpjpe.append(info["mpjpe"])
             self.gt_pos.append(info["body_pos_gt"])
             self.pred_pos.append(info["body_pos"])
@@ -114,6 +121,22 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                     all_zs = [all_zs[: (i - 1), idx] for idx, i in enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                     self.zs_all += all_zs
 
+
+                if flags.dataset:
+                    all_obs_buf = np.stack(self.obs_buf)
+                    all_obs_buf = [all_obs_buf[: (i - 1), idx] for idx, i in
+                                   enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
+                    self.obs_buf_all += all_obs_buf
+
+                    all_actions = np.stack(self.actions)
+                    all_actions = [all_actions[: (i - 1), idx] for idx, i in
+                                   enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
+                    self.actions_all += all_actions
+
+                    all_reset_buf = np.stack(self.reset_buf)
+                    all_reset_buf = [all_reset_buf[: (i - 1), idx] for idx, i in
+                                     enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
+                    self.reset_buf_all += all_reset_buf
 
                 self.mpjpe_all.append(all_mpjpe)
                 self.pred_pos_all += all_body_pos_pred
@@ -161,8 +184,10 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                         zs_all = self.zs_all[:humanoid_env._motion_lib._num_unique_motions]
                         zs_dump = {k: zs_all[idx].cpu().numpy() for idx, k in enumerate(humanoid_env._motion_lib._motion_data_keys)}
                         joblib.dump(zs_dump, osp.join(self.config['network_path'], "zs_run.pkl"))
-                    
-                    import ipdb; ipdb.set_trace()
+
+                    if flags.dataset:
+                        joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all), osp.join(self.config['network_path'], "obs_actions_reset.pkl"))
+                        import ipdb; ipdb.set_trace()
 
                     # joblib.dump(np.concatenate(self.zs_all[: humanoid_env._motion_lib._num_unique_motions]), osp.join(self.config['network_path'], "zs.pkl"))
 
@@ -180,6 +205,7 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                 self.pbar.update(1)
                 self.pbar.refresh()
                 self.mpjpe, self.gt_pos, self.pred_pos,  = [], [], []
+                if flags.dataset: self.obs_buf, self.actions = [], []
                 if COLLECT_Z: self.zs = []
                 self.curr_stpes = 0
 
