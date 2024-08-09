@@ -4,7 +4,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, Dataset
 import numpy as np
 import joblib
-
+import random
 
 def load_model():
     from train import MLP
@@ -26,8 +26,9 @@ class HumanoidDataset(Dataset):
         if self.length > self.obs[idx].shape[0]:
             print("idx is ", idx, self.obs[idx].shape)
             import pdb; pdb.set_trace()
-        obs = self.obs[idx][0:self.length]
-        action = self.actions[idx][0:self.length]
+        rand_index = random.randint(0, self.obs[idx].shape[0] - self.length)
+        obs = self.obs[idx][rand_index:rand_index+self.length]
+        action = self.actions[idx][rand_index:rand_index+self.length]
         return obs, action
 
 class MLP(nn.Module):
