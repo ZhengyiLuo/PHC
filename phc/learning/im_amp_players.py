@@ -186,7 +186,11 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                         joblib.dump(zs_dump, osp.join(self.config['network_path'], "zs_run.pkl"))
 
                     if flags.dataset:
-                        joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all), osp.join(self.config['network_path'], "obs_actions_reset.pkl"))
+                        if humanoid_env.add_obs_noise:
+                            filename = "obs_actions_reset_add_obs_noise.pkl"
+                        else:
+                            filename = "obs_actions_reset_no_obs_noise.pkl"
+                        joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all), osp.join(self.config['network_path'], filename))
                         import ipdb; ipdb.set_trace()
 
                     # joblib.dump(np.concatenate(self.zs_all[: humanoid_env._motion_lib._num_unique_motions]), osp.join(self.config['network_path'], "zs.pkl"))

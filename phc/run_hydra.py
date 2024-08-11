@@ -280,6 +280,7 @@ def main(cfg_hydra: DictConfig) -> None:
 
     flags.test = cfg.test
     flags.dataset = cfg.dataset
+    flags.mlp = cfg.mlp
     flags.add_proj = cfg.add_proj
     flags.has_eval = cfg.has_eval
     flags.trigger_input = False

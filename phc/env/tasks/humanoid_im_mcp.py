@@ -28,9 +28,9 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
             self.pnn = load_pnn(pnn_ck, num_prim = self.num_prim, has_lateral = self.has_lateral, activation = self.z_activation, device = self.device)
             self.running_mean, self.running_var = pnn_ck['running_mean_std']['running_mean'], pnn_ck['running_mean_std']['running_var']
 
-        if flags.dataset:
+        if flags.mlp:
             self.mlp_model = MLP(574, 2048, 69)
-            self.mlp_model.load_state_dict(torch.load('./bc_model/bc_model_86000.pth'))
+            self.mlp_model.load_state_dict(torch.load('./bc_model/bc_model_238000.pth'))
             self.mlp_model.to(self.device)
 
         self.fps = deque(maxlen=90)
@@ -70,7 +70,7 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
             else:
                 x_all = torch.stack([net(curr_obs) for net in self.actors], dim=1)
 
-            if flags.dataset:
+            if flags.mlp:
                 mlp_action = self.mlp_model(curr_obs)
                 mlp_action = mlp_action.unsqueeze(1)
                 x_all = mlp_action.repeat(1, self.num_actions, 1)
