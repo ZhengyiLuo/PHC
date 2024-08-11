@@ -15,6 +15,7 @@ resume_str: null
 num_threads: 64
 test: False
 dataset: False
+mlp: False
 output_path: output/HumanoidIm/${exp_name}
 torch_deterministic: False
 epoch: 0
