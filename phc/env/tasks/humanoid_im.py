@@ -637,6 +637,8 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             self.extras['body_pos_gt'] = motion_res['rg_pos'].cpu().numpy()
             self.extras['obs_buf'] = self.obs_buf.cpu().numpy()  # n, 945
             self.extras['actions'] = self.actions.cpu().numpy()  # n, 69
+            if self.collect_clean_action:
+                self.extras['clean_actions'] = self.clean_actions.cpu().numpy()
             self.extras['reset_buf'] = self.reset_buf.cpu().numpy()  # n
 
         return
@@ -655,7 +657,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         else:
             obs = self_obs
             
-        if self.add_obs_noise and (not flags.test or flags.dataset):
+        if self.add_obs_noise and not flags.test:
             obs = obs + torch.randn_like(obs) * 0.1
 
         if self.obs_v == 4:

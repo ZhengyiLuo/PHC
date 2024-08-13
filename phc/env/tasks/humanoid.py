@@ -316,7 +316,11 @@ class Humanoid(BaseTask):
         self.auto_pmcp_soft = cfg["env"].get("auto_pmcp_soft", False)
         self.strict_eval = cfg["env"].get("strict_eval", False)
         self.add_obs_noise = cfg["env"].get("add_obs_noise", False)
-
+        self.collect_clean_action = cfg["env"].get("collect_clean_action", False)
+        self.add_action_noise = cfg["env"].get("add_action_noise", False)
+        self.action_noise_std = cfg["env"].get("action_noise_std", 0.05)
+        self.collect_dataset = cfg["env"].get("collect_dataset", False)
+        self.use_mlp = cfg["env"].get("use_mlp", False)
         self._occl_training = cfg["env"].get("occl_training", False)  # Cycle motion, but cycle farrrrr.
         self._occl_training_prob = cfg["env"].get("occl_training_prob", 0.1)  # Cycle motion, but cycle farrrrr.
         self._sim_occlu = False
@@ -1204,6 +1208,19 @@ class Humanoid(BaseTask):
             print("\nhumanoid.py pre_physics_step actions")
             print(actions[0][0: 8])
         self.actions = actions.to(self.device).clone()
+        if self.collect_clean_action:
+            self.clean_actions = actions.to(self.device).clone()
+            if flags.debug:
+                print("humanoid.py 1214 collect clean_actions")
+                print(self.clean_actions[0][0:8])
+        if self.add_action_noise:
+            if flags.debug:
+                print("humanoid.py 1214 add action noise")
+                print("before: ", self.actions[0][0:8])
+            noise = torch.normal(mean=0.0, std=self.action_noise_std, size = actions.shape, device=self.device)
+            self.actions += noise
+            if flags.debug:
+                print("after: ", self.actions[0][0:8])
         if len(self.actions.shape) == 1:
             self.actions = self.actions[None, ]
             

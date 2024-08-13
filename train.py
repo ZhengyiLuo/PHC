@@ -14,14 +14,6 @@ foldername = os.path.join("./bc_model/", now.strftime("%m-%d-%H"))
 if not os.path.exists(foldername):
     os.makedirs(foldername)
 
-def load_model():
-    from train import MLP
-    model = MLP(574,2048,69)
-    model.load_state_dict(torch.load('./bc_model/bc_model_10.pth'))
-    obs = torch.zeros(1,574)
-    action = model(obs)
-
-
 class HumanoidDataset(Dataset):
     def __init__(self, obs, actions, length):
         self.obs = obs
@@ -37,7 +29,6 @@ class HumanoidDataset(Dataset):
         rand_index = random.randint(0, self.obs[idx].shape[0] - self.length)
         obs = self.obs[idx][rand_index:rand_index+self.length]
         action = self.actions[idx][rand_index:rand_index+self.length]
-        obs = obs + (torch.randn_like(obs) * 2 - 1) * 0.1
         return obs, action
 
 class MLP(nn.Module):
@@ -85,7 +76,7 @@ def main():
     device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
     print("Device:", device)
     # Load your dataset here (replace with actual data loading)
-    obs, actions, reset = joblib.load("output/HumanoidIm/phc_comp_kp_2/obs_actions_reset_no_obs_noise.pkl")
+    obs, actions, reset = joblib.load("output/HumanoidIm/phc_comp_kp_2/obs_clean_actions_reset_action_noise_0.05.pkl")
     input_size = obs[0].shape[1]  # Example input size (e.g., pose parameters + shape parameters + global orientation)
     hidden_size = 2048  # Example hidden layer size
     output_size = actions[0].shape[1]  # Example output size (e.g., joint angles)
