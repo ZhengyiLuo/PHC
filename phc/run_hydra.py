@@ -279,8 +279,6 @@ def main(cfg_hydra: DictConfig) -> None:
         cfg.debug, cfg.follow, False, False, False, False, False, True, cfg.server_mode, False, False, cfg.im_eval, cfg.no_virtual_display, cfg.render_o3d
 
     flags.test = cfg.test
-    flags.dataset = cfg.dataset
-    flags.mlp = cfg.mlp
     flags.add_proj = cfg.add_proj
     flags.has_eval = cfg.has_eval
     flags.trigger_input = False

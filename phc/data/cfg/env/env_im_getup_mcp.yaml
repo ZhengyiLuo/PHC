@@ -10,7 +10,12 @@ episode_length: 300
 is_flag_run: False
 enable_debug_vis: False
 add_obs_noise: False
-
+add_action_noise: False
+action_noise_std: 0.05
+collect_dataset: False
+collect_clean_action: False
+use_mlp: False
+mlp_model_path: ""
 sym_loss_coef: 1
 fut_tracks: False
 obs_v: 6

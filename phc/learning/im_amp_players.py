@@ -28,10 +28,7 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
 
         self.terminate_state = torch.zeros(self.env.task.num_envs, device=self.device)
         self.terminate_memory = []
-        if flags.dataset:
-            self.obs_buf, self.obs_buf_all = [], []
-            self.actions, self.actions_all = [], []
-            self.reset_buf, self.reset_buf_all = [], []
+
         self.mpjpe, self.mpjpe_all = [], []
         self.gt_pos, self.gt_pos_all = [], []
         self.pred_pos, self.pred_pos_all = [], []
@@ -43,6 +40,13 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
         humanoid_env = self.env.task
         humanoid_env._termination_distances[:] = 0.5 # if not humanoid_env.strict_eval else 0.25 # ZL: use UHC's termination distance
         humanoid_env._recovery_episode_prob, humanoid_env._fall_init_prob = 0, 0
+
+        if humanoid_env.collect_dataset:
+            self.obs_buf, self.obs_buf_all = [], []
+            self.actions, self.actions_all = [], []
+            if humanoid_env.collect_clean_action:
+                self.clean_actions, self.clean_actions_all = [], []
+            self.reset_buf, self.reset_buf_all = [], []
 
         if flags.im_eval:
             self.success_rate = 0
@@ -87,9 +91,11 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
             else:
                 curr_max = humanoid_env._motion_lib.get_motion_num_steps().max()
 
-            if flags.dataset:
+            if humanoid_env.collect_dataset:
                 self.obs_buf.append(info['obs_buf'])
                 self.actions.append(info['actions'])
+                if humanoid_env.collect_clean_action:
+                    self.clean_actions.append(info['clean_actions'])
                 self.reset_buf.append(info['reset_buf'])
             self.mpjpe.append(info["mpjpe"])
             self.gt_pos.append(info["body_pos_gt"])
@@ -122,7 +128,7 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                     self.zs_all += all_zs
 
 
-                if flags.dataset:
+                if humanoid_env.collect_dataset:
                     all_obs_buf = np.stack(self.obs_buf)
                     for i, obs in enumerate(all_obs_buf):
                         all_obs_buf[i] = ((all_obs_buf[i] - humanoid_env.running_mean.detach().cpu().numpy()) / np.sqrt(
@@ -136,6 +142,11 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                     all_actions = [all_actions[: (i - 1), idx] for idx, i in
                                    enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                     self.actions_all += all_actions
+                    if humanoid_env.collect_clean_action:
+                        all_clean_actions = np.stack(self.clean_actions)
+                        all_clean_actions = [all_clean_actions[: (i - 1), idx] for idx, i in
+                                       enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
+                        self.clean_actions_all += all_clean_actions
 
                     all_reset_buf = np.stack(self.reset_buf)
                     all_reset_buf = [all_reset_buf[: (i - 1), idx] for idx, i in
@@ -189,12 +200,23 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                         zs_dump = {k: zs_all[idx].cpu().numpy() for idx, k in enumerate(humanoid_env._motion_lib._motion_data_keys)}
                         joblib.dump(zs_dump, osp.join(self.config['network_path'], "zs_run.pkl"))
 
-                    if flags.dataset:
+                    if humanoid_env.collect_dataset:
                         if humanoid_env.add_obs_noise:
                             filename = "obs_actions_reset_add_obs_noise.pkl"
+                            joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all),
+                                        osp.join(self.config['network_path'], filename))
+                        elif humanoid_env.add_action_noise:
+                            if humanoid_env.collect_clean_action:
+                                filename = f"obs_clean_actions_reset_action_noise_{humanoid_env.action_noise_std}.pkl"
+                                joblib.dump((self.obs_buf_all, self.clean_actions_all, self.reset_buf_all),
+                                        osp.join(self.config['network_path'], filename))
+                            else:
+                                filename = f"obs_actions_reset_action_noise_{humanoid_env.action_noise_std}.pkl"
+                                joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all),
+                                        osp.join(self.config['network_path'], filename))
                         else:
-                            filename = "obs_actions_reset_no_obs_noise.pkl"
-                        joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all), osp.join(self.config['network_path'], filename))
+                            filename = "clean_obs_clean_actions_reset.pkl"
+                            joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all), osp.join(self.config['network_path'], filename))
                         import ipdb; ipdb.set_trace()
 
                     # joblib.dump(np.concatenate(self.zs_all[: humanoid_env._motion_lib._num_unique_motions]), osp.join(self.config['network_path'], "zs.pkl"))
@@ -213,7 +235,7 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                 self.pbar.update(1)
                 self.pbar.refresh()
                 self.mpjpe, self.gt_pos, self.pred_pos,  = [], [], []
-                if flags.dataset: self.obs_buf, self.actions = [], []
+                if humanoid_env.collect_dataset: self.obs_buf, self.actions, self.clean_actions, self.reset_buf = [], [], [], []
                 if COLLECT_Z: self.zs = []
                 self.curr_stpes = 0
 

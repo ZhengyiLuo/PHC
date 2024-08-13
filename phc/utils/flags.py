@@ -10,6 +10,4 @@ flags = Flags({
     'debug': False,
     "real_traj": False,
     "im_eval": False,
-    "dataset": False,
-    "mlp": False,
     })
