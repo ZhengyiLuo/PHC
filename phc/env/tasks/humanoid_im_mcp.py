@@ -30,7 +30,7 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
 
         if flags.mlp:
             self.mlp_model = MLP(574, 2048, 69)
-            self.mlp_model.load_state_dict(torch.load('./bc_model/bc_model_238000.pth'))
+            self.mlp_model.load_state_dict(torch.load('./bc_model/bc_model_46000.pth'))
             self.mlp_model.to(self.device)
 
         self.fps = deque(maxlen=90)
@@ -65,18 +65,26 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
             
             if self.has_pnn:
                 _, actions = self.pnn(curr_obs)
-                
                 x_all = torch.stack(actions, dim=1)
+                actions = torch.sum(weights[:, :, None] * x_all, dim=1)
+                if flags.debug:
+                    print("\npnn output actions \n", actions[0][0:8])
             else:
                 x_all = torch.stack([net(curr_obs) for net in self.actors], dim=1)
+                actions = torch.sum(weights[:, :, None] * x_all, dim=1)
+                if flags.debug:
+                    print("\nnot pnn output actions \n", actions[0][0:8])
 
             if flags.mlp:
                 mlp_action = self.mlp_model(curr_obs)
                 mlp_action = mlp_action.unsqueeze(1)
-                x_all = mlp_action.repeat(1, self.num_actions, 1)
+                mlp_x_all = mlp_action.repeat(1, self.num_actions, 1)
+                actions = torch.sum(weights[:, :, None] * mlp_x_all, dim=1)
+                if flags.debug:
+                    print("\nmlp actions\n", actions[0][0:8])
+            #import pdb; pdb.set_trace()
             # print(weights)
-            actions = torch.sum(weights[:, :, None] * x_all, dim=1)
-        
+
         # actions = x_all[:, 3]  # Debugging
         # apply actions
         self.pre_physics_step(actions)

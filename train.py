@@ -5,8 +5,14 @@ from torch.utils.data import DataLoader, Dataset
 import numpy as np
 import joblib
 import random
+import os
 import wandb
+from datetime import datetime
 wandb.login()
+now = datetime.now()
+foldername = os.path.join("./bc_model/", now.strftime("%m-%d-%H"))
+if not os.path.exists(foldername):
+    os.makedirs(foldername)
 
 def load_model():
     from train import MLP
@@ -25,12 +31,13 @@ class HumanoidDataset(Dataset):
         return len(self.obs)
 
     def __getitem__(self, idx):
-        if self.length > self.obs[idx].shape[0]:
-            print("idx is ", idx, self.obs[idx].shape)
-            import pdb; pdb.set_trace()
+        # if self.length > self.obs[idx].shape[0]:
+        #     print("idx is ", idx, self.obs[idx].shape)
+        #     import pdb; pdb.set_trace()
         rand_index = random.randint(0, self.obs[idx].shape[0] - self.length)
         obs = self.obs[idx][rand_index:rand_index+self.length]
         action = self.actions[idx][rand_index:rand_index+self.length]
+        obs = obs + (torch.randn_like(obs) * 2 - 1) * 0.1
         return obs, action
 
 class MLP(nn.Module):
@@ -66,8 +73,8 @@ def train_model(model, device, criterion, optimizer, data_loader, num_epochs):
         if (epoch + 1) % 10 == 0:
             print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
             # Save the model
-        if (epoch + 1) % 2000 == 0:
-            torch.save(model.state_dict(), f'./bc_model/bc_model_{epoch+1}.pth')
+        if (epoch + 1) % 5000 == 0:
+            torch.save(model.state_dict(), f'{foldername}/bc_model_{epoch+1}.pth')
 
 
     print("Training complete.")
@@ -75,17 +82,17 @@ def train_model(model, device, criterion, optimizer, data_loader, num_epochs):
 
 def main():
     # Hyperparameters
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
     print("Device:", device)
     # Load your dataset here (replace with actual data loading)
-    obs, actions, reset = joblib.load("output/HumanoidIm/phc_comp_kp_2/obs_actions_reset.pkl")
+    obs, actions, reset = joblib.load("output/HumanoidIm/phc_comp_kp_2/obs_actions_reset_no_obs_noise.pkl")
     input_size = obs[0].shape[1]  # Example input size (e.g., pose parameters + shape parameters + global orientation)
     hidden_size = 2048  # Example hidden layer size
     output_size = actions[0].shape[1]  # Example output size (e.g., joint angles)
     batch_size = 16384
     num_epochs = 1000000
     learning_rate = 2e-5
-    min_episode_length = 16
+    min_episode_length = 1
 
     run = wandb.init(
         # Set the project where this run will be logged
@@ -99,6 +106,7 @@ def main():
             "num_epochs": num_epochs,
             "min_episode_length": min_episode_length,
             "input_size": input_size,
+            "info": "noise obs to clean action"
         },
     )
 
@@ -120,6 +128,8 @@ def main():
 
 
     assert len(all_obs) == len(all_actions)
+    all_obs = [torch.tensor(array, dtype=torch.float32).to(device) for array in all_obs]
+    all_actions = [torch.tensor(array, dtype=torch.float32).to(device) for array in all_actions]
     dataset = HumanoidDataset(all_obs, all_actions, min_episode_length)
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 

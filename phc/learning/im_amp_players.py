@@ -124,6 +124,10 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
 
                 if flags.dataset:
                     all_obs_buf = np.stack(self.obs_buf)
+                    for i, obs in enumerate(all_obs_buf):
+                        all_obs_buf[i] = ((all_obs_buf[i] - humanoid_env.running_mean.detach().cpu().numpy()) / np.sqrt(
+                            humanoid_env.running_var.detach().cpu().numpy() + 1e-05))
+                        all_obs_buf[i] = np.clip(all_obs_buf[i], -5.0, 5.0)
                     all_obs_buf = [all_obs_buf[: (i - 1), idx] for idx, i in
                                    enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                     self.obs_buf_all += all_obs_buf
