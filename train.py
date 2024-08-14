@@ -10,10 +10,7 @@ import wandb
 import argparse
 from datetime import datetime
 wandb.login()
-now = datetime.now()
-foldername = os.path.join("./bc_model/", now.strftime("%m-%d-%H"))
-if not os.path.exists(foldername):
-    os.makedirs(foldername)
+
 
 class HumanoidDataset(Dataset):
     def __init__(self, obs, actions, length):
@@ -46,7 +43,7 @@ class MLP(nn.Module):
         x = self.layer3(x)
         return x
 
-def train_model(model, device, criterion, optimizer, data_loader, num_epochs):
+def train_model(model, device, criterion, optimizer, data_loader, num_epochs, foldername):
     model.to(device)
     for epoch in range(num_epochs):
         for batch_obs, batch_actions in data_loader:
@@ -62,11 +59,11 @@ def train_model(model, device, criterion, optimizer, data_loader, num_epochs):
             loss.backward()
             optimizer.step()
         wandb.log({"loss": loss.item()})
-        if (epoch + 1) % 10 == 0:
+        if (epoch + 1) % 100 == 0:
             print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
             # Save the model
-        if (epoch + 1) % 5000 == 0:
-            torch.save(model.state_dict(), f'{foldername}/bc_model_{epoch+1}.pth')
+        if (epoch + 1) % 10000 == 0:
+            torch.save(model.state_dict(), f'{foldername}/{epoch+1}.pth')
 
 
     print("Training complete.")
@@ -83,6 +80,13 @@ def main():
 
     device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
     print("Device:", device)
+
+    file_path = args.dataset_path
+    parent_folder = os.path.dirname(file_path)
+    file_name = os.path.splitext(os.path.basename(file_path))[0]
+    foldername = os.path.join(parent_folder, file_name)
+    if not os.path.exists(foldername):
+        os.makedirs(foldername)
 
     obs, actions, reset = joblib.load(args.dataset_path)
     input_size = obs[0].shape[1]  # Example input size (e.g., pose parameters + shape parameters + global orientation)
@@ -138,7 +142,7 @@ def main():
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
     # Train the model
-    train_model(model, device, criterion, optimizer, data_loader, num_epochs)
+    train_model(model, device, criterion, optimizer, data_loader, num_epochs, foldername)
 
 
 if __name__ == "__main__":

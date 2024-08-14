@@ -325,7 +325,9 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             self._motion_eval_lib = MotionLibSMPL(motion_lib_cfg)
 
             self._motion_lib = self._motion_train_lib
-            self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(), limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=(not flags.test) and (not self.seq_motions), max_len=-1 if flags.test else self.max_len)
+            self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(),
+                                          limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=(not flags.test) and (not self.seq_motions),
+                                          max_len=-1 if flags.test else self.max_len, one_motion_per_time=self.collect_one_motion_per_time)
 
         else:
             self._motion_lib = MotionLib(motion_file=motion_train_file, dof_body_ids=self._dof_body_ids, dof_offsets=self._dof_offsets, device=self.device)
@@ -429,8 +431,14 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         self.reset()
 
     def forward_motion_samples(self):
-        self.start_idx += self.num_envs
-        self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(), limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=False, start_idx=self.start_idx)
+        if self.collect_dataset:
+            self.start_idx +=1
+            self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(),
+                                          limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=False,
+                                          start_idx=self.start_idx, one_motion_per_time=self.collect_one_motion_per_time)
+        else:
+            self.start_idx += self.num_envs
+            self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(), limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=False, start_idx=self.start_idx)
         self.reset()
 
     # Disabled.
