@@ -7,6 +7,7 @@ import joblib
 import random
 import os
 import wandb
+import argparse
 from datetime import datetime
 wandb.login()
 now = datetime.now()
@@ -73,11 +74,17 @@ def train_model(model, device, criterion, optimizer, data_loader, num_epochs):
 
 def main():
     # Hyperparameters
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('--dataset_path', type=str, default="output/HumanoidIm/phc_comp_kp_2/obs_clean_actions_reset_action_noise_0.05.pkl")
+
+    # Parse the arguments
+    args = parser.parse_args()
+
     device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
     print("Device:", device)
-    # Load your dataset here (replace with actual data loading)
-    filename = "output/HumanoidIm/phc_comp_kp_2/obs_clean_actions_reset_action_noise_0.25.pkl"
-    obs, actions, reset = joblib.load(filename)
+
+    obs, actions, reset = joblib.load(args.dataset_path)
     input_size = obs[0].shape[1]  # Example input size (e.g., pose parameters + shape parameters + global orientation)
     hidden_size = 2048  # Example hidden layer size
     output_size = actions[0].shape[1]  # Example output size (e.g., joint angles)
@@ -98,7 +105,7 @@ def main():
             "num_epochs": num_epochs,
             "min_episode_length": min_episode_length,
             "input_size": input_size,
-            "dataset": filename
+            "dataset": args.dataset_path,
         },
     )
 
