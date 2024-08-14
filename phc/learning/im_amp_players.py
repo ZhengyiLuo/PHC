@@ -209,7 +209,8 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                                         osp.join(self.config['network_path'], filename))
                         elif humanoid_env.add_action_noise:
                             if humanoid_env.collect_clean_action:
-                                filename = f"obs_clean_actions_reset_action_noise_{humanoid_env.action_noise_std}_firsttwo.pkl"
+                                motion_file_name = os.path.basename(humanoid_env.cfg.env.motion_file)
+                                filename = f"obs_clean_actions_reset_action_noise_{humanoid_env.action_noise_std}_{motion_file_name}"
                                 joblib.dump((self.obs_buf_all, self.clean_actions_all, self.reset_buf_all),
                                         osp.join(self.config['network_path'], filename))
                             else:
