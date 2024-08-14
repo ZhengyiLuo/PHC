@@ -76,7 +76,8 @@ def main():
     device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
     print("Device:", device)
     # Load your dataset here (replace with actual data loading)
-    obs, actions, reset = joblib.load("output/HumanoidIm/phc_comp_kp_2/obs_clean_actions_reset_action_noise_0.05.pkl")
+    filename = "output/HumanoidIm/phc_comp_kp_2/obs_clean_actions_reset_action_noise_0.25.pkl"
+    obs, actions, reset = joblib.load(filename)
     input_size = obs[0].shape[1]  # Example input size (e.g., pose parameters + shape parameters + global orientation)
     hidden_size = 2048  # Example hidden layer size
     output_size = actions[0].shape[1]  # Example output size (e.g., joint angles)
@@ -97,7 +98,7 @@ def main():
             "num_epochs": num_epochs,
             "min_episode_length": min_episode_length,
             "input_size": input_size,
-            "info": "noise obs to clean action"
+            "dataset": filename
         },
     )
 
