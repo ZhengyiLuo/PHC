@@ -93,9 +93,10 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
 
             if humanoid_env.collect_dataset:
                 self.obs_buf.append(info['obs_buf'])
-                self.actions.append(info['actions'])
                 if humanoid_env.collect_clean_action:
                     self.clean_actions.append(info['clean_actions'])
+                else:
+                    self.actions.append(info['actions'])
                 self.reset_buf.append(info['reset_buf'])
             self.mpjpe.append(info["mpjpe"])
             self.gt_pos.append(info["body_pos_gt"])
@@ -138,15 +139,16 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                                    enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                     self.obs_buf_all += all_obs_buf
 
-                    all_actions = np.stack(self.actions)
-                    all_actions = [all_actions[: (i - 1), idx] for idx, i in
-                                   enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
-                    self.actions_all += all_actions
                     if humanoid_env.collect_clean_action:
                         all_clean_actions = np.stack(self.clean_actions)
-                        all_clean_actions = [all_clean_actions[: (i - 1), idx] for idx, i in
+                        all_clean_actions = [all_clean_actions[1:, idx] for idx, i in
                                        enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                         self.clean_actions_all += all_clean_actions
+                    else:
+                        all_actions = np.stack(self.actions)
+                        all_actions = [all_actions[1:, idx] for idx, i in
+                                       enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
+                        self.actions_all += all_actions
 
                     all_reset_buf = np.stack(self.reset_buf)
                     all_reset_buf = [all_reset_buf[: (i - 1), idx] for idx, i in
@@ -207,7 +209,7 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                                         osp.join(self.config['network_path'], filename))
                         elif humanoid_env.add_action_noise:
                             if humanoid_env.collect_clean_action:
-                                filename = f"obs_clean_actions_reset_action_noise_{humanoid_env.action_noise_std}.pkl"
+                                filename = f"obs_clean_actions_reset_action_noise_{humanoid_env.action_noise_std}_firsttwo.pkl"
                                 joblib.dump((self.obs_buf_all, self.clean_actions_all, self.reset_buf_all),
                                         osp.join(self.config['network_path'], filename))
                             else:
