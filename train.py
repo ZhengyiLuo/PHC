@@ -59,41 +59,26 @@ def train_model(model, device, criterion, optimizer, data_loader, num_epochs, fo
             loss.backward()
             optimizer.step()
         wandb.log({"loss": loss.item()})
-        if (epoch + 1) % 100 == 0:
+        if (epoch + 1) % 1000 == 0:
             print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
             # Save the model
-        if (epoch + 1) % 10000 == 0:
+        if (epoch + 1) % 100000 == 0:
             torch.save(model.state_dict(), f'{foldername}/{epoch+1}.pth')
 
 
     print("Training complete.")
     return model
 
-def main():
-    # Hyperparameters
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument('--dataset_path', type=str, default="output/HumanoidIm/phc_comp_kp_2/obs_clean_actions_reset_action_noise_0.05.pkl")
-
-    # Parse the arguments
-    args = parser.parse_args()
-
+def train(dataset_path, save_model_path):
     device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
     print("Device:", device)
 
-    file_path = args.dataset_path
-    parent_folder = os.path.dirname(file_path)
-    file_name = os.path.splitext(os.path.basename(file_path))[0]
-    foldername = os.path.join(parent_folder, file_name)
-    if not os.path.exists(foldername):
-        os.makedirs(foldername)
-
-    obs, actions, reset = joblib.load(args.dataset_path)
+    obs, actions, reset = joblib.load(dataset_path)
     input_size = obs[0].shape[1]  # Example input size (e.g., pose parameters + shape parameters + global orientation)
     hidden_size = 2048  # Example hidden layer size
     output_size = actions[0].shape[1]  # Example output size (e.g., joint angles)
     batch_size = 16384
-    num_epochs = 1000000
+    num_epochs = 2000000
     learning_rate = 2e-5
     min_episode_length = 1
 
@@ -109,7 +94,7 @@ def main():
             "num_epochs": num_epochs,
             "min_episode_length": min_episode_length,
             "input_size": input_size,
-            "dataset": args.dataset_path,
+            "dataset": dataset_path,
         },
     )
 
@@ -142,8 +127,17 @@ def main():
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
     # Train the model
-    train_model(model, device, criterion, optimizer, data_loader, num_epochs, foldername)
+    train_model(model, device, criterion, optimizer, data_loader, num_epochs, save_model_path)
 
 
 if __name__ == "__main__":
-    main()
+    parent_folder = "bc_model/obs_clean_actions_reset_action_noise_0.05_amass_isaac_im_train_take6_upright_slim.pkl"
+    pkl_files = [f for f in os.listdir(parent_folder) if f.endswith('.pkl')]
+    for file_path in pkl_files:
+        file_name = os.path.splitext(os.path.basename(file_path))[0]
+        foldername = os.path.join(parent_folder, file_name)
+        if not os.path.exists(foldername):
+            os.makedirs(foldername)
+            dataset_path = os.path.join(parent_folder, file_path)
+            train(dataset_path, foldername)
+
