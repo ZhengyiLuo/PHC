@@ -51,7 +51,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         self.device_type = cfg.get("device_type", "cuda")
         self.device_id = cfg.get("device_id", 0)
         self.headless = cfg["headless"]
-        self.start_idx = 0
+        #self.start_idx = 0
 
         self.reward_specs = cfg["env"].get("reward_specs", {"k_pos": 100, "k_rot": 10, "k_vel": 0.1, "k_ang_vel": 0.1, "w_pos": 0.5, "w_rot": 0.3, "w_vel": 0.1, "w_ang_vel": 0.1})
 
@@ -327,7 +327,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             self._motion_lib = self._motion_train_lib
             self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(),
                                           limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=(not flags.test) and (not self.seq_motions),
-                                          max_len=-1 if flags.test else self.max_len, one_motion_per_time=self.collect_one_motion_per_time)
+                                          max_len=-1 if flags.test else self.max_len, one_motion_per_time=self.collect_one_motion_per_time, start_idx=self.start_idx)
 
         else:
             self._motion_lib = MotionLib(motion_file=motion_train_file, dof_body_ids=self._dof_body_ids, dof_offsets=self._dof_offsets, device=self.device)

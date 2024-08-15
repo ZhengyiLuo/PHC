@@ -162,7 +162,7 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                             os.makedirs(foldername)
                         filename = f"{humanoid_env._motion_lib.curr_motion_keys[0]}.pkl"
                         joblib.dump((self.obs_buf_all, self.clean_actions_all, self.reset_buf_all),
-                                    osp.join(foldername, filename))
+                                    osp.join(foldername, filename), compress=True)
                         self.obs_buf_all = []
                         self.reset_buf_all = []
                         self.clean_actions_all = []

@@ -318,6 +318,7 @@ class Humanoid(BaseTask):
         self.add_obs_noise = cfg["env"].get("add_obs_noise", False)
         self.collect_clean_action = cfg["env"].get("collect_clean_action", False)
         self.collect_one_motion_per_time = cfg["env"].get("collect_one_motion_per_time", False)
+        self.start_idx = cfg["env"].get("start_idx", 0)
         self.add_action_noise = cfg["env"].get("add_action_noise", False)
         self.mlp_model_path = cfg["env"].get("mlp_model_path", "")
         self.action_noise_std = cfg["env"].get("action_noise_std", 0.05)
