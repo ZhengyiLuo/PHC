@@ -15,6 +15,7 @@ action_noise_std: 0.05
 collect_dataset: False
 collect_clean_action: False
 collect_one_motion_per_time: False
+start_idx: 0
 use_mlp: False
 mlp_model_path: ""
 sym_loss_coef: 1
