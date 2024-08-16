@@ -29,7 +29,7 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
             self.running_mean, self.running_var = pnn_ck['running_mean_std']['running_mean'], pnn_ck['running_mean_std']['running_var']
 
         if self.use_mlp:
-            self.mlp_model = MLP(574, 2048, 69)
+            self.mlp_model = MLP(self.num_obs, 2048, self.num_dof)
             self.mlp_model.load_state_dict(torch.load(self.mlp_model_path))
             self.mlp_model.to(self.device)
 
