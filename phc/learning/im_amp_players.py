@@ -44,6 +44,7 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
         if humanoid_env.collect_dataset:
             self.obs_buf, self.obs_buf_all = [], []
             self.actions, self.actions_all = [], []
+            self.motion_length_all = []
             if humanoid_env.collect_clean_action:
                 self.clean_actions, self.clean_actions_all = [], []
             self.reset_buf, self.reset_buf_all = [], []
@@ -135,18 +136,22 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                         all_obs_buf[i] = ((all_obs_buf[i] - humanoid_env.running_mean.detach().cpu().numpy()) / np.sqrt(
                             humanoid_env.running_var.detach().cpu().numpy() + 1e-05))
                         all_obs_buf[i] = np.clip(all_obs_buf[i], -5.0, 5.0)
+
                     all_obs_buf = [all_obs_buf[: (i - 1), idx] for idx, i in
                                    enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                     self.obs_buf_all += all_obs_buf
 
+                    self.motion_length_all += (humanoid_env._motion_lib.get_motion_num_steps() - 1)
+
                     if humanoid_env.collect_clean_action:
                         all_clean_actions = np.stack(self.clean_actions)
-                        all_clean_actions = [all_clean_actions[1:, idx] for idx, i in
+                        all_clean_actions = [all_clean_actions[1:i, idx] for idx, i in
                                        enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                         self.clean_actions_all += all_clean_actions
+
                     else:
                         all_actions = np.stack(self.actions)
-                        all_actions = [all_actions[1:, idx] for idx, i in
+                        all_actions = [all_actions[1:i, idx] for idx, i in
                                        enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                         self.actions_all += all_actions
 
@@ -155,9 +160,10 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                                      enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                     self.reset_buf_all += all_reset_buf
 
+
+
                     if humanoid_env.collect_one_motion_per_time:
-                        motion_file_name = os.path.basename(humanoid_env.cfg.env.motion_file)
-                        foldername = f"./bc_model/obs_clean_actions_reset_action_noise_{humanoid_env.action_noise_std}_{motion_file_name}"
+                        foldername = f"./bc_model/obs_clean_actions_reset_action_noise_{humanoid_env.action_noise_std}"
                         if not os.path.exists(foldername):
                             os.makedirs(foldername)
                         filename = f"{humanoid_env._motion_lib.curr_motion_keys[0]}.pkl"
@@ -215,23 +221,26 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                         joblib.dump(zs_dump, osp.join(self.config['network_path'], "zs_run.pkl"))
 
                     if humanoid_env.collect_dataset and not humanoid_env.collect_one_motion_per_time:
-                        if humanoid_env.add_obs_noise:
-                            filename = "obs_actions_reset_add_obs_noise.pkl"
-                            joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all),
-                                        osp.join(self.config['network_path'], filename))
-                        elif humanoid_env.add_action_noise:
+                        self.obs_buf_all = np.concatenate(self.obs_buf_all, axis=0)
+                        self.reset_buf_all = np.concatenate(self.reset_buf_all, axis=0)
+
+                        if humanoid_env.add_action_noise:
                             if humanoid_env.collect_clean_action:
+                                self.clean_actions_all = np.concatenate(self.clean_actions_all, axis=0)
                                 motion_file_name = os.path.basename(humanoid_env.cfg.env.motion_file)
                                 filename = f"obs_clean_actions_reset_action_noise_{humanoid_env.action_noise_std}_{motion_file_name}"
-                                joblib.dump((self.obs_buf_all, self.clean_actions_all, self.reset_buf_all),
+                                joblib.dump((self.obs_buf_all, self.clean_actions_all, self.reset_buf_all, self.motion_length_all),
                                         osp.join(self.config['network_path'], filename))
                             else:
+                                self.actions_all = np.concatenate(self.actions_all, axis=0)
                                 filename = f"obs_actions_reset_action_noise_{humanoid_env.action_noise_std}.pkl"
-                                joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all),
+                                joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all, self.motion_length_all),
                                         osp.join(self.config['network_path'], filename))
                         else:
+                            self.actions_all = np.concatenate(self.actions_all, axis=0)
                             filename = "clean_obs_clean_actions_reset.pkl"
-                            joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all), osp.join(self.config['network_path'], filename))
+                            joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all, self.motion_length_all),
+                                        osp.join(self.config['network_path'], filename))
                         import ipdb; ipdb.set_trace()
 
                     # joblib.dump(np.concatenate(self.zs_all[: humanoid_env._motion_lib._num_unique_motions]), osp.join(self.config['network_path'], "zs.pkl"))

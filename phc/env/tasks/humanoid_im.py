@@ -431,7 +431,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         self.reset()
 
     def forward_motion_samples(self):
-        if self.collect_dataset:
+        if self.collect_dataset and self.collect_one_motion_per_time:
             self.start_idx +=1
             self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(),
                                           limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=False,
