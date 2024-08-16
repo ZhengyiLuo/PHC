@@ -19,7 +19,7 @@ import joblib
 import time
 from smpl_sim.smpllib.smpl_eval import compute_metrics_lite
 from rl_games.common.tr_helpers import unsqueeze_obs
-
+from datetime import datetime
 COLLECT_Z = False
 
 class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
@@ -141,12 +141,9 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                                    enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                     self.obs_buf_all += all_obs_buf
 
-                    self.motion_length_all += (humanoid_env._motion_lib.get_motion_num_steps() - 1)
-
                     if humanoid_env.collect_clean_action:
-                        all_clean_actions = np.stack(self.clean_actions)
-                        all_clean_actions = [all_clean_actions[1:i, idx] for idx, i in
-                                       enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
+                        all_clean_actions = np.stack(self.clean_actions) #58, 1024, 69
+                        all_clean_actions = [all_clean_actions[1:i, idx] for idx, i in enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                         self.clean_actions_all += all_clean_actions
 
                     else:
@@ -161,17 +158,22 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                     self.reset_buf_all += all_reset_buf
 
 
-
-                    if humanoid_env.collect_one_motion_per_time:
+                    save_first_128_motion=False
+                    if humanoid_env.collect_one_motion_per_time or save_first_128_motion:
                         foldername = f"./bc_model/obs_clean_actions_reset_action_noise_{humanoid_env.action_noise_std}"
                         if not os.path.exists(foldername):
                             os.makedirs(foldername)
-                        filename = f"{humanoid_env._motion_lib.curr_motion_keys[0]}.pkl"
+                        now = datetime.now()
+                        # Format the date and time as a string
+                        # Example format: '2024-08-15-14-30-59' (year-month-day-hour-minute-second)
+                        date = now.strftime("%d-%H-%M")
+                        filename = f"{humanoid_env.start_idx//humanoid_env.num_envs}_{humanoid_env.num_envs}_{date}.pkl"
                         joblib.dump((self.obs_buf_all, self.clean_actions_all, self.reset_buf_all),
                                     osp.join(foldername, filename), compress=True)
                         self.obs_buf_all = []
                         self.reset_buf_all = []
                         self.clean_actions_all = []
+                        sys.exit()
 
                 self.mpjpe_all.append(all_mpjpe)
                 self.pred_pos_all += all_body_pos_pred
@@ -221,26 +223,24 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                         joblib.dump(zs_dump, osp.join(self.config['network_path'], "zs_run.pkl"))
 
                     if humanoid_env.collect_dataset and not humanoid_env.collect_one_motion_per_time:
-                        self.obs_buf_all = np.concatenate(self.obs_buf_all, axis=0)
-                        self.reset_buf_all = np.concatenate(self.reset_buf_all, axis=0)
-
+                        now = datetime.now()
+                        # Format the date and time as a string
+                        # Example format: '2024-08-15-14-30-59' (year-month-day-hour-minute-second)
+                        date = now.strftime("%d-%H-%M")
                         if humanoid_env.add_action_noise:
                             if humanoid_env.collect_clean_action:
-                                self.clean_actions_all = np.concatenate(self.clean_actions_all, axis=0)
-                                motion_file_name = os.path.basename(humanoid_env.cfg.env.motion_file)
-                                filename = f"obs_clean_actions_reset_action_noise_{humanoid_env.action_noise_std}_{motion_file_name}"
-                                joblib.dump((self.obs_buf_all, self.clean_actions_all, self.reset_buf_all, self.motion_length_all),
-                                        osp.join(self.config['network_path'], filename))
+                                foldername = f"./bc_model/obs_clean_actions_reset_action_noise_{humanoid_env.action_noise_std}/all/"
+                                filename = f"obs_clean_actions_reset_action_noise_{humanoid_env.action_noise_std}_{date}.pkl"
+                                joblib.dump((self.obs_buf_all, self.clean_actions_all, self.reset_buf_all),
+                                        osp.join(foldername, filename), compress=True)
                             else:
-                                self.actions_all = np.concatenate(self.actions_all, axis=0)
                                 filename = f"obs_actions_reset_action_noise_{humanoid_env.action_noise_std}.pkl"
-                                joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all, self.motion_length_all),
-                                        osp.join(self.config['network_path'], filename))
+                                joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all),
+                                        osp.join(self.config['network_path'], filename), compress=True)
                         else:
-                            self.actions_all = np.concatenate(self.actions_all, axis=0)
                             filename = "clean_obs_clean_actions_reset.pkl"
-                            joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all, self.motion_length_all),
-                                        osp.join(self.config['network_path'], filename))
+                            joblib.dump((self.obs_buf_all, self.actions_all, self.reset_buf_all),
+                                        osp.join(self.config['network_path'], filename), compress=True)
                         import ipdb; ipdb.set_trace()
 
                     # joblib.dump(np.concatenate(self.zs_all[: humanoid_env._motion_lib._num_unique_motions]), osp.join(self.config['network_path'], "zs.pkl"))

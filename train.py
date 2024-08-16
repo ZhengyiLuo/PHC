@@ -10,7 +10,8 @@ import wandb
 import argparse
 from datetime import datetime
 wandb.login()
-
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+print("Device:", device)
 
 class HumanoidDataset(Dataset):
     def __init__(self, obs, actions, length):
@@ -69,11 +70,19 @@ def train_model(model, device, criterion, optimizer, data_loader, num_epochs, fo
     print("Training complete.")
     return model
 
-def train(dataset_path, save_model_path):
-    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
-    print("Device:", device)
+def train(dataset_paths, save_model_path):
+    
+    obs = []
+    actions=[]
+    reset=[]
+ 
+    for dataset_path in dataset_paths:
 
-    obs, actions, reset = joblib.load(dataset_path)
+        obs1, actions1, reset1 = joblib.load(dataset_path)
+    
+        obs+=obs1
+        actions+=actions1
+        reset+=reset1
     input_size = obs[0].shape[1]  # Example input size (e.g., pose parameters + shape parameters + global orientation)
     hidden_size = 2048  # Example hidden layer size
     output_size = actions[0].shape[1]  # Example output size (e.g., joint angles)
@@ -131,13 +140,13 @@ def train(dataset_path, save_model_path):
 
 
 if __name__ == "__main__":
-    parent_folder = "bc_model/obs_clean_actions_reset_action_noise_0.05_amass_isaac_im_train_take6_upright_slim.pkl"
-    pkl_files = [f for f in os.listdir(parent_folder) if f.endswith('.pkl')]
-    for file_path in pkl_files:
-        file_name = os.path.splitext(os.path.basename(file_path))[0]
-        foldername = os.path.join(parent_folder, file_name)
-        if not os.path.exists(foldername):
-            os.makedirs(foldername)
-            dataset_path = os.path.join(parent_folder, file_path)
-            train(dataset_path, foldername)
+    parent_folder = "./bc_model/obs_clean_actions_reset_action_noise_0.05/"
+    pkl_files = [parent_folder+f for f in os.listdir(parent_folder) if f.endswith('.pkl')]
+    print(pkl_files) 
+    file_name = "first128"
+    foldername = os.path.join(parent_folder, file_name)
+    if not os.path.exists(foldername):
+        os.makedirs(foldername)
+ 
+    train(pkl_files, foldername)
 

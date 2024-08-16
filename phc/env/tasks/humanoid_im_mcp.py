@@ -56,7 +56,7 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
         
         with torch.no_grad():
             # Apply trained Model.
-            curr_obs = ((self.obs_buf - self.running_mean.float()) / torch.sqrt(self.running_var.float() + 1e-05))
+            curr_obs = ((self.obs_buf - self.running_mean.float().to(self.device)) / torch.sqrt(self.running_var.float().to(self.device) + 1e-05))
             
             curr_obs = torch.clamp(curr_obs, min=-5.0, max=5.0)
             if self.discrete_mcp:
