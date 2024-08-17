@@ -1216,7 +1216,7 @@ class Humanoid(BaseTask):
             self.clean_actions = actions.to(self.device).clone()
 
             if self.add_action_noise:
-                noise = torch.normal(mean=0.0, std=self.action_noise_std, size = actions.shape, device=self.device)
+                noise = torch.normal(mean=0.0, std=float(self.action_noise_std), size = actions.shape, device=self.device)
                 self.actions += noise
 
         if len(self.actions.shape) == 1:
