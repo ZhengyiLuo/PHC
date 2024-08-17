@@ -316,7 +316,14 @@ class Humanoid(BaseTask):
         self.auto_pmcp_soft = cfg["env"].get("auto_pmcp_soft", False)
         self.strict_eval = cfg["env"].get("strict_eval", False)
         self.add_obs_noise = cfg["env"].get("add_obs_noise", False)
-
+        self.collect_clean_action = cfg["env"].get("collect_clean_action", False)
+        self.collect_one_motion_per_time = cfg["env"].get("collect_one_motion_per_time", False)
+        self.start_idx = cfg["env"].get("start_idx", 0)
+        self.add_action_noise = cfg["env"].get("add_action_noise", False)
+        self.mlp_model_path = cfg["env"].get("mlp_model_path", "")
+        self.action_noise_std = cfg["env"].get("action_noise_std", 0.05)
+        self.collect_dataset = cfg["env"].get("collect_dataset", False)
+        self.use_mlp = cfg["env"].get("use_mlp", False)
         self._occl_training = cfg["env"].get("occl_training", False)  # Cycle motion, but cycle farrrrr.
         self._occl_training_prob = cfg["env"].get("occl_training_prob", 0.1)  # Cycle motion, but cycle farrrrr.
         self._sim_occlu = False
@@ -965,7 +972,8 @@ class Humanoid(BaseTask):
         dof_prop = self.gym.get_asset_dof_properties(humanoid_asset)
         if self.has_shape_variation:
             pd_scale = humanoid_mass / self.cfg['env'].get('default_humanoid_mass', 77.0 if self._real_weight else 35.0)
-            
+        else:
+            pd_scale = 1
         if (self.control_mode == "isaac_pd"):
             dof_prop["driveMode"][:] = gymapi.DOF_MODE_POS
             dof_prop['stiffness'] *= pd_scale * self._kp_scale
@@ -1199,8 +1207,23 @@ class Humanoid(BaseTask):
     def pre_physics_step(self, actions):
         # if flags.debug:
             # actions *= 0
-
+        if flags.debug:
+            print("\nhumanoid.py pre_physics_step actions")
+            print(actions[0][0: 8])
         self.actions = actions.to(self.device).clone()
+        if self.collect_clean_action:
+            self.clean_actions = actions.to(self.device).clone()
+            if flags.debug:
+                print("humanoid.py 1214 collect clean_actions")
+                print(self.clean_actions[0][0:8])
+        if self.add_action_noise:
+            if flags.debug:
+                print("humanoid.py 1214 add action noise")
+                print("before: ", self.actions[0][0:8])
+            noise = torch.normal(mean=0.0, std=self.action_noise_std, size = actions.shape, device=self.device)
+            self.actions += noise
+            if flags.debug:
+                print("after: ", self.actions[0][0:8])
         if len(self.actions.shape) == 1:
             self.actions = self.actions[None, ]
             

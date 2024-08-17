@@ -9,6 +9,7 @@ import torch.nn as nn
 from phc.learning.pnn import PNN
 from collections import deque
 from phc.learning.network_loader import load_mcp_mlp, load_pnn
+from train import MLP
 
 class HumanoidImMCP(humanoid_im.HumanoidIm):
 
@@ -26,7 +27,12 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
             pnn_ck = torch_ext.load_checkpoint(self.models_path[0])
             self.pnn = load_pnn(pnn_ck, num_prim = self.num_prim, has_lateral = self.has_lateral, activation = self.z_activation, device = self.device)
             self.running_mean, self.running_var = pnn_ck['running_mean_std']['running_mean'], pnn_ck['running_mean_std']['running_var']
-        
+
+        if self.use_mlp:
+            self.mlp_model = MLP(self.num_obs, 2048, self.num_dof)
+            self.mlp_model.load_state_dict(torch.load(self.mlp_model_path))
+            self.mlp_model.to(self.device)
+
         self.fps = deque(maxlen=90)
         
         return
@@ -50,7 +56,7 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
         
         with torch.no_grad():
             # Apply trained Model.
-            curr_obs = ((self.obs_buf - self.running_mean.float()) / torch.sqrt(self.running_var.float() + 1e-05))
+            curr_obs = ((self.obs_buf - self.running_mean.float().to(self.device)) / torch.sqrt(self.running_var.float().to(self.device) + 1e-05))
             
             curr_obs = torch.clamp(curr_obs, min=-5.0, max=5.0)
             if self.discrete_mcp:
@@ -59,13 +65,27 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
             
             if self.has_pnn:
                 _, actions = self.pnn(curr_obs)
-                
                 x_all = torch.stack(actions, dim=1)
+                actions = torch.sum(weights[:, :, None] * x_all, dim=1)
+                if flags.debug:
+                    print("\npnn output actions \n", actions[0][0:8])
             else:
                 x_all = torch.stack([net(curr_obs) for net in self.actors], dim=1)
+                actions = torch.sum(weights[:, :, None] * x_all, dim=1)
+                if flags.debug:
+                    print("\nnot pnn output actions \n", actions[0][0:8])
+
+            if self.use_mlp:
+                mlp_action = self.mlp_model(curr_obs)
+                mlp_action = mlp_action.unsqueeze(1)
+                mlp_x_all = mlp_action.repeat(1, self.num_actions, 1)
+                actions = torch.sum(weights[:, :, None] * mlp_x_all, dim=1)
+                if flags.debug:
+                    print("\nmlp input observations \n", curr_obs[0][0:8])
+                    print("\nmlp actions\n", actions[0][0:8])
+            #import pdb; pdb.set_trace()
             # print(weights)
-            actions = torch.sum(weights[:, :, None] * x_all, dim=1)
-        
+
         # actions = x_all[:, 3]  # Debugging
         # apply actions
         self.pre_physics_step(actions)
