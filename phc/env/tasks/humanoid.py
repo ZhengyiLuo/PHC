@@ -316,14 +316,12 @@ class Humanoid(BaseTask):
         self.auto_pmcp_soft = cfg["env"].get("auto_pmcp_soft", False)
         self.strict_eval = cfg["env"].get("strict_eval", False)
         self.add_obs_noise = cfg["env"].get("add_obs_noise", False)
-        self.collect_clean_action = cfg["env"].get("collect_clean_action", False)
-        self.collect_one_motion_per_time = cfg["env"].get("collect_one_motion_per_time", False)
         self.start_idx = cfg["env"].get("start_idx", 0)
         self.add_action_noise = cfg["env"].get("add_action_noise", False)
         self.mlp_model_path = cfg["env"].get("mlp_model_path", "")
         self.action_noise_std = cfg["env"].get("action_noise_std", 0.05)
         self.collect_dataset = cfg["env"].get("collect_dataset", False)
-        self.use_mlp = cfg["env"].get("use_mlp", False)
+        self.mlp_bypass = cfg["env"].get("mlp_bypass", False)
         self._occl_training = cfg["env"].get("occl_training", False)  # Cycle motion, but cycle farrrrr.
         self._occl_training_prob = cfg["env"].get("occl_training_prob", 0.1)  # Cycle motion, but cycle farrrrr.
         self._sim_occlu = False
@@ -1121,81 +1119,83 @@ class Humanoid(BaseTask):
         return
 
     def _compute_humanoid_obs(self, env_ids=None):
-        if (ENABLE_MAX_COORD_OBS):
-            if (env_ids is None):
-                body_pos = self._rigid_body_pos
-                body_rot = self._rigid_body_rot
-                body_vel = self._rigid_body_vel
-                body_ang_vel = self._rigid_body_ang_vel
-                if self.self_obs_v == 2:
-                    body_pos = torch.cat([self._rigid_body_pos_hist, body_pos.unsqueeze(1)], dim=1)
-                    body_rot = torch.cat([self._rigid_body_rot_hist, body_rot.unsqueeze(1)], dim=1)
-                    body_vel = torch.cat([self._rigid_body_vel_hist, body_vel.unsqueeze(1)], dim=1)
-                    body_ang_vel = torch.cat([self._rigid_body_ang_vel_hist, body_ang_vel.unsqueeze(1)], dim=1)
-                if self.self_obs_v == 3:
-                    force_sensor_readings = self.vec_sensor_tensor
-                    
-                    
-            else:
-                body_pos = self._rigid_body_pos[env_ids]
-                body_rot = self._rigid_body_rot[env_ids]
-                body_vel = self._rigid_body_vel[env_ids]
-                body_ang_vel = self._rigid_body_ang_vel[env_ids]
-                if self.self_obs_v == 2:
-                    body_pos = torch.cat([self._rigid_body_pos_hist[env_ids], body_pos.unsqueeze(1)], dim=1)
-                    body_rot = torch.cat([self._rigid_body_rot_hist[env_ids], body_rot.unsqueeze(1)], dim=1)
-                    body_vel = torch.cat([self._rigid_body_vel_hist[env_ids], body_vel.unsqueeze(1)], dim=1)
-                    body_ang_vel = torch.cat([self._rigid_body_ang_vel_hist[env_ids], body_ang_vel.unsqueeze(1)], dim=1)
-                if self.self_obs_v == 3:
-                    force_sensor_readings = self.vec_sensor_tensor[env_ids]
-            
-            
-            
-            if self.humanoid_type in ["smpl", "smplh", "smplx"] :
+        with torch.no_grad():
+            if (ENABLE_MAX_COORD_OBS):
                 if (env_ids is None):
-                    body_shape_params = self.humanoid_shapes[:, :-6] if self.humanoid_type in ["smpl", "smplh", "smplx"] else self.humanoid_shapes
-                    limb_weights = self.humanoid_limb_and_weights
+                    body_pos = self._rigid_body_pos
+                    body_rot = self._rigid_body_rot
+                    body_vel = self._rigid_body_vel
+                    body_ang_vel = self._rigid_body_ang_vel
+                    if self.self_obs_v == 2:
+                        body_pos = torch.cat([self._rigid_body_pos_hist, body_pos.unsqueeze(1)], dim=1)
+                        body_rot = torch.cat([self._rigid_body_rot_hist, body_rot.unsqueeze(1)], dim=1)
+                        body_vel = torch.cat([self._rigid_body_vel_hist, body_vel.unsqueeze(1)], dim=1)
+                        body_ang_vel = torch.cat([self._rigid_body_ang_vel_hist, body_ang_vel.unsqueeze(1)], dim=1)
+                    if self.self_obs_v == 3:
+                        force_sensor_readings = self.vec_sensor_tensor
+                        
+                        
                 else:
-                    body_shape_params = self.humanoid_shapes[env_ids, :-6] if self.humanoid_type in ["smpl", "smplh", "smplx"] else self.humanoid_shapes[env_ids]
-                    limb_weights = self.humanoid_limb_and_weights[env_ids]
-                    
-                if self.self_obs_v == 1:
-                    obs = compute_humanoid_observations_smpl_max(body_pos, body_rot, body_vel, body_ang_vel, body_shape_params, limb_weights, self._local_root_obs, self._root_height_obs, self._has_upright_start, self._has_shape_obs, self._has_limb_weight_obs)
-                elif self.self_obs_v == 2:
-                    obs = compute_humanoid_observations_smpl_max_v2(body_pos, body_rot, body_vel, body_ang_vel, body_shape_params, limb_weights, self._local_root_obs, self._root_height_obs, self._has_upright_start, self._has_shape_obs, self._has_limb_weight_obs, self.past_track_steps + 1)
-                elif self.self_obs_v == 3:
-                    obs = compute_humanoid_observations_smpl_max_v3(body_pos, body_rot, body_vel, body_ang_vel, force_sensor_readings, body_shape_params, limb_weights, self._local_root_obs, self._root_height_obs, self._has_upright_start, self._has_shape_obs, self._has_limb_weight_obs)
-                    
+                    body_pos = self._rigid_body_pos[env_ids]
+                    body_rot = self._rigid_body_rot[env_ids]
+                    body_vel = self._rigid_body_vel[env_ids]
+                    body_ang_vel = self._rigid_body_ang_vel[env_ids]
+                    if self.self_obs_v == 2:
+                        body_pos = torch.cat([self._rigid_body_pos_hist[env_ids], body_pos.unsqueeze(1)], dim=1)
+                        body_rot = torch.cat([self._rigid_body_rot_hist[env_ids], body_rot.unsqueeze(1)], dim=1)
+                        body_vel = torch.cat([self._rigid_body_vel_hist[env_ids], body_vel.unsqueeze(1)], dim=1)
+                        body_ang_vel = torch.cat([self._rigid_body_ang_vel_hist[env_ids], body_ang_vel.unsqueeze(1)], dim=1)
+                    if self.self_obs_v == 3:
+                        force_sensor_readings = self.vec_sensor_tensor[env_ids]
+                
+                
+                
+                if self.humanoid_type in ["smpl", "smplh", "smplx"] :
+                    if (env_ids is None):
+                        body_shape_params = self.humanoid_shapes[:, :-6] if self.humanoid_type in ["smpl", "smplh", "smplx"] else self.humanoid_shapes
+                        limb_weights = self.humanoid_limb_and_weights
+                    else:
+                        body_shape_params = self.humanoid_shapes[env_ids, :-6] if self.humanoid_type in ["smpl", "smplh", "smplx"] else self.humanoid_shapes[env_ids]
+                        limb_weights = self.humanoid_limb_and_weights[env_ids]
+                        
+                    if self.self_obs_v == 1:
+                        obs = compute_humanoid_observations_smpl_max(body_pos, body_rot, body_vel, body_ang_vel, body_shape_params, limb_weights, self._local_root_obs, self._root_height_obs, self._has_upright_start, self._has_shape_obs, self._has_limb_weight_obs)
+                    elif self.self_obs_v == 2:
+                        obs = compute_humanoid_observations_smpl_max_v2(body_pos, body_rot, body_vel, body_ang_vel, body_shape_params, limb_weights, self._local_root_obs, self._root_height_obs, self._has_upright_start, self._has_shape_obs, self._has_limb_weight_obs, self.past_track_steps + 1)
+                    elif self.self_obs_v == 3:
+                        obs = compute_humanoid_observations_smpl_max_v3(body_pos, body_rot, body_vel, body_ang_vel, force_sensor_readings, body_shape_params, limb_weights, self._local_root_obs, self._root_height_obs, self._has_upright_start, self._has_shape_obs, self._has_limb_weight_obs)
+                        
+
+                else:
+                    obs = compute_humanoid_observations_max(body_pos, body_rot, body_vel, body_ang_vel, self._local_root_obs, self._root_height_obs)
 
             else:
-                obs = compute_humanoid_observations_max(body_pos, body_rot, body_vel, body_ang_vel, self._local_root_obs, self._root_height_obs)
-
-        else:
-            if (env_ids is None):
-                root_pos = self._rigid_body_pos[:, 0, :]
-                root_rot = self._rigid_body_rot[:, 0, :]
-                root_vel = self._rigid_body_vel[:, 0, :]
-                root_ang_vel = self._rigid_body_ang_vel[:, 0, :]
-                dof_pos = self._dof_pos
-                dof_vel = self._dof_vel
-                key_body_pos = self._rigid_body_pos[:, self._key_body_ids, :]
-            else:
-                root_pos = self._rigid_body_pos[env_ids][:, 0, :]
-                root_rot = self._rigid_body_rot[env_ids][:, 0, :]
-                root_vel = self._rigid_body_vel[env_ids][:, 0, :]
-                root_ang_vel = self._rigid_body_ang_vel[env_ids][:, 0, :]
-                dof_pos = self._dof_pos[env_ids]
-                dof_vel = self._dof_vel[env_ids]
-                key_body_pos = self._rigid_body_pos[env_ids][:, self._key_body_ids, :]
-
-            if (self.humanoid_type in ["smpl", "smplh", "smplx"] ) and self.self.has_shape_obs:
                 if (env_ids is None):
-                    body_shape_params = self.humanoid_shapes
+                    root_pos = self._rigid_body_pos[:, 0, :]
+                    root_rot = self._rigid_body_rot[:, 0, :]
+                    root_vel = self._rigid_body_vel[:, 0, :]
+                    root_ang_vel = self._rigid_body_ang_vel[:, 0, :]
+                    dof_pos = self._dof_pos
+                    dof_vel = self._dof_vel
+                    key_body_pos = self._rigid_body_pos[:, self._key_body_ids, :]
                 else:
-                    body_shape_params = self.humanoid_shapes[env_ids]
-                obs = compute_humanoid_observations_smpl(root_pos, root_rot, root_vel, root_ang_vel, dof_pos, dof_vel, key_body_pos, self._dof_obs_size, self._dof_offsets, body_shape_params, self._local_root_obs, self._root_height_obs, self._has_upright_start, self._has_shape_obs)
-            else:
-                obs = compute_humanoid_observations(root_pos, root_rot, root_vel, root_ang_vel, dof_pos, dof_vel, key_body_pos, self._local_root_obs, self._root_height_obs, self._dof_obs_size, self._dof_offsets)
+                    root_pos = self._rigid_body_pos[env_ids][:, 0, :]
+                    root_rot = self._rigid_body_rot[env_ids][:, 0, :]
+                    root_vel = self._rigid_body_vel[env_ids][:, 0, :]
+                    root_ang_vel = self._rigid_body_ang_vel[env_ids][:, 0, :]
+                    dof_pos = self._dof_pos[env_ids]
+                    dof_vel = self._dof_vel[env_ids]
+                    key_body_pos = self._rigid_body_pos[env_ids][:, self._key_body_ids, :]
+
+                if (self.humanoid_type in ["smpl", "smplh", "smplx"] ) and self.self.has_shape_obs:
+                    if (env_ids is None):
+                        body_shape_params = self.humanoid_shapes
+                    else:
+                        body_shape_params = self.humanoid_shapes[env_ids]
+                    obs = compute_humanoid_observations_smpl(root_pos, root_rot, root_vel, root_ang_vel, dof_pos, dof_vel, key_body_pos, self._dof_obs_size, self._dof_offsets, body_shape_params, self._local_root_obs, self._root_height_obs, self._has_upright_start, self._has_shape_obs)
+                else:
+                    obs = compute_humanoid_observations(root_pos, root_rot, root_vel, root_ang_vel, dof_pos, dof_vel, key_body_pos, self._local_root_obs, self._root_height_obs, self._dof_obs_size, self._dof_offsets)
+            
         return obs
 
     def _reset_actors(self, env_ids):
@@ -1211,19 +1211,14 @@ class Humanoid(BaseTask):
             print("\nhumanoid.py pre_physics_step actions")
             print(actions[0][0: 8])
         self.actions = actions.to(self.device).clone()
-        if self.collect_clean_action:
+
+        if self.collect_dataset:
             self.clean_actions = actions.to(self.device).clone()
-            if flags.debug:
-                print("humanoid.py 1214 collect clean_actions")
-                print(self.clean_actions[0][0:8])
-        if self.add_action_noise:
-            if flags.debug:
-                print("humanoid.py 1214 add action noise")
-                print("before: ", self.actions[0][0:8])
-            noise = torch.normal(mean=0.0, std=self.action_noise_std, size = actions.shape, device=self.device)
-            self.actions += noise
-            if flags.debug:
-                print("after: ", self.actions[0][0:8])
+
+            if self.add_action_noise:
+                noise = torch.normal(mean=0.0, std=self.action_noise_std, size = actions.shape, device=self.device)
+                self.actions += noise
+
         if len(self.actions.shape) == 1:
             self.actions = self.actions[None, ]
             

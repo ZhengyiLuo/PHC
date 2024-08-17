@@ -327,7 +327,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             self._motion_lib = self._motion_train_lib
             self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(),
                                           limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=(not flags.test) and (not self.seq_motions),
-                                          max_len=-1 if flags.test else self.max_len, one_motion_per_time=self.collect_one_motion_per_time, start_idx=self.start_idx)
+                                          max_len=-1 if flags.test else self.max_len, start_idx=self.start_idx)
 
         else:
             self._motion_lib = MotionLib(motion_file=motion_train_file, dof_body_ids=self._dof_body_ids, dof_offsets=self._dof_offsets, device=self.device)
@@ -431,14 +431,8 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         self.reset()
 
     def forward_motion_samples(self):
-        if self.collect_dataset and self.collect_one_motion_per_time:
-            self.start_idx +=1
-            self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(),
-                                          limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=False,
-                                          start_idx=self.start_idx, one_motion_per_time=self.collect_one_motion_per_time)
-        else:
-            self.start_idx += self.num_envs
-            self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(), limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=False, start_idx=self.start_idx)
+        self.start_idx += self.num_envs
+        self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(), limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=False, start_idx=self.start_idx)
         self.reset()
 
     # Disabled.
@@ -643,16 +637,22 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             self.extras['mpjpe'] = (body_pos - motion_res['rg_pos']).norm(dim=-1).mean(dim=-1)
             self.extras['body_pos'] = body_pos.cpu().numpy()
             self.extras['body_pos_gt'] = motion_res['rg_pos'].cpu().numpy()
-            self.extras['obs_buf'] = self.obs_buf.cpu().numpy()  # n, 945
-            self.extras['actions'] = self.actions.cpu().numpy()  # n, 69
-            if self.collect_clean_action:
+
+            #### Dumping dataset
+            if self.collect_dataset:
+                self.extras['obs_buf'] = self.obs_buf_t.copy()  # n, 945
+                self.extras['actions'] = self.actions.cpu().numpy()  # n, 69
                 self.extras['clean_actions'] = self.clean_actions.cpu().numpy()
-            self.extras['reset_buf'] = self.reset_buf.cpu().numpy()  # n
+                self.extras['reset_buf'] = self.reset_buf.cpu().numpy()  # n
+
+            
+                self.obs_buf_t = self.obs_buf.cpu().numpy() # update to next time step
 
         return
 
     def _compute_observations(self, env_ids=None):
         # env_ids is used for resetting
+        
         if env_ids is None:
             env_ids = torch.arange(self.num_envs).to(self.device)
 
@@ -680,6 +680,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             self.obs_buf[env_ids] = obs_slice
         else:
             self.obs_buf[env_ids] = obs
+        
         return obs
 
     def _compute_task_obs(self, env_ids=None, save_buffer = True):
@@ -894,6 +895,11 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             self.reward_raw = torch.cat([self.reward_raw, power_reward[:, None]], dim=-1)
         
         return
+    
+    def _reset_envs(self, env_ids):
+        super()._reset_envs(env_ids)
+        if self.collect_dataset:
+            self.obs_buf_t = self.obs_buf.cpu().numpy() # first time step update
 
     def _reset_ref_state_init(self, env_ids):
         self._motion_start_times_offset[env_ids] = 0  # Reset the motion time offsets

@@ -9,6 +9,8 @@ import os
 import wandb
 import argparse
 from datetime import datetime
+from phc.learning.mlp import MLP
+
 wandb.login()
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
@@ -29,20 +31,6 @@ class HumanoidDataset(Dataset):
         obs = self.obs[idx][rand_index:rand_index+self.length]
         action = self.actions[idx][rand_index:rand_index+self.length]
         return obs, action
-
-class MLP(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size):
-        super(MLP, self).__init__()
-        self.layer1 = nn.Linear(input_size, hidden_size)
-        self.layer2 = nn.Linear(hidden_size, hidden_size)
-        self.layer3 = nn.Linear(hidden_size, output_size)
-        self.relu = nn.ReLU()
-
-    def forward(self, x):
-        x = self.relu(self.layer1(x))
-        x = self.relu(self.layer2(x))
-        x = self.layer3(x)
-        return x
 
 def train_model(model, device, criterion, optimizer, data_loader, num_epochs, foldername):
     model.to(device)
@@ -66,7 +54,6 @@ def train_model(model, device, criterion, optimizer, data_loader, num_epochs, fo
         if (epoch + 1) % 100000 == 0:
             torch.save(model.state_dict(), f'{foldername}/{epoch+1}.pth')
 
-
     print("Training complete.")
     return model
 
@@ -77,7 +64,6 @@ def train(dataset_paths, save_model_path):
     reset=[]
  
     for dataset_path in dataset_paths:
-
         obs1, actions1, reset1 = joblib.load(dataset_path)
     
         obs+=obs1
@@ -112,6 +98,7 @@ def train(dataset_paths, save_model_path):
         actions = actions[:11313]
         reset = reset[:11313]
     all_obs, all_actions = [], []
+
     for index, value in enumerate(reset):
         if value[-1] != 1:
             value[-1] = 1
