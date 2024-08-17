@@ -131,13 +131,14 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
 
 
                 if humanoid_env.collect_dataset:
-                    all_obs_buf = np.stack(self.obs_buf)
+                    all_obs_buf = np.stack(self.obs_buf) # Time, batch, obs
                     all_obs_buf = [all_obs_buf[: (i - 1), idx] for idx, i in enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                     self.obs_buf_all += all_obs_buf
 
-                    all_clean_actions = np.stack(self.clean_actions) #58, 1024, 69
+                    all_clean_actions = np.stack(self.clean_actions) 
                     all_clean_actions = [all_clean_actions[: (i - 1), idx] for idx, i in enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                     self.clean_actions_all += all_clean_actions
+                    
                     all_actions = np.stack(self.env_actions)
                     all_actions = [all_actions[: (i - 1), idx] for idx, i in enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                     self.actions_all += all_actions
@@ -154,68 +155,68 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                 
 
                 if (humanoid_env.start_idx + humanoid_env.num_envs >= humanoid_env._motion_lib._num_unique_motions):
+                    terminate_hist = np.concatenate(self.terminate_memory)
+                    succ_idxes = np.nonzero(~terminate_hist[: humanoid_env._motion_lib._num_unique_motions])[0].tolist()
+
+                    pred_pos_all_succ = [(self.pred_pos_all[:humanoid_env._motion_lib._num_unique_motions])[i] for i in succ_idxes]
+                    gt_pos_all_succ = [(self.gt_pos_all[: humanoid_env._motion_lib._num_unique_motions])[i] for i in succ_idxes]
+
+                    pred_pos_all = self.pred_pos_all[:humanoid_env._motion_lib._num_unique_motions]
+                    gt_pos_all = self.gt_pos_all[: humanoid_env._motion_lib._num_unique_motions]
+
+                    # np.sum([i.shape[0] for i in self.pred_pos_all[:humanoid_env._motion_lib._num_unique_motions]])
+                    # humanoid_env._motion_lib.get_motion_num_steps().sum()
+
+                    failed_keys = humanoid_env._motion_lib._motion_data_keys[terminate_hist[: humanoid_env._motion_lib._num_unique_motions]]
+                    success_keys = humanoid_env._motion_lib._motion_data_keys[~terminate_hist[: humanoid_env._motion_lib._num_unique_motions]]
+                    # print("failed", humanoid_env._motion_lib._motion_data_keys[np.concatenate(self.terminate_memory)[:humanoid_env._motion_lib._num_unique_motions]])
+                    if flags.real_traj:
+                        pred_pos_all = [i[:, humanoid_env._reset_bodies_id] for i in pred_pos_all]
+                        gt_pos_all = [i[:, humanoid_env._reset_bodies_id] for i in gt_pos_all]
+                        pred_pos_all_succ = [i[:, humanoid_env._reset_bodies_id] for i in pred_pos_all_succ]
+                        gt_pos_all_succ = [i[:, humanoid_env._reset_bodies_id] for i in gt_pos_all_succ]
+                        
+                        
+                        
+                    metrics = compute_metrics_lite(pred_pos_all, gt_pos_all)
+                    metrics_succ = compute_metrics_lite(pred_pos_all_succ, gt_pos_all_succ)
+
+                    metrics_all_print = {m: np.mean(v) for m, v in metrics.items()}
+                    metrics_print = {m: np.mean(v) for m, v in metrics_succ.items()}
+
+                    print("------------------------------------------")
+                    print("------------------------------------------")
+                    print(f"Success Rate: {self.success_rate:.10f}")
+                    print("All: ", " \t".join([f"{k}: {v:.3f}" for k, v in metrics_all_print.items()]))
+                    print("Succ: "," \t".join([f"{k}: {v:.3f}" for k, v in metrics_print.items()]))
+                    # print(1 - self.terminate_state.sum() / self.terminate_state.shape[0])
+                    print(self.config['network_path'])
+                    if COLLECT_Z:
+                        zs_all = self.zs_all[:humanoid_env._motion_lib._num_unique_motions]
+                        zs_dump = {k: zs_all[idx].cpu().numpy() for idx, k in enumerate(humanoid_env._motion_lib._motion_data_keys)}
+                        joblib.dump(zs_dump, osp.join(self.config['network_path'], "zs_run.pkl"))
+
                     if humanoid_env.collect_dataset:
-                        if (humanoid_env.start_idx + humanoid_env.num_envs) // humanoid_env._motion_lib._num_unique_motions > self.num_data_collection_runs:
-                            dump_dir = osp.join(self.config['network_path'], "eval", f"phc_act_{humanoid_env.cfg.env.motion_file.split('/')[-1].split('.')[0]}_collect_runs_{self.num_data_collection_runs}_{datetime.now().strftime('%Y-%m-%d-%H:%M:%S')}.pkl")
-                            os.makedirs(osp.join(self.config['network_path'], "eval"), exist_ok=True)
-                            print("Dumping to: ", dump_dir)
-                            joblib.dump({
-                                    "obs": np.concatenate(self.obs_buf_all), 
-                                    "clean_action": np.concatenate(self.clean_actions_all), 
-                                    "env_action": np.concatenate(self.actions_all),
-                                    "key_names": np.concatenate(self.keys_all),
-                                    "reset": np.concatenate(self.reset_buf_all), 
-                                    "running_mean": self.running_mean_std.state_dict(),
-                                    }, dump_dir, compress=True)
-                        
-                        
-                    else:
-                        
-                        terminate_hist = np.concatenate(self.terminate_memory)
-                        succ_idxes = np.nonzero(~terminate_hist[: humanoid_env._motion_lib._num_unique_motions])[0].tolist()
+                        motion_file = humanoid_env.cfg.env.motion_file.split('/')[-1].split('.')[0]
+                        dump_dir = osp.join(self.config['network_path'], "phc_act", motion_file, f"noise_{humanoid_env.add_action_noise}_{humanoid_env.action_noise_std}_{datetime.now().strftime('%Y-%m-%d-%H:%M:%S')}.pkl")
+                        os.makedirs(osp.join(self.config['network_path'], "phc_act", motion_file), exist_ok=True)
+                        print("Dumping to: ", dump_dir)
+                        joblib.dump({
+                                "obs": np.concatenate(self.obs_buf_all), 
+                                "clean_action": np.concatenate(self.clean_actions_all), 
+                                "env_action": np.concatenate(self.actions_all),
+                                "key_names": np.concatenate(self.keys_all),
+                                "reset": np.concatenate(self.reset_buf_all), 
+                                "running_mean": self.running_mean_std.state_dict(),
+                                "config": humanoid_env.cfg,
+                                }, dump_dir, compress=True)
+                        exit()
 
-                        pred_pos_all_succ = [(self.pred_pos_all[:humanoid_env._motion_lib._num_unique_motions])[i] for i in succ_idxes]
-                        gt_pos_all_succ = [(self.gt_pos_all[: humanoid_env._motion_lib._num_unique_motions])[i] for i in succ_idxes]
+                    import ipdb; ipdb.set_trace()
 
-                        pred_pos_all = self.pred_pos_all[:humanoid_env._motion_lib._num_unique_motions]
-                        gt_pos_all = self.gt_pos_all[: humanoid_env._motion_lib._num_unique_motions]
-
-                        # np.sum([i.shape[0] for i in self.pred_pos_all[:humanoid_env._motion_lib._num_unique_motions]])
-                        # humanoid_env._motion_lib.get_motion_num_steps().sum()
-
-                        failed_keys = humanoid_env._motion_lib._motion_data_keys[terminate_hist[: humanoid_env._motion_lib._num_unique_motions]]
-                        success_keys = humanoid_env._motion_lib._motion_data_keys[~terminate_hist[: humanoid_env._motion_lib._num_unique_motions]]
-                        # print("failed", humanoid_env._motion_lib._motion_data_keys[np.concatenate(self.terminate_memory)[:humanoid_env._motion_lib._num_unique_motions]])
-                        if flags.real_traj:
-                            pred_pos_all = [i[:, humanoid_env._reset_bodies_id] for i in pred_pos_all]
-                            gt_pos_all = [i[:, humanoid_env._reset_bodies_id] for i in gt_pos_all]
-                            pred_pos_all_succ = [i[:, humanoid_env._reset_bodies_id] for i in pred_pos_all_succ]
-                            gt_pos_all_succ = [i[:, humanoid_env._reset_bodies_id] for i in gt_pos_all_succ]
-                            
-                            
-                            
-                        metrics = compute_metrics_lite(pred_pos_all, gt_pos_all)
-                        metrics_succ = compute_metrics_lite(pred_pos_all_succ, gt_pos_all_succ)
-
-                        metrics_all_print = {m: np.mean(v) for m, v in metrics.items()}
-                        metrics_print = {m: np.mean(v) for m, v in metrics_succ.items()}
-
-                        print("------------------------------------------")
-                        print("------------------------------------------")
-                        print(f"Success Rate: {self.success_rate:.10f}")
-                        print("All: ", " \t".join([f"{k}: {v:.3f}" for k, v in metrics_all_print.items()]))
-                        print("Succ: "," \t".join([f"{k}: {v:.3f}" for k, v in metrics_print.items()]))
-                        # print(1 - self.terminate_state.sum() / self.terminate_state.shape[0])
-                        print(self.config['network_path'])
-                        if COLLECT_Z:
-                            zs_all = self.zs_all[:humanoid_env._motion_lib._num_unique_motions]
-                            zs_dump = {k: zs_all[idx].cpu().numpy() for idx, k in enumerate(humanoid_env._motion_lib._motion_data_keys)}
-                            joblib.dump(zs_dump, osp.join(self.config['network_path'], "zs_run.pkl"))
-
-                        import ipdb; ipdb.set_trace()
-                        joblib.dump(failed_keys, osp.join(self.config['network_path'], "failed.pkl"))
-                        joblib.dump(success_keys, osp.join(self.config['network_path'], "long_succ.pkl"))
-                        print("....")
+                    joblib.dump(failed_keys, osp.join(self.config['network_path'], "failed.pkl"))
+                    joblib.dump(success_keys, osp.join(self.config['network_path'], "long_succ.pkl"))
+                    print("....")
 
                 done[:] = 1  # Turning all of the sequences done and reset for the next batch of eval.
 
