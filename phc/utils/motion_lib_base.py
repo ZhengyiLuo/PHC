@@ -176,7 +176,7 @@ class MotionLibBase():
     def fix_trans_height(pose_aa, trans, curr_gender_betas, mesh_parsers, fix_height_mode):
         raise NotImplementedError
 
-    def load_motions(self, skeleton_trees, gender_betas, limb_weights, random_sample=True, start_idx=0, max_len=-1, one_motion_per_time=False):
+    def load_motions(self, skeleton_trees, gender_betas, limb_weights, random_sample=True, start_idx=0, max_len=-1):
         # load motion load the same number of motions as there are skeletons (humanoids)
         if "gts" in self.__dict__:
             del self.gts, self.grs, self.lrs, self.grvs, self.gravs, self.gavs, self.gvs, self.dvs,
@@ -205,10 +205,7 @@ class MotionLibBase():
         if random_sample:
             sample_idxes = torch.multinomial(self._sampling_prob, num_samples=num_motion_to_load, replacement=True).to(self._device)
         else:
-            if one_motion_per_time:
-                sample_idxes = torch.remainder(torch.zeros(len(skeleton_trees)).long() + start_idx, self._num_unique_motions).to(self._device)
-            else:
-                sample_idxes = torch.remainder(torch.arange(len(skeleton_trees)) + start_idx, self._num_unique_motions ).to(self._device)
+            sample_idxes = torch.remainder(torch.arange(len(skeleton_trees)) + start_idx, self._num_unique_motions ).to(self._device)
 
         # import ipdb; ipdb.set_trace()
         self._curr_motion_ids = sample_idxes
