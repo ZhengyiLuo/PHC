@@ -19,6 +19,7 @@ import time
 from smpl_sim.smpllib.smpl_eval import compute_metrics_lite
 from rl_games.common.tr_helpers import unsqueeze_obs
 from datetime import datetime
+import copy
 COLLECT_Z = False
 
 class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
@@ -97,7 +98,6 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                 self.clean_actions.append(info['clean_actions'])
                 self.env_actions.append(info['actions'])
                 self.reset_buf.append(info['reset_buf'])
-                self.keys.append(humanoid_env._motion_lib.curr_motion_keys)
 
             self.mpjpe.append(info["mpjpe"])
             self.gt_pos.append(info["body_pos_gt"])
@@ -146,8 +146,8 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                     all_reset_buf = np.stack(self.reset_buf)
                     all_reset_buf = [all_reset_buf[: (i - 1), idx] for idx, i in enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                     self.reset_buf_all += all_reset_buf
-
-                    self.keys_all += self.keys
+                    
+                    self.keys_all += humanoid_env._motion_lib.curr_motion_keys.tolist()
 
                 self.mpjpe_all.append(all_mpjpe)
                 self.pred_pos_all += all_body_pos_pred
@@ -205,7 +205,7 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                                 "obs": np.concatenate(self.obs_buf_all), 
                                 "clean_action": np.concatenate(self.clean_actions_all), 
                                 "env_action": np.concatenate(self.actions_all),
-                                "key_names": np.concatenate(self.keys_all),
+                                "key_names": np.array(self.keys_all),
                                 "reset": np.concatenate(self.reset_buf_all), 
                                 "running_mean": self.running_mean_std.state_dict(),
                                 "config": humanoid_env.cfg,
