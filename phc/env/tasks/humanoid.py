@@ -320,7 +320,7 @@ class Humanoid(BaseTask):
         self.add_action_noise = cfg["env"].get("add_action_noise", False)
         self.mlp_model_path = cfg["env"].get("mlp_model_path", "")
         self.action_noise_std = cfg["env"].get("action_noise_std", 0.05)
-        self.collect_dataset = cfg["env"].get("collect_dataset", False)
+        self.collect_dataset = cfg.get("collect_dataset", False)
         self.mlp_bypass = cfg["env"].get("mlp_bypass", False)
         self._occl_training = cfg["env"].get("occl_training", False)  # Cycle motion, but cycle farrrrr.
         self._occl_training_prob = cfg["env"].get("occl_training_prob", 0.1)  # Cycle motion, but cycle farrrrr.

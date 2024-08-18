@@ -33,7 +33,7 @@ if __name__ == "__main__":
         env.zero_out_far=False robot.real_weight_porpotion_boxes=False env.num_prim=3 \
             env.motion_file={dataset_path} env.models=['output/HumanoidIm/phc_3/Humanoid.pth'] \
                 env.num_envs={num_envs} headless=True epoch=-1 test=True im_eval=True \
-                env.collect_dataset=True  env.add_action_noise={add_action_noise}   env.action_noise_std={action_noise_std}"
+                collect_dataset=True  env.add_action_noise={add_action_noise}   env.action_noise_std={action_noise_std}"
         
         print(cmd)
         # os.system(cmd)
