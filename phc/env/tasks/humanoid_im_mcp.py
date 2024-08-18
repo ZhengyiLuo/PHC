@@ -29,7 +29,7 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
             self.running_mean, self.running_var = pnn_ck['running_mean_std']['running_mean'], pnn_ck['running_mean_std']['running_var']
 
         if self.mlp_bypass:
-            self.mlp_model = MLP(input_dim = self.num_obs, output_dim=self.num_dof, unites = [2048, 1024, 512], activation = "silu")
+            self.mlp_model = MLP(input_dim = self.num_obs, output_dim=self.num_dof, units = [2048, 1024, 512], activation = "silu")
             self.mlp_model.load_state_dict(torch.load(self.mlp_model_path))
             self.mlp_model.to(self.device)
 
@@ -76,10 +76,7 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
                     print("\nnot pnn output actions \n", actions[0][0:8])
 
             if self.mlp_bypass:
-                mlp_action = self.mlp_model(curr_obs)
-                mlp_action = mlp_action.unsqueeze(1)
-                mlp_x_all = mlp_action.repeat(1, self.num_actions, 1)
-                actions = torch.sum(weights[:, :, None] * mlp_x_all, dim=1)
+                actions = self.mlp_model(curr_obs)
                 if flags.debug:
                     print("\nmlp input observations \n", curr_obs[0][0:8])
                     print("\nmlp actions\n", actions[0][0:8])

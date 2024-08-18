@@ -315,13 +315,6 @@ class Humanoid(BaseTask):
         self.auto_pmcp = cfg["env"].get("auto_pmcp", False)
         self.auto_pmcp_soft = cfg["env"].get("auto_pmcp_soft", False)
         self.strict_eval = cfg["env"].get("strict_eval", False)
-        self.add_obs_noise = cfg["env"].get("add_obs_noise", False)
-        self.start_idx = cfg["env"].get("start_idx", 0)
-        self.add_action_noise = cfg["env"].get("add_action_noise", False)
-        self.mlp_model_path = cfg["env"].get("mlp_model_path", "")
-        self.action_noise_std = cfg["env"].get("action_noise_std", 0.05)
-        self.collect_dataset = cfg.get("collect_dataset", False)
-        self.mlp_bypass = cfg["env"].get("mlp_bypass", False)
         self._occl_training = cfg["env"].get("occl_training", False)  # Cycle motion, but cycle farrrrr.
         self._occl_training_prob = cfg["env"].get("occl_training_prob", 0.1)  # Cycle motion, but cycle farrrrr.
         self._sim_occlu = False
@@ -331,6 +324,15 @@ class Humanoid(BaseTask):
         self._zero_out_far_steps = cfg["env"].get("zero_out_far_steps", 90)
         self.past_track_steps = cfg["env"].get("past_track_steps", 5)
         #################### Devs ####################
+
+        #################### Collect Dataset ####################
+        self.add_obs_noise = cfg["env"].get("add_obs_noise", False)
+        self.start_idx = cfg["env"].get("start_idx", 0)
+        self.add_action_noise = cfg["env"].get("add_action_noise", False)
+        self.mlp_model_path = cfg["env"].get("mlp_model_path", "")
+        self.action_noise_std = cfg["env"].get("action_noise_std", 0.05)
+        self.collect_dataset = cfg.get("collect_dataset", False)
+        self.mlp_bypass = cfg["env"].get("mlp_bypass", False)
         
     def load_smpl_configs(self, cfg):
         self.load_common_humanoid_configs(cfg)
