@@ -12,16 +12,15 @@ from tqdm import tqdm
 from collections import defaultdict
 
 if __name__ == "__main__":
-    num_envs = 512
     add_action_noise = True
     action_noise_std = 0.05
-    # dataset_path = "/hdd/zen/dev/meta/EgoQuest/data/amass/pkls/amass_isaac_im_train_take6_upright_slim.pkl"
-    dataset_path = "/hdd/zen/dev/meta/EgoQuest/data/amass/pkls/amass_isaac_run_upright_slim.pkl"
+    dataset_path = "/hdd/zen/dev/meta/EgoQuest/data/amass/pkls/amass_isaac_im_train_take6_upright_slim.pkl"
+    # dataset_path = "/hdd/zen/dev/meta/EgoQuest/data/amass/pkls/amass_isaac_run_upright_slim.pkl"
     motion_file_name = dataset_path.split("/")[-1].split(".")[0]
     exp_name = "phc_comp_3"
     dataset_full = joblib.load(dataset_path)
     num_envs = len(dataset_full) if len(dataset_full)  < 512 else 512
-    num_runs = 3
+    num_runs = 10
 
     # Creating dataset
     for i in range(num_runs):
@@ -36,7 +35,7 @@ if __name__ == "__main__":
                 collect_dataset=True  env.add_action_noise={add_action_noise}   env.action_noise_std={action_noise_std}"
         
         print(cmd)
-        # os.system(cmd)
+        os.system(cmd)
 
     print("Done")
     # Aggregrating the dataset into one file 
