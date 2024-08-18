@@ -27,6 +27,7 @@ device_id: 0
 metadata: false
 play: ${test}
 train: True
+collect_dataset: False
 
 
 ####### Testing Configs. ########
