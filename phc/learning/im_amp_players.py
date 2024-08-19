@@ -48,7 +48,6 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
             self.clean_actions, self.clean_actions_all = [], []
             self.keys, self.keys_all = [], []
             self.reset_buf, self.reset_buf_all = [], []
-            self.num_data_collection_runs = 10
 
         if flags.im_eval:
             self.success_rate = 0
