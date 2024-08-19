@@ -83,7 +83,6 @@ def train(dataset_path, output_path):
     num_epochs = 1000
     save_frequency = 100
     learning_rate = 2e-5
-    min_episode_length = 1
 
     dataset = HumanoidDataset(dataset_path)
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=32)
@@ -97,7 +96,6 @@ def train(dataset_path, output_path):
             "hidden_size": units,
             "batch_size": batch_size,
             "num_epochs": num_epochs,
-            "min_episode_length": min_episode_length,
             "dataset": dataset_path,
         },
     )
