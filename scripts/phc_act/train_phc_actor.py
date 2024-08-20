@@ -34,8 +34,8 @@ class HumanoidDataset(Dataset):
         if use_pretrained_running_mean:
             self.running_mean = meta_data["running_mean"]["running_mean"].cpu().float()
             self.running_var = meta_data["running_mean"]["running_var"].cpu().float()
-            self.obs = (self.obs - self.running_mean) / torch.sqrt(self.running_var + 1e-05)
-            self.obs = torch.clamp(self.obs, min=-5.0, max=5.0)
+            self.obs.sub_(self.running_mean).div_(torch.sqrt(self.running_var + 1e-05))
+            self.obs.clamp_(min=-5.0, max=5.0)
 
         self.obs_size = self.obs.shape[-1]
         self.action_size = self.actions.shape[-1]
