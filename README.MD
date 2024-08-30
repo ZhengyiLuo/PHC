@@ -6,6 +6,7 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 <div float="center">
   <img src="assets/phc_teaser.gif" />
+  <img src="assets/phc_x_teaser.gif" />
 </div>
 
 # Table of Contents
@@ -147,7 +148,7 @@ The SMPL model is used to adjust the height the humanoid robot to avoid penetnra
 bash download_data.sh
 ```
 
-this wil download amass_isaac_standing_upright_slim.pkl, which is a standing still pose for testing. 
+this will download amass_isaac_standing_upright_slim.pkl, which is a standing still pose for testing. 
 
 To evaluate with your own SMPL data, see the script `scripts/data_process/convert_data_smpl.py`. Pay speical attention to make sure the coordinate system is the same as the one used  in simulaiton (with negative z as gravity direction). 
 
@@ -181,12 +182,17 @@ to do the above visulaization, press m (to cancel termination based on imitation
 
 ### Imitation 
 
-🎇🎇🎇 New (keypoint model, can getup from the ground and walk back) | Best model for video/language model
+PHC-X-Prim (single primitive model)
+```
+python phc/run_hydra.py learning=im_pnn_big exp_name=phc_x_pnn  env=env_im_x_pnn robot=smplx_humanoid env.motion_file=sample_data/standing_x.pkl env.training_prim=0 epoch=-1 test=True 
+```
+
+PHC+: keypoint model, can getup from the ground and walk back) | Best model for video/language model
 ```
 python phc/run_hydra.py learning=im_mcp_big learning.params.network.ending_act=False exp_name=phc_comp_kp_2 env.obs_v=7 env=env_im_getup_mcp robot=smpl_humanoid robot.real_weight_porpotion_boxes=False env.motion_file=sample_data/amass_isaac_standing_upright_slim.pkl env.models=['output/HumanoidIm/phc_kp_2/Humanoid.pth'] env.num_prim=3 env.num_envs=1  headless=False epoch=-1 test=True
 ```
 
-🎇🎇🎇 New (rotation + keypoint model, can getup from the ground but not walk back -- model used in PULSE due to time constraint)
+PHC+: rotation + keypoint model, can getup from the ground but not walk back -- model used in PULSE due to time constraint
 ```
 python phc/run_hydra.py learning=im_mcp_big  exp_name=phc_comp_3 env=env_im_getup_mcp robot=smpl_humanoid env.zero_out_far=False robot.real_weight_porpotion_boxes=False env.num_prim=3 env.motion_file=sample_data/amass_isaac_standing_upright_slim.pkl env.models=['output/HumanoidIm/phc_3/Humanoid.pth'] env.num_envs=1  headless=False epoch=-1 test=True
 ```
