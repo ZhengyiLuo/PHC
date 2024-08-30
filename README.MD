@@ -32,6 +32,8 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
+[August 30, 2024] Release support for SMPLX humanoid. 
+
 [Apirl 5, 2024] Upgrading to use [SMPLSim](https://github.com/ZhengyiLuo/SMPLSim) to automatically create the SMPL humanoid. Please run `pip install git+https://github.com/ZhengyiLuo/SMPLSim.git@master` to SMPLSim. SMPLSim requires python 3.8; for python 3.7, please `pip install git+https://github.com/ZhengyiLuo/SMPLSim.git@isaac37`.
 
 [Feburary 28, 2024] Releasing Auto-PMCP procedure to train single primitives; this procedure can lead to very high-performant imiatators without PNN, though it wouldn't have the failure state recovery capability. See the `auto_pmcp_soft` flag. 
@@ -57,7 +59,7 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## TODOs
 
-- [ ] Add support for smplx/h (fingers!!!).
+- [x] Add support for smplx/h (fingers!!!).
 
 - [x] Release PHC+ model (100% success rate on AMASS) used in [PULSE](https://zhengyiluo.github.io/PULSE/). 
 
@@ -97,6 +99,7 @@ All evaluation is done using the mean SMPL body pose and adjust the height, usin
 | PHC+ [in Pulse](https://zhengyiluo.github.io/PULSE/)  | 100% |     26.6     | 2.7 |
 | PHC-Prim (single primitive) | 99.9% |     25.9     | 2.3 |
 | PHC-Fut (using future) | 100% |     25.3     | 2.5 |
+| PHC-X-Prim (single primitive) | 99.9% |     24.7     | 3.6 |
 
 ### Dependencies
 
@@ -114,7 +117,7 @@ pip install -r requirement.txt
 2. Download and setup [Isaac Gym](https://developer.nvidia.com/isaac-gym). 
 
 
-3. [Optional if only inference] Download SMPL paramters from [SMPL](https://smpl.is.tue.mpg.de/). Put them in the `data/smpl` folder, unzip them into 'data/smpl' folder. Please download the v1.1.0 version, which contains the neutral humanoid. Rename the files `basicmodel_neutral_lbs_10_207_0_v1.1.0`, `basicmodel_m_lbs_10_207_0_v1.1.0.pkl`, `basicmodel_f_lbs_10_207_0_v1.1.0.pkl` to `SMPL_NEUTRAL.pkl`, `SMPL_MALE.pkl` and `SMPL_FEMALE.pkl`. Rename The file structure should look like this:
+3. Download SMPL paramters from [SMPL](https://smpl.is.tue.mpg.de/) and [SMPLX](https://smpl-x.is.tue.mpg.de/download.php). Put them in the `data/smpl` folder, unzip them into 'data/smpl' folder. For SMPL, please download the v1.1.0 version, which contains the neutral humanoid. Rename the files `basicmodel_neutral_lbs_10_207_0_v1.1.0`, `basicmodel_m_lbs_10_207_0_v1.1.0.pkl`, `basicmodel_f_lbs_10_207_0_v1.1.0.pkl` to `SMPL_NEUTRAL.pkl`, `SMPL_MALE.pkl` and `SMPL_FEMALE.pkl`. For SMPLX, please download the v1.1 version. Rename The file structure should look like this:
 
 ```
 
@@ -123,6 +126,9 @@ pip install -r requirement.txt
         |-- SMPL_FEMALE.pkl
         |-- SMPL_NEUTRAL.pkl
         |-- SMPL_MALE.pkl
+        |-- SMPLX_FEMALE.pkl
+        |-- SMPLX_NEUTRAL.pkl
+        |-- SMPLX_MALE.pkl
 
 ```
 
