@@ -32,6 +32,8 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
+[August 30, 2024] Releasing support for SMPLX.
+
 [Apirl 5, 2024] Upgrading to use [SMPLSim](https://github.com/ZhengyiLuo/SMPLSim) to automatically create the SMPL humanoid. Please run `pip install git+https://github.com/ZhengyiLuo/SMPLSim.git@master` to SMPLSim. SMPLSim requires python 3.8; for python 3.7, please `pip install git+https://github.com/ZhengyiLuo/SMPLSim.git@isaac37`.
 
 [Feburary 28, 2024] Releasing Auto-PMCP procedure to train single primitives; this procedure can lead to very high-performant imiatators without PNN, though it wouldn't have the failure state recovery capability. See the `auto_pmcp_soft` flag. 
@@ -57,7 +59,7 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## TODOs
 
-- [ ] Add support for smplx/h (fingers!!!).
+- [x] Add support for smplx/h (fingers!!!).
 
 - [x] Release PHC+ model (100% success rate on AMASS) used in [PULSE](https://zhengyiluo.github.io/PULSE/). 
 
@@ -123,6 +125,7 @@ pip install -r requirement.txt
         |-- SMPL_FEMALE.pkl
         |-- SMPL_NEUTRAL.pkl
         |-- SMPL_MALE.pkl
+        
 
 ```
 

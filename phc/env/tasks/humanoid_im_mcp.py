@@ -27,7 +27,7 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
             pnn_ck = torch_ext.load_checkpoint(self.models_path[0])
             self.pnn = load_pnn(pnn_ck, num_prim = self.num_prim, has_lateral = self.has_lateral, activation = self.z_activation, device = self.device)
             self.running_mean, self.running_var = pnn_ck['running_mean_std']['running_mean'], pnn_ck['running_mean_std']['running_var']
-
+        
         if self.mlp_bypass:
             self.mlp_model = MLP(input_dim = self.num_obs, output_dim=self.num_dof, units = [2048, 1024, 512], activation = "silu")
             self.mlp_model.load_state_dict(torch.load(self.mlp_model_path))
@@ -57,8 +57,9 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
         with torch.no_grad():
             # Apply trained Model.
             curr_obs = ((self.obs_buf - self.running_mean.float().to(self.device)) / torch.sqrt(self.running_var.float().to(self.device) + 1e-05))
-            
             curr_obs = torch.clamp(curr_obs, min=-5.0, max=5.0)
+            
+            
             if self.discrete_mcp:
                 max_idx = torch.argmax(weights, dim=1)
                 weights = torch.nn.functional.one_hot(max_idx, num_classes=self.num_prim).float()

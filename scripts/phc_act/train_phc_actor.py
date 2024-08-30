@@ -21,15 +21,15 @@ import h5py
 from tqdm import tqdm
 
 wandb.login()
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
 
 class HumanoidDataset(Dataset):
     def __init__(self, dataset_path, use_pretrained_running_mean = True):
         meta_data = joblib.load(dataset_path + "_meta_data.pkl")
-        self.hdf5_files = h5py.File(dataset_path + ".h5", 'r') 
-        self.obs = torch.tensor(self.hdf5_files["obs"][:])
-        self.actions = torch.tensor(self.hdf5_files["clean_action"][:])
+        self.hdf5_file = h5py.File(dataset_path + ".h5", 'r') 
+        self.obs = torch.tensor(self.hdf5_file["obs"][:])
+        self.actions = torch.tensor(self.hdf5_file["clean_action"][:])
 
         if use_pretrained_running_mean:
             self.running_mean = meta_data["running_mean"]["running_mean"].cpu().float()
@@ -50,9 +50,9 @@ class HumanoidDataset(Dataset):
         self.hdf5_file.close()
 
 
-def train_model(model, device, criterion, optimizer, data_loader, num_epochs, foldername, save_frequency = 100):
+def train_model(model, device, criterion, optimizer, data_loader, num_epochs, foldername, save_frequency = 100, curr_epoch = 0):
     model.to(device)
-    pbar = tqdm(range(num_epochs))
+    pbar = tqdm(range(curr_epoch, num_epochs))
     for epoch in pbar:
         for batch_obs, batch_actions in data_loader:
             # Forward pass
@@ -71,19 +71,19 @@ def train_model(model, device, criterion, optimizer, data_loader, num_epochs, fo
 
         pbar.set_description(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
             
-        if (epoch + 1) % save_frequency == 0:
-            torch.save(model.state_dict(), f'{foldername}/{epoch+1:05d}.pth')
+        if epoch > 0 and epoch % save_frequency == 0:
+            torch.save(model.state_dict(), f'{foldername}/{epoch:05d}.pth')
 
     print("Training complete.")
     return model
 
-def train(dataset_path, output_path):
+def train(dataset_path, output_path, num_epochs = 1000, save_frequency = 100, resume_cpk = -2):
     units = [2048, 1024, 512]  # Example hidden layer size
-    batch_size = 16384
-    num_epochs = 1000
-    save_frequency = 100
+    batch_size = 16384 * 10
+    
     learning_rate = 2e-5
     min_episode_length = 1
+    curr_epoch = 0
 
     dataset = HumanoidDataset(dataset_path)
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=32)
@@ -107,13 +107,23 @@ def train(dataset_path, output_path):
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
+    if resume_cpk != -2:
+        ckpt = f'{output_path}/{resume_cpk:05d}.pth'
+        print('Resuming from checkpoint:', ckpt)
+        model.load_state_dict(torch.load(ckpt))
+        curr_epoch = resume_cpk
+
+
     # Train the model
-    train_model(model, device, criterion, optimizer, data_loader, num_epochs, output_path, save_frequency = save_frequency)
+    train_model(model, device, criterion, optimizer, data_loader, num_epochs, output_path, save_frequency = save_frequency, curr_epoch = curr_epoch)
 
 
 if __name__ == "__main__":
     dataset_path = "output/HumanoidIm/phc_comp_3/phc_act/phc_act_amass_isaac_run_upright_slim"
     output_path = "output/HumanoidIm/phc_comp_3/phc_act/models/"
+    resume_cpk = 900
+    num_epochs = 10000
+    save_frequency = 500
     os.makedirs(output_path, exist_ok=True)
-    train(dataset_path, output_path)
+    train(dataset_path, output_path, resume_cpk = resume_cpk,  num_epochs = num_epochs, save_frequency = save_frequency)
 

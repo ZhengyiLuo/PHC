@@ -14,8 +14,8 @@ from collections import defaultdict
 if __name__ == "__main__":
     add_action_noise = True
     action_noise_std = 0.05
-    dataset_path = "/hdd/zen/dev/meta/EgoQuest/data/amass/pkls/amass_isaac_im_train_take6_upright_slim.pkl"
-    # dataset_path = "/hdd/zen/dev/meta/EgoQuest/data/amass/pkls/amass_isaac_run_upright_slim.pkl"
+    # dataset_path = "/hdd/zen/dev/meta/EgoQuest/data/amass/pkls/amass_isaac_im_train_take6_upright_slim.pkl"
+    dataset_path = "/hdd/zen/dev/meta/EgoQuest/data/amass/pkls/amass_isaac_run_upright_slim.pkl"
     motion_file_name = dataset_path.split("/")[-1].split(".")[0]
     exp_name = "phc_comp_3"
     dataset_full = joblib.load(dataset_path)
@@ -28,12 +28,13 @@ if __name__ == "__main__":
             add_action_noise = False
         else:
             add_action_noise = True
+        
         cmd = f"python phc/run_hydra.py learning=im_mcp_big  exp_name={exp_name} env=env_im_getup_mcp robot=smpl_humanoid \
         env.zero_out_far=False robot.real_weight_porpotion_boxes=False env.num_prim=3 \
             env.motion_file={dataset_path} env.models=['output/HumanoidIm/phc_3/Humanoid.pth'] \
                 env.num_envs={num_envs} headless=True epoch=-1 test=True im_eval=True \
                 collect_dataset=True  env.add_action_noise={add_action_noise}   env.action_noise_std={action_noise_std}"
-        
+        action_noise_std += 0.01
         print(cmd)
         os.system(cmd)
 
@@ -47,8 +48,11 @@ if __name__ == "__main__":
     for file in tqdm(pkl_files):
         file_data = joblib.load(file)
         for k, v in file_data.items():
-            full_dataset[k].append(v)
-
+            if k in ['obs', "clean_action", "env_action", "reset"] and type(v) == list:
+                full_dataset[k].append(np.concatenate(v))
+            else:
+                full_dataset[k].append(v)
+                
     for key, value in full_dataset.items():
         if key in  ["running_mean"]:
             full_dataset[key] = value[0]
@@ -56,7 +60,7 @@ if __name__ == "__main__":
             continue
         else:
             full_dataset[key] = np.concatenate(value, axis=0)
-
+    
     with h5py.File(f'output/HumanoidIm/{exp_name}/phc_act/phc_act_{motion_file_name}.h5', 'w') as hdf5_file:
         metadata_dump = {}
         for key, value in full_dataset.items():
