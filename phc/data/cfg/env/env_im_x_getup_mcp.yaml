@@ -1,0 +1,87 @@
+# if given, will override the device setting in gym. 
+task: HumanoidImMCPGetup
+project_name: "PHC"
+notes:  "Progressive MCP without softmax, zero out far"
+
+motion_file: ""
+num_envs: 3072
+env_spacing: 2
+episode_length: 300
+max_len: -1
+is_flag_run: False
+enable_debug_vis: False
+
+sym_loss_coef: 1
+fut_tracks: False
+obs_v: 6
+save_kin_info: False
+auto_pmcp: False
+auto_pmcp_soft: True
+
+######## PNN Configs ########
+has_pnn: True
+fitting: True
+num_prim: 4
+training_prim: 0
+actors_to_load: 4
+has_lateral: False
+models: []
+
+######## Getup Configs ########
+zero_out_far: True
+zero_out_far_train: False
+cycle_motion: True
+getup_udpate_epoch: 78750
+
+getup_schedule: True
+recoverySteps: 90
+zero_out_far_steps: 90
+recoveryEpisodeProb: 0.5
+fallInitProb: 0.3
+hard_negative: False
+
+z_activation: "silu"
+
+kp_scale: 1
+
+power_reward: True
+
+shape_resampling_interval: 500
+
+control_mode: "isaac_pd"
+power_scale: 1.0
+controlFrequencyInv: 2 # 30 Hz
+stateInit: "Random"  
+hybridInitProb: 0.5
+numAMPObsSteps: 10
+
+reward_specs:
+  k_pos: 100
+  k_rot: 10
+  k_vel: 0.1
+  k_ang_vel: 0.1
+
+  w_pos: 0.5
+  w_rot: 0.3
+  w_vel: 0.1
+  w_ang_vel: 0.1
+
+local_root_obs: True
+root_height_obs: True
+key_bodies: ["R_Ankle", "L_Ankle", "R_Wrist",  "L_Wrist"]
+contact_bodies: ["R_Ankle", "L_Ankle", "R_Toe", "L_Toe"]
+reset_bodies:  ['Pelvis', 'L_Hip', 'L_Knee', 'L_Ankle', 'R_Hip', 'R_Knee', 'R_Ankle', 'Torso', 'Spine', 'Chest', 'Neck', 'Head', 'L_Thorax', 'L_Shoulder', 'L_Elbow', 'L_Wrist', 'L_Index1', 'L_Index2', 'L_Index3', 'L_Middle1', 'L_Middle2', 'L_Middle3', 'L_Pinky1', 'L_Pinky2', 'L_Pinky3', 'L_Ring1', 'L_Ring2', 'L_Ring3', 'L_Thumb1', 'L_Thumb2', 'L_Thumb3', 'R_Thorax', 'R_Shoulder', 'R_Elbow', 'R_Wrist', 'R_Index1', 'R_Index2', 'R_Index3', 'R_Middle1', 'R_Middle2', 'R_Middle3', 'R_Pinky1', 'R_Pinky2', 'R_Pinky3', 'R_Ring1', 'R_Ring2', 'R_Ring3', 'R_Thumb1', 'R_Thumb2', 'R_Thumb3']
+force_sensor_joints: ['Pelvis', 'L_Ankle', "L_Toe", 'R_Ankle', "R_Toe", 'Head', 'L_Index1', 'L_Index2', 'L_Index3', 'L_Middle1', 'L_Middle2', 'L_Middle3', 'L_Pinky1', 'L_Pinky2', 'L_Pinky3', 'L_Ring1', 'L_Ring2', 'L_Ring3', 'L_Thumb1', 'L_Thumb2', 'L_Thumb3', 'R_Index1', 'R_Index2', 'R_Index3', 'R_Middle1', 'R_Middle2', 'R_Middle3', 'R_Pinky1', 'R_Pinky2', 'R_Pinky3', 'R_Ring1', 'R_Ring2', 'R_Ring3', 'R_Thumb1', 'R_Thumb2', 'R_Thumb3']
+terminationHeight: 0.15
+enableEarlyTermination: True
+terminationDistance: 0.25
+
+### Fut config
+numTrajSamples: 3
+trajSampleTimestepInv: 3
+enableTaskObs: True
+
+plane:
+  staticFriction: 1.0
+  dynamicFriction: 1.0
+  restitution: 0.0

@@ -14,3 +14,6 @@ gdown https://drive.google.com/uc?id=1pS1bRUbKFDp6o6ZJ9XSFaBlXv6_PrhNc -O  outpu
 
 gdown https://drive.google.com/uc?id=1V1mG5dTXzkONgPiwd97JeKtnFaj7KwQx -O  output/HumanoidIm/phc_comp_kp_2/Humanoid.pth
 gdown https://drive.google.com/uc?id=1QVv1qxsN2LnncPna66qSV3OikYfseCnx -O  output/HumanoidIm/phc_kp_2/Humanoid.pth
+
+gdown https://drive.google.com/uc?id= -O  output/HumanoidIm/phc_x_comp/Humanoid.pth
+gdown https://drive.google.com/uc?id= -O  output/HumanoidIm/phc_x_pnn/Humanoid.pth
