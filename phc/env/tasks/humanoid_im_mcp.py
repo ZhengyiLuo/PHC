@@ -30,7 +30,11 @@ class HumanoidImMCP(humanoid_im.HumanoidIm):
 
         if self.mlp_bypass:
             self.mlp_model = MLP(input_dim = self.num_obs, output_dim=self.num_dof, units = [2048, 1024, 512], activation = "silu")
-            self.mlp_model.load_state_dict(torch.load(self.mlp_model_path))
+            checkpoint = torch.load(self.mlp_model_path)
+            if 'model_state_dict' in checkpoint:
+                self.mlp_model.load_state_dict(checkpoint['model_state_dict'])
+            else:
+                self.mlp_model.load_state_dict(checkpoint)
             self.mlp_model.to(self.device)
 
         self.fps = deque(maxlen=90)
