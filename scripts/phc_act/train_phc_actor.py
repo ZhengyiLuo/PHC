@@ -34,9 +34,42 @@ device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
 
 class HumanoidDataset(Dataset):
-    def __init__(self, dataset_path, metadata_path, use_pretrained_running_mean = True):
+    def __init__(self, dataset_path, metadata_path, use_pretrained_running_mean = True, sample_pkl=False, directory=""):
+        if sample_pkl and os.path.exists(directory):
+            all_pkl_files = glob.glob(f"{directory}/*.pkl")
+
+            noise_0_005 = []
+            noise_0075_01 = []
+
+            for pkl_file in all_pkl_files:
+                split = pkl_file.split("/")[-1].split("_")
+                if split[1] == "False" or split[2] == "0.05":
+                    noise_0_005.append(pkl_file)
+                elif split[2]=="0.075":
+                    noise_0075_01.append(pkl_file)
+
+            pkl_files = random.sample(noise_0_005, 5) + random.sample(noise_0075_01, 1)
+            print("curr dataset: ", pkl_files)
+
+            data = defaultdict(list)
+
+            for file in tqdm(pkl_files):
+                file_data = joblib.load(file)
+                for k, v in file_data.items():
+                    data[k].append(v)
+
+            for key, value in data.items():
+                if key in ["running_mean"]:
+                    data[key] = value[0]
+                elif key == "config":
+                    continue
+                else:
+                    data[key] = np.concatenate(value, axis=0)
+        else:
+            data = joblib.load(dataset_path)
+
+
         meta_data = joblib.load(metadata_path)
-        data = joblib.load(dataset_path)
         self.obs = torch.tensor(data['obs'])
         self.actions = torch.tensor(data['clean_action'])
 
@@ -135,12 +168,12 @@ def train_model(model, device, criterion, optimizer, batch_size,
     model.to(device)
     pbar = tqdm(range(start_epoch, num_epochs))
     if not sample_pkl_or_not:
-        dataset = HumanoidDataset(dataset_path, metadata_path, data=None)
+        dataset = HumanoidDataset(dataset_path, metadata_path)
         data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=32)
     for epoch in pbar:
         if epoch%save_frequency == 0 and sample_pkl_or_not:
-            dataset_path = sample_pkl(directory= "/data/kangnil/PHC/output/HumanoidIm/phc_comp_3/phc_act/amass_isaac_im_train_take6_upright_slim/")
-            dataset = HumanoidDataset(dataset_path, metadata_path)
+            dataset = HumanoidDataset(dataset_path, metadata_path, sample_pkl = sample_pkl_or_not,
+                                      directory="output/HumanoidIm/phc_comp_3/phc_act/amass_isaac_im_train_take6_upright_slim/")
             data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=32)
         for batch_obs, batch_actions in data_loader:
             # Forward pass
@@ -203,7 +236,7 @@ if __name__ == "__main__":
     #dataset_path = "/data/kangnil/PHC/output/HumanoidIm/phc_comp_3/phc_act/amass_isaac_im_train_take6_upright_slim/noise_True_0.1_2024-09-05-05:59:22.pkl"
     metadata_path = "/data/kangnil/PHC/output/HumanoidIm/phc_comp_3/phc_act/phc_act_amass_isaac_im_train_take6_upright_slim_metadata.pkl"
     output_path = f"/data/kangnil/PHC/output/HumanoidIm/phc_comp_3/phc_act/amass_isaac_im_train_take6_upright_slim/models/"
-    ckpt_path = "00600.pth"
+    ckpt_path = "01600.pth"
     os.makedirs(output_path, exist_ok=True)
     sample_pkl_or_not = True
     train(dataset_path, metadata_path, sample_pkl_or_not, output_path, ckpt_path)
