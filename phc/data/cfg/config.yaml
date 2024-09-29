@@ -28,6 +28,7 @@ metadata: false
 play: ${test}
 train: True
 collect_dataset: False
+disable_multiprocessing: True
 
 
 ####### Testing Configs. ########
