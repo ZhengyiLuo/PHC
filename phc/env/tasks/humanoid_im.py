@@ -314,7 +314,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
                 "min_length": self._min_motion_len,
                 "max_length": -1,
                 "im_eval": flags.im_eval,
-                "multi_thread": True ,
+                "multi_thread": not self.cfg.disable_multiprocessing ,
                 "smpl_type": self.humanoid_type,
                 "randomrize_heading": True,
                 "device": self.device,

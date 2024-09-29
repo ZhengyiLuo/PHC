@@ -679,7 +679,12 @@ class Humanoid(BaseTask):
     def _create_smpl_humanoid_xml(self, num_humanoids, smpl_robot, queue, pid):
         np.random.seed(np.random.randint(5002) * (pid + 1))
         res = {}
-        for idx in num_humanoids:
+        if pid == 0 and self.cfg.disable_multiprocessing:
+            pbar = tqdm(num_humanoids)
+        else:
+            pbar = num_humanoids
+        
+        for idx in pbar:
             if self.has_shape_variation:
                 gender_beta = self._amass_gender_betas[idx % self._amass_gender_betas.shape[0]]
             else:
@@ -769,7 +774,7 @@ class Humanoid(BaseTask):
             if self.has_shape_variation:
                 queue = mp.Queue()
                 num_jobs = min(mp.cpu_count(), 64)
-                if num_jobs <= 8:
+                if num_jobs <= 8 or self.cfg.disable_multiprocessing:
                     num_jobs = 1
                 if flags.debug:
                     num_jobs = 1

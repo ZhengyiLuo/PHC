@@ -6,6 +6,7 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 <div float="center">
   <img src="assets/phc_teaser.gif" />
+  <img src="assets/phc_x_teaser.gif" />
 </div>
 
 # Table of Contents
@@ -32,7 +33,7 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
-[August 30, 2024] Releasing support for SMPLX.
+[August 30, 2024] Release support for SMPLX humanoid. 
 
 [Apirl 5, 2024] Upgrading to use [SMPLSim](https://github.com/ZhengyiLuo/SMPLSim) to automatically create the SMPL humanoid. Please run `pip install git+https://github.com/ZhengyiLuo/SMPLSim.git@master` to SMPLSim. SMPLSim requires python 3.8; for python 3.7, please `pip install git+https://github.com/ZhengyiLuo/SMPLSim.git@isaac37`.
 
@@ -99,6 +100,7 @@ All evaluation is done using the mean SMPL body pose and adjust the height, usin
 | PHC+ [in Pulse](https://zhengyiluo.github.io/PULSE/)  | 100% |     26.6     | 2.7 |
 | PHC-Prim (single primitive) | 99.9% |     25.9     | 2.3 |
 | PHC-Fut (using future) | 100% |     25.3     | 2.5 |
+| PHC-X-Prim (single primitive) | 99.9% |     24.7     | 3.6 |
 
 ### Dependencies
 
@@ -116,7 +118,7 @@ pip install -r requirement.txt
 2. Download and setup [Isaac Gym](https://developer.nvidia.com/isaac-gym). 
 
 
-3. [Optional if only inference] Download SMPL paramters from [SMPL](https://smpl.is.tue.mpg.de/). Put them in the `data/smpl` folder, unzip them into 'data/smpl' folder. Please download the v1.1.0 version, which contains the neutral humanoid. Rename the files `basicmodel_neutral_lbs_10_207_0_v1.1.0`, `basicmodel_m_lbs_10_207_0_v1.1.0.pkl`, `basicmodel_f_lbs_10_207_0_v1.1.0.pkl` to `SMPL_NEUTRAL.pkl`, `SMPL_MALE.pkl` and `SMPL_FEMALE.pkl`. Rename The file structure should look like this:
+3. Download SMPL paramters from [SMPL](https://smpl.is.tue.mpg.de/) and [SMPLX](https://smpl-x.is.tue.mpg.de/download.php). Put them in the `data/smpl` folder, unzip them into 'data/smpl' folder. For SMPL, please download the v1.1.0 version, which contains the neutral humanoid. Rename the files `basicmodel_neutral_lbs_10_207_0_v1.1.0`, `basicmodel_m_lbs_10_207_0_v1.1.0.pkl`, `basicmodel_f_lbs_10_207_0_v1.1.0.pkl` to `SMPL_NEUTRAL.pkl`, `SMPL_MALE.pkl` and `SMPL_FEMALE.pkl`. For SMPLX, please download the v1.1 version. Rename The file structure should look like this:
 
 ```
 
@@ -125,7 +127,9 @@ pip install -r requirement.txt
         |-- SMPL_FEMALE.pkl
         |-- SMPL_NEUTRAL.pkl
         |-- SMPL_MALE.pkl
-        
+        |-- SMPLX_FEMALE.pkl
+        |-- SMPLX_NEUTRAL.pkl
+        |-- SMPLX_MALE.pkl
 
 ```
 
@@ -144,7 +148,7 @@ The SMPL model is used to adjust the height the humanoid robot to avoid penetnra
 bash download_data.sh
 ```
 
-this wil download amass_isaac_standing_upright_slim.pkl, which is a standing still pose for testing. 
+this will download amass_isaac_standing_upright_slim.pkl, which is a standing still pose for testing. 
 
 To evaluate with your own SMPL data, see the script `scripts/data_process/convert_data_smpl.py`. Pay speical attention to make sure the coordinate system is the same as the one used  in simulaiton (with negative z as gravity direction). 
 
@@ -178,12 +182,17 @@ to do the above visulaization, press m (to cancel termination based on imitation
 
 ### Imitation 
 
-🎇🎇🎇 New (keypoint model, can getup from the ground and walk back) | Best model for video/language model
+PHC-X-Prim (single primitive model)
+```
+python phc/run_hydra.py learning=im_pnn_big exp_name=phc_x_pnn  env=env_im_x_pnn robot=smplx_humanoid env.motion_file=sample_data/standing_x.pkl env.training_prim=0 epoch=-1 test=True 
+```
+
+PHC+: keypoint model, can getup from the ground and walk back) | Best model for video/language model
 ```
 python phc/run_hydra.py learning=im_mcp_big learning.params.network.ending_act=False exp_name=phc_comp_kp_2 env.obs_v=7 env=env_im_getup_mcp robot=smpl_humanoid robot.real_weight_porpotion_boxes=False env.motion_file=sample_data/amass_isaac_standing_upright_slim.pkl env.models=['output/HumanoidIm/phc_kp_2/Humanoid.pth'] env.num_prim=3 env.num_envs=1  headless=False epoch=-1 test=True
 ```
 
-🎇🎇🎇 New (rotation + keypoint model, can getup from the ground but not walk back -- model used in PULSE due to time constraint)
+PHC+: rotation + keypoint model, can getup from the ground but not walk back -- model used in PULSE due to time constraint
 ```
 python phc/run_hydra.py learning=im_mcp_big  exp_name=phc_comp_3 env=env_im_getup_mcp robot=smpl_humanoid env.zero_out_far=False robot.real_weight_porpotion_boxes=False env.num_prim=3 env.motion_file=sample_data/amass_isaac_standing_upright_slim.pkl env.models=['output/HumanoidIm/phc_3/Humanoid.pth'] env.num_envs=1  headless=False epoch=-1 test=True
 ```

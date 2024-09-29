@@ -117,9 +117,15 @@ class HumanoidAMP(Humanoid):
         self._amp_obs_demo_buf = None
 
         data_dir = "data/smpl"
-        self.smpl_parser_n = SMPL_Parser(model_path=data_dir, gender="neutral").to(self.device)
-        self.smpl_parser_m = SMPL_Parser(model_path=data_dir, gender="male").to(self.device)
-        self.smpl_parser_f = SMPL_Parser(model_path=data_dir, gender="female").to(self.device)
+        
+        if self.humanoid_type in ["smpl", ]:
+            self.smpl_parser_n = SMPL_Parser(model_path=data_dir, gender="neutral").to(self.device)
+            self.smpl_parser_m = SMPL_Parser(model_path=data_dir, gender="male").to(self.device)
+            self.smpl_parser_f = SMPL_Parser(model_path=data_dir, gender="female").to(self.device)
+        elif self.humanoid_type in ["smplx"]:
+            self.smpl_parser_n = SMPLX_Parser(model_path=data_dir, gender="neutral", use_pca=False, create_transl=False, flat_hand_mean = True, num_betas=20).to(self.device)
+            self.smpl_parser_m = SMPLX_Parser(model_path=data_dir, gender="male", use_pca=False, create_transl=False, flat_hand_mean = True, num_betas=20).to(self.device)
+            self.smpl_parser_f = SMPLX_Parser(model_path=data_dir, gender="female", use_pca=False, create_transl=False, flat_hand_mean = True, num_betas=20).to(self.device)
 
         self.start = True  # camera flag
         self.ref_motion_cache = {}
@@ -323,7 +329,7 @@ class HumanoidAMP(Humanoid):
                 "min_length": -1,
                 "max_length": -1,
                 "im_eval": flags.im_eval,
-                "multi_thread": True ,
+                "multi_thread": not self.cfg.disable_multiprocessing ,
                 "smpl_type": self.humanoid_type,
                 "randomrize_heading": True,
                 "device": self.device,

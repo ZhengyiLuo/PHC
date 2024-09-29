@@ -55,6 +55,14 @@ class MotionLibSMPL(MotionLibBase):
                 smpl_parser_n = SMPL_Parser(model_path=data_dir, gender="neutral")
                 smpl_parser_m = SMPL_Parser(model_path=data_dir, gender="male")
                 smpl_parser_f = SMPL_Parser(model_path=data_dir, gender="female")
+            elif motion_lib_cfg.smpl_type == "smplh":
+                smpl_parser_n = SMPLH_Parser(model_path=data_dir, gender="neutral")
+                smpl_parser_m = SMPLH_Parser(model_path=data_dir, gender="male")
+                smpl_parser_f = SMPLH_Parser(model_path=data_dir, gender="female")
+            elif motion_lib_cfg.smpl_type == "smplx":
+                smpl_parser_n = SMPLX_Parser(model_path=data_dir, gender="neutral", use_pca=False, create_transl=False, flat_hand_mean = True, num_betas=20)
+                smpl_parser_m = SMPLX_Parser(model_path=data_dir, gender="male", use_pca=False, create_transl=False, flat_hand_mean = True, num_betas=20)
+                smpl_parser_f = SMPLX_Parser(model_path=data_dir, gender="female", use_pca=False, create_transl=False, flat_hand_mean = True, num_betas=20)
             self.mesh_parsers = {0: smpl_parser_n, 1: smpl_parser_m, 2: smpl_parser_f}
         else:
             print("SMPL models not found, set mesh_parsers to None")
@@ -99,7 +107,13 @@ class MotionLibSMPL(MotionLibBase):
         np.random.seed(np.random.randint(5000)* pid)
         res = {}
         assert (len(ids) == len(motion_data_list))
-        for f in range(len(motion_data_list)):
+        
+        if pid == 0 and not config.multi_thread:
+            pbar = tqdm(len(motion_data_list))
+        else:
+            pbar = len(motion_data_list)
+        
+        for f in pbar:
             curr_id = ids[f]  # id for this datasample
             curr_file = motion_data_list[f]
             if not isinstance(curr_file, dict) and osp.isfile(curr_file):
