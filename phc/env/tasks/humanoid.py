@@ -765,13 +765,16 @@ class Humanoid(BaseTask):
                 robot = None
                 
 
-
+            torch.set_num_threads(1)
+            mp.set_sharing_strategy('file_descriptor')
+            
             asset_options = gymapi.AssetOptions()
             asset_options.angular_damping = 0.01
             asset_options.max_angular_velocity = 100.0
             asset_options.default_dof_drive_mode = gymapi.DOF_MODE_NONE
 
             if self.has_shape_variation:
+                
                 queue = mp.Queue()
                 num_jobs = min(mp.cpu_count(), 64)
                 if num_jobs <= 8 or self.cfg.disable_multiprocessing:
