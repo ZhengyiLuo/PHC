@@ -107,7 +107,13 @@ class MotionLibSMPL(MotionLibBase):
         np.random.seed(np.random.randint(5000)* pid)
         res = {}
         assert (len(ids) == len(motion_data_list))
-        for f in range(len(motion_data_list)):
+        
+        if pid == 0 and not config.multi_thread:
+            pbar = tqdm(len(motion_data_list))
+        else:
+            pbar = len(motion_data_list)
+        
+        for f in pbar:
             curr_id = ids[f]  # id for this datasample
             curr_file = motion_data_list[f]
             if not isinstance(curr_file, dict) and osp.isfile(curr_file):

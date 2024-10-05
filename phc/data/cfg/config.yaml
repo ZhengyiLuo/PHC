@@ -13,7 +13,9 @@ seed: 0
 no_log: False
 resume_str: null
 num_threads: 64
-test: False 
+test: False
+dataset: False
+mlp: False
 output_path: output/HumanoidIm/${exp_name}
 torch_deterministic: False
 epoch: 0
@@ -25,6 +27,8 @@ device_id: 0
 metadata: false
 play: ${test}
 train: True
+collect_dataset: False
+disable_multiprocessing: True
 
 
 ####### Testing Configs. ########
