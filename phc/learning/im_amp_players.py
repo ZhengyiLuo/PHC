@@ -46,9 +46,8 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
             self.env_actions, self.actions_all = [], []
             self.motion_length_all = []
             self.clean_actions, self.clean_actions_all = [], []
-            self.keys, self.keys_all = [], []
+            self.keys_all = []
             self.reset_buf, self.reset_buf_all = [], []
-            self.num_data_collection_runs = 10
 
         if flags.im_eval:
             self.success_rate = 0
@@ -149,6 +148,8 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                     
                     self.keys_all += humanoid_env._motion_lib.curr_motion_keys.tolist()
 
+                    self.motion_length_all += [obs.shape[0] for obs in all_obs_buf]
+
                 self.mpjpe_all.append(all_mpjpe)
                 self.pred_pos_all += all_body_pos_pred
                 self.gt_pos_all += all_body_pos_gt
@@ -206,7 +207,8 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                                 "clean_action": self.clean_actions_all, 
                                 "env_action": self.actions_all,
                                 "key_names": np.array(self.keys_all),
-                                "reset": self.reset_buf_all, 
+                                "motion_lengths": np.array(self.motion_length_all),
+                                "reset": np.concatenate(self.reset_buf_all), 
                                 "running_mean": self.running_mean_std.state_dict(),
                                 "config": humanoid_env.cfg,
                                 }, dump_dir, compress=True)
