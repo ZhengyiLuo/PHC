@@ -51,7 +51,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         self.device_type = cfg.get("device_type", "cuda")
         self.device_id = cfg.get("device_id", 0)
         self.headless = cfg["headless"]
-        self.start_idx = 0
+        #self.start_idx = 0
 
         self.reward_specs = cfg["env"].get("reward_specs", {"k_pos": 100, "k_rot": 10, "k_vel": 0.1, "k_ang_vel": 0.1, "w_pos": 0.5, "w_rot": 0.3, "w_vel": 0.1, "w_ang_vel": 0.1})
 
@@ -314,7 +314,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
                 "min_length": self._min_motion_len,
                 "max_length": -1,
                 "im_eval": flags.im_eval,
-                "multi_thread": True ,
+                "multi_thread": not self.cfg.disable_multiprocessing ,
                 "smpl_type": self.humanoid_type,
                 "randomrize_heading": True,
                 "device": self.device,
@@ -325,7 +325,9 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             self._motion_eval_lib = MotionLibSMPL(motion_lib_cfg)
 
             self._motion_lib = self._motion_train_lib
-            self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(), limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=(not flags.test) and (not self.seq_motions), max_len=-1 if flags.test else self.max_len)
+            self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(),
+                                          limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=(not flags.test) and (not self.seq_motions),
+                                          max_len=-1 if flags.test else self.max_len, start_idx=self.start_idx)
 
         else:
             self._motion_lib = MotionLib(motion_file=motion_train_file, dof_body_ids=self._dof_body_ids, dof_offsets=self._dof_offsets, device=self.device)
@@ -636,10 +638,21 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             self.extras['body_pos'] = body_pos.cpu().numpy()
             self.extras['body_pos_gt'] = motion_res['rg_pos'].cpu().numpy()
 
+            #### Dumping dataset
+            if self.collect_dataset:
+                self.extras['obs_buf'] = self.obs_buf_t.copy()  # n, 945
+                self.extras['actions'] = self.actions.cpu().numpy()  # n, 69
+                self.extras['clean_actions'] = self.clean_actions.cpu().numpy()
+                self.extras['reset_buf'] = self.reset_buf.cpu().numpy()  # n
+
+            
+                self.obs_buf_t = self.obs_buf.cpu().numpy() # update to next time step
+
         return
 
     def _compute_observations(self, env_ids=None):
         # env_ids is used for resetting
+        
         if env_ids is None:
             env_ids = torch.arange(self.num_envs).to(self.device)
 
@@ -667,6 +680,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             self.obs_buf[env_ids] = obs_slice
         else:
             self.obs_buf[env_ids] = obs
+        
         return obs
 
     def _compute_task_obs(self, env_ids=None, save_buffer = True):
@@ -881,6 +895,11 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             self.reward_raw = torch.cat([self.reward_raw, power_reward[:, None]], dim=-1)
         
         return
+    
+    def _reset_envs(self, env_ids):
+        super()._reset_envs(env_ids)
+        if self.collect_dataset:
+            self.obs_buf_t = self.obs_buf.cpu().numpy() # first time step update
 
     def _reset_ref_state_init(self, env_ids):
         self._motion_start_times_offset[env_ids] = 0  # Reset the motion time offsets

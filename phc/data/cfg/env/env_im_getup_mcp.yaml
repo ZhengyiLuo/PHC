@@ -9,13 +9,20 @@ env_spacing: 2
 episode_length: 300
 is_flag_run: False
 enable_debug_vis: False
-
-
 sym_loss_coef: 1
 fut_tracks: False
 obs_v: 6
 auto_pmcp: False
 auto_pmcp_soft: True
+
+######## Dumping offline dataset configs ########
+add_obs_noise: False
+add_action_noise: False
+action_noise_std: 0.05
+mlp_bypass: False
+mlp_model_path: ""
+start_idx: 0
+collect_dataset: False
 
 ######## PNN Configs ########
 has_pnn: True

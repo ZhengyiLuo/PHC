@@ -271,7 +271,6 @@ def main():
     if args.motion_file:
         cfg['env']['motion_file'] = args.motion_file
     flags.test = args.test
-
     # Create default directories for weights and statistics
     cfg_train['params']['config']['network_path'] = args.network_path
     args.log_path = osp.join(args.log_path, cfg['name'], cfg_env_name)

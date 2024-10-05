@@ -1,5 +1,4 @@
 
-
 import glob
 import os
 import sys
@@ -11,7 +10,6 @@ import numpy as np
 import torch
 from phc.utils.flags import flags
 from rl_games.algos_torch import torch_ext
-from phc.utils.running_mean_std import RunningMeanStd
 from rl_games.common.player import BasePlayer
 
 import learning.amp_players as amp_players
@@ -20,7 +18,8 @@ import joblib
 import time
 from smpl_sim.smpllib.smpl_eval import compute_metrics_lite
 from rl_games.common.tr_helpers import unsqueeze_obs
-
+from datetime import datetime
+import copy
 COLLECT_Z = False
 
 class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
@@ -29,6 +28,7 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
 
         self.terminate_state = torch.zeros(self.env.task.num_envs, device=self.device)
         self.terminate_memory = []
+
         self.mpjpe, self.mpjpe_all = [], []
         self.gt_pos, self.gt_pos_all = [], []
         self.pred_pos, self.pred_pos_all = [], []
@@ -40,6 +40,14 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
         humanoid_env = self.env.task
         humanoid_env._termination_distances[:] = 0.5 # if not humanoid_env.strict_eval else 0.25 # ZL: use UHC's termination distance
         humanoid_env._recovery_episode_prob, humanoid_env._fall_init_prob = 0, 0
+
+        if humanoid_env.collect_dataset:
+            self.obs_buf, self.obs_buf_all = [], []
+            self.env_actions, self.actions_all = [], []
+            self.motion_length_all = []
+            self.clean_actions, self.clean_actions_all = [], []
+            self.keys_all = []
+            self.reset_buf, self.reset_buf_all = [], []
 
         if flags.im_eval:
             self.success_rate = 0
@@ -84,6 +92,12 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
             else:
                 curr_max = humanoid_env._motion_lib.get_motion_num_steps().max()
 
+            if humanoid_env.collect_dataset:
+                self.obs_buf.append(info['obs_buf'])
+                self.clean_actions.append(info['clean_actions'])
+                self.env_actions.append(info['actions'])
+                self.reset_buf.append(info['reset_buf'])
+
             self.mpjpe.append(info["mpjpe"])
             self.gt_pos.append(info["body_pos_gt"])
             self.pred_pos.append(info["body_pos"])
@@ -114,6 +128,27 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                     all_zs = [all_zs[: (i - 1), idx] for idx, i in enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
                     self.zs_all += all_zs
 
+
+                if humanoid_env.collect_dataset:
+                    all_obs_buf = np.stack(self.obs_buf) # Time, batch, obs
+                    all_obs_buf = [all_obs_buf[: (i - 1), idx] for idx, i in enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
+                    self.obs_buf_all += all_obs_buf
+
+                    all_clean_actions = np.stack(self.clean_actions) 
+                    all_clean_actions = [all_clean_actions[: (i - 1), idx] for idx, i in enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
+                    self.clean_actions_all += all_clean_actions
+                    
+                    all_actions = np.stack(self.env_actions)
+                    all_actions = [all_actions[: (i - 1), idx] for idx, i in enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
+                    self.actions_all += all_actions
+
+                    all_reset_buf = np.stack(self.reset_buf)
+                    all_reset_buf = [all_reset_buf[: (i - 1), idx] for idx, i in enumerate(humanoid_env._motion_lib.get_motion_num_steps())]
+                    self.reset_buf_all += all_reset_buf
+                    
+                    self.keys_all += humanoid_env._motion_lib.curr_motion_keys.tolist()
+
+                    self.motion_length_all += [obs.shape[0] for obs in all_obs_buf]
 
                 self.mpjpe_all.append(all_mpjpe)
                 self.pred_pos_all += all_body_pos_pred
@@ -161,10 +196,25 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                         zs_all = self.zs_all[:humanoid_env._motion_lib._num_unique_motions]
                         zs_dump = {k: zs_all[idx].cpu().numpy() for idx, k in enumerate(humanoid_env._motion_lib._motion_data_keys)}
                         joblib.dump(zs_dump, osp.join(self.config['network_path'], "zs_run.pkl"))
-                    
-                    import ipdb; ipdb.set_trace()
 
-                    # joblib.dump(np.concatenate(self.zs_all[: humanoid_env._motion_lib._num_unique_motions]), osp.join(self.config['network_path'], "zs.pkl"))
+                    if humanoid_env.collect_dataset:
+                        motion_file = humanoid_env.cfg.env.motion_file.split('/')[-1].split('.')[0]
+                        dump_dir = osp.join(self.config['network_path'], "phc_act", motion_file, f"noise_{humanoid_env.add_action_noise}_{humanoid_env.action_noise_std}_{datetime.now().strftime('%Y-%m-%d-%H:%M:%S')}.pkl")
+                        os.makedirs(osp.join(self.config['network_path'], "phc_act", motion_file), exist_ok=True)
+                        print("Dumping to: ", dump_dir)
+                        joblib.dump({
+                                "obs": self.obs_buf_all, 
+                                "clean_action": self.clean_actions_all, 
+                                "env_action": self.actions_all,
+                                "key_names": np.array(self.keys_all),
+                                "motion_lengths": np.array(self.motion_length_all),
+                                "reset": np.concatenate(self.reset_buf_all), 
+                                "running_mean": self.running_mean_std.state_dict(),
+                                "config": humanoid_env.cfg,
+                                }, dump_dir, compress=True)
+                        exit()
+
+                    import ipdb; ipdb.set_trace()
 
                     joblib.dump(failed_keys, osp.join(self.config['network_path'], "failed.pkl"))
                     joblib.dump(success_keys, osp.join(self.config['network_path'], "long_succ.pkl"))
@@ -180,6 +230,8 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
                 self.pbar.update(1)
                 self.pbar.refresh()
                 self.mpjpe, self.gt_pos, self.pred_pos,  = [], [], []
+                if humanoid_env.collect_dataset: 
+                    self.obs_buf, self.env_actions, self.clean_actions, self.reset_buf, self.keys = [], [], [], [], []
                 if COLLECT_Z: self.zs = []
                 self.curr_stpes = 0
 
