@@ -91,7 +91,7 @@ class Humanoid(BaseTask):
             self._pd_control = True
         else:
             self._pd_control = False
-        self.power_scale = self.cfg["env"]["power_scale"]
+        self.power_scale = self.cfg["control"].get("powerScale", 1.0)
 
         self.debug_viz = self.cfg["env"]["enable_debug_vis"]
         self.plane_static_friction = self.cfg["env"]["plane"]["staticFriction"]
@@ -764,6 +764,7 @@ class Humanoid(BaseTask):
         lower = gymapi.Vec3(-spacing, -spacing, 0.0)
         upper = gymapi.Vec3(spacing, spacing, spacing)
 
+        
         asset_root = self.cfg.robot.asset["assetRoot"]
         asset_file = self.cfg.robot.asset["assetFileName"]
         self.humanoid_masses = []
@@ -1023,6 +1024,12 @@ class Humanoid(BaseTask):
             self.gym.create_asset_force_sensor(humanoid_asset, right_foot_idx, sensor_pose, sensor_options)
             
         return
+    
+    def _process_rigid_body_props(self, props, env_id):
+        return props
+    
+    def _process_rigid_shape_props(self, rigid_shape_props_asset, env_id):
+        return rigid_shape_props_asset
     
     def _build_env(self, env_id, env_ptr, humanoid_asset):
         if self._divide_group or flags.divide_group:
@@ -1312,7 +1319,7 @@ class Humanoid(BaseTask):
                     self._pd_action_offset[self._dof_names.index("L_Shoulder") * 3 + 2] = -np.pi / 2
                     self._pd_action_offset[self._dof_names.index("R_Shoulder") * 3] = -np.pi / 3
                     self._pd_action_offset[self._dof_names.index("R_Shoulder") * 3 + 2] = np.pi / 2
-        elif self.humanoid_type in ['h1', 'g1', , ]:
+        elif self.humanoid_type in ['h1', 'g1', ]:
             self._pd_action_offset[:] = 0
 
         return
@@ -1580,7 +1587,7 @@ class Humanoid(BaseTask):
         return
 
     def _build_key_body_ids_tensor(self, key_body_names):
-        if self.humanoid_type in ['h1', 'g1', , 'smpl', 'smplh', 'smplx']:
+        if self.humanoid_type in ['h1', 'g1',  'smpl', 'smplh', 'smplx']:
             body_ids = [self._body_names.index(name) for name in key_body_names]
             body_ids = to_torch(body_ids, device=self.device, dtype=torch.long)
 

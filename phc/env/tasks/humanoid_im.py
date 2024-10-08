@@ -432,7 +432,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             dof_pos_seg = data_to_dump['dof_pos'][start:end, humanoid_index]
             B, H = dof_pos_seg.shape
             root_states_seg = data_to_dump['root_states'][start:end, humanoid_index]
-            if self.humanoid_type in ['h1', 'g1', , ]:
+            if self.humanoid_type in ['h1', 'g1' ]:
                 motion_dump = {
                     "skeleton_tree": self.state_record['skeleton_trees'][humanoid_index].to_dict(),
                     "trans": root_states_seg[:, :3],
