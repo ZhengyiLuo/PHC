@@ -64,7 +64,6 @@ def main(cfg : DictConfig) -> None:
     curr_start, num_motions, motion_id, motion_acc, time_step, dt, paused = 0, 1, 0, set(), 0, 1/30, False
     
     motion_file = f"data/{cfg.robot.humanoid_type}/v1/singles/{cfg.get('motion_name', '0-KIT_3_walking_slow08_poses')}.pkl"
-    # motion_file = f"data/e_atlas_21jts/singles/{cfg.get('motion_name', '0-KIT_3_walking_slow08_poses')}.pkl"
     motion_file = "data/h1/v1/amass_phc.pkl"
     print(motion_file)
     motion_data = joblib.load(motion_file)

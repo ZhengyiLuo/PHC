@@ -89,7 +89,7 @@ class BaseTask():
         self.num_actions = cfg["env"]["numActions"]
         self.is_discrete = cfg["env"].get("is_discrete", False)
 
-        self.control_freq_inv = cfg["env"].get("controlFrequencyInv", 1)
+        self.control_freq_inv = cfg["control"].get("decimation", 2)
 
         # optimization flags for pytorch JIT
         torch._C._jit_set_profiling_mode(False)

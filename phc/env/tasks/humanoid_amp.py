@@ -312,7 +312,7 @@ class HumanoidAMP(Humanoid):
                 self._num_amp_obs_per_step += 11 if (asset_file == "mjcf/smpl_humanoid.xml") else 12
             if self._has_limb_weight_obs_disc:
                 self._num_amp_obs_per_step += 10
-         elif self.humanoid_type in ['h1', 'g1']:
+        elif self.humanoid_type in ['h1', 'g1']:
             if self.amp_obs_v == 1:
                 self._num_amp_obs_per_step = 13 + self._dof_obs_size + len(self._dof_names)  + 3 * num_key_bodies  # [root_h, root_rot, root_vel, root_ang_vel, dof_pos, dof_vel, key_body_pos]
             else:
