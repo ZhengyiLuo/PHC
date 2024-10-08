@@ -64,13 +64,21 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         self._track_bodies = cfg["env"].get("trackBodies", self._full_track_bodies)
         self._track_bodies_id = self._build_key_body_ids_tensor(self._track_bodies)
         self._reset_bodies = cfg["env"].get("reset_bodies", self._track_bodies)
-
         self._reset_bodies_id = self._build_key_body_ids_tensor(self._reset_bodies)
         
         self._full_track_bodies_id = self._build_key_body_ids_tensor(self._full_track_bodies)
         self._eval_track_bodies_id = self._build_key_body_ids_tensor(self._eval_bodies)
         self._motion_start_times_offset = torch.zeros(self.num_envs).to(self.device)
         self._cycle_counter = torch.zeros(self.num_envs, device=self.device, dtype=torch.int)
+        
+        extend_names, extend_pos, extend_rot = [], [], []
+        for extend_config in cfg.robot.extend_config:
+            extend_names.append(extend_config["parent_name"])
+            extend_pos.append(extend_config["pos"])
+            
+        self.extend_body_parent_ids = self._build_key_body_ids_tensor(extend_names)
+        self.extend_body_pos_in_parent = torch.tensor(extend_pos).repeat(self.num_envs, 1, 1).to(self.device)
+        self.num_extend_bodies = len(extend_names)
 
         spacing = 5
         side_lenght = torch.ceil(torch.sqrt(torch.tensor(self.num_envs)))
@@ -201,7 +209,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             #     control.set_zoom(0.001)
 
 
-    def render(self, sync_frame_time = False):
+    def render(self, sync_frame_time = False, i = 0):
         super().render(sync_frame_time=sync_frame_time)
         
         if self.viewer_o3d and self.control_i == 0:

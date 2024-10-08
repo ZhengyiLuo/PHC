@@ -955,13 +955,19 @@ class Humanoid(BaseTask):
         # self.gym.set_actor_dof_properties(self.envs[0], self.humanoid_handles[0], dof_prop)
 
         for j in range(self.num_dof):
+            
             if dof_prop['lower'][j] > dof_prop['upper'][j]:
                 self.dof_limits_lower.append(dof_prop['upper'][j])
                 self.dof_limits_upper.append(dof_prop['lower'][j])
+            elif dof_prop['lower'][j] == dof_prop['upper'][j]:
+                print("Warning: DOF limits are the same")
+                if dof_prop['lower'][j] == 0:
+                    self.dof_limits_lower.append(-np.pi)
+                    self.dof_limits_upper.append(np.pi)
             else:
                 self.dof_limits_lower.append(dof_prop['lower'][j])
                 self.dof_limits_upper.append(dof_prop['upper'][j])
-
+        
         self.dof_limits_lower = to_torch(self.dof_limits_lower, device=self.device)
         self.dof_limits_upper = to_torch(self.dof_limits_upper, device=self.device)
         self.dof_limits = torch.stack([self.dof_limits_lower, self.dof_limits_upper], dim=-1)
@@ -1000,6 +1006,7 @@ class Humanoid(BaseTask):
             
             self.dof_vel_limits[i] = props["velocity"][i].item()
             self.torque_limits[i] = props["effort"][i].item()
+            
             if "torque_limits_hard_coded" in self.__dict__:
                 self.torque_limits[i] = self.torque_limits_hard_coded[i]
             else:   
@@ -1086,33 +1093,6 @@ class Humanoid(BaseTask):
         humanoid_limb_weight = torch.tensor(limb_lengths + masses)
         self.humanoid_limb_and_weights.append(humanoid_limb_weight)  # ZL: attach limb lengths and full body weight.
 
-        if self.humanoid_type in ["smpl", "smplh", "smplx"]:
-            gender = self.humanoid_shapes[env_id, 0].long()
-            percentage = 1 - np.clip((humanoid_mass - 70) / 70, 0, 1)
-            if gender == 0:
-                gender = 1
-                color_vec = gymapi.Vec3(*get_color_gradient(percentage, "Greens"))
-            elif gender == 1:
-                gender = 2
-                color_vec = gymapi.Vec3(*get_color_gradient(percentage, "Blues"))
-            elif gender == 2:
-                gender = 0
-                color_vec = gymapi.Vec3(*get_color_gradient(percentage, "Reds"))
-
-            # color = torch.zeros(3)
-            # color[gender] = 1 - np.clip((humanoid_mass - 70) / 70, 0, 1)
-            if flags.test:
-                color_vec = gymapi.Vec3(*agt_color(env_id + 0))
-            # if env_id == 0:
-            #     color_vec = gymapi.Vec3(0.23192618223760095, 0.5456516724336793, 0.7626143790849673)
-            # elif env_id == 1:
-            #     color_vec = gymapi.Vec3(0.907912341407151, 0.20284505959246443, 0.16032295271049596)
-
-        else:
-            color_vec = gymapi.Vec3(0.54, 0.85, 0.2)
-
-        for j in range(self.num_bodies):
-            self.gym.set_rigid_body_color(env_ptr, humanoid_handle, j, gymapi.MESH_VISUAL, color_vec)
         pd_scale = 1
         dof_prop = self.gym.get_asset_dof_properties(humanoid_asset)
         
@@ -1188,31 +1168,23 @@ class Humanoid(BaseTask):
             self.p_gains, self.d_gains = to_torch(self.p_gains), to_torch(self.d_gains)
             self.default_dof_pos = torch.zeros(1, self.num_dof).to(self.device)
         
-        if self.has_shape_variation:
-            pd_scale = humanoid_mass / self.cfg['env'].get('default_humanoid_mass', 77.0 if self._real_weight else 35.0)
-        else:
+        
+        dof_prop = self.gym.get_asset_dof_properties(humanoid_asset)
+        if self.control_mode in ["isaac_pd"]:
+            dof_prop["driveMode"] = gymapi.DOF_MODE_POS
             pd_scale = 1
-        if (self.control_mode == "isaac_pd"):
-            dof_prop["driveMode"][:] = gymapi.DOF_MODE_POS
+            if self.has_shape_variation:
+                pd_scale = humanoid_mass / self.cfg['env'].get('default_humanoid_mass', 77.0 if self._real_weight else 35.0)
             dof_prop['stiffness'] *= pd_scale * self._kp_scale
             dof_prop['damping'] *= pd_scale * self._kd_scale
-        else:
-            if self.control_mode == "pd":
-                # self.kp_gains = to_torch(self._kp_scale * dof_prop['stiffness'], device=self.device)
-                # self.kd_gains = to_torch(self._kd_scale * dof_prop['damping'], device=self.device)
-                self.kp_gains = to_torch(self._kp_scale * dof_prop['stiffness']/4, device=self.device)
-                self.kd_gains = to_torch(self._kd_scale * dof_prop['damping']/4, device=self.device)
-                dof_prop['velocity'][:] = 100
-                dof_prop['stiffness'][:] = 0
-                dof_prop['friction'][:] = 1
-                dof_prop['damping'][:] = 0.001
-            elif self.control_mode == "force":
-                dof_prop['velocity'][:] = 100
-                dof_prop['stiffness'][:] = 0
-                dof_prop['friction'][:] = 1
-                dof_prop['damping'][:] = 0.001
-                
-            dof_prop["driveMode"][:] = gymapi.DOF_MODE_EFFORT
+            
+            if self.humanoid_type in ['h1', 'g1', "e_atlas_nohand"]:
+                dof_prop['stiffness'] = self.p_gains.numpy()
+                dof_prop['damping'] = self.d_gains.numpy()
+
+        elif self.control_mode in ["pd", "force"]:
+            dof_prop["driveMode"] = gymapi.DOF_MODE_EFFORT
+            
         self.gym.set_actor_dof_properties(env_ptr, humanoid_handle, dof_prop)
         
         
@@ -1229,18 +1201,117 @@ class Humanoid(BaseTask):
                 elif self.humanoid_type in ["smplh", "smplx"]:
                     filter_ints = [0, 0, 7, 16, 12, 0, 56, 2, 33, 128, 0, 192, 0, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                 elif self.humanoid_type in ['h1']:
-                    filter_ints = [0, 2, 0, 2, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    filter_ints = [0, 2, 0, 2, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                 elif self.humanoid_type in ['g1']:
-                    filter_ints = [0, 0, 2, 0, 8, 0, 8, 0, 1, 0, 4, 0, 4, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    filter_ints = [0, 0, 2688, 0, 8192, 0, 8192, 0, 1344, 0, 4096, 0, 4096, 3072, 768, 192, 1, 0, 1, 0, 32, 8, 40, 0, 0, 0, 0, 0, 2, 0, 2, 0, 16, 4, 20, 0, 0, 0, 0, 0]
 
                     
             props = self.gym.get_actor_rigid_shape_properties(env_ptr, humanoid_handle)
-
             assert (len(filter_ints) == len(props))
+
             for p_idx in range(len(props)):
                 props[p_idx].filter = filter_ints[p_idx]
             self.gym.set_actor_rigid_shape_properties(env_ptr, humanoid_handle, props)
 
+        if self.humanoid_type in ["smpl", "smplh", "smplx"]:
+            gender = self.humanoid_shapes[env_id, 0].long()
+            percentage = 1 - np.clip((humanoid_mass - 70) / 70, 0, 1)
+            if gender == 0:
+                gender = 1
+                color_vec = gymapi.Vec3(*get_color_gradient(percentage, "Greens"))
+            elif gender == 1:
+                gender = 2
+                color_vec = gymapi.Vec3(*get_color_gradient(percentage, "Blues"))
+            elif gender == 2:
+                gender = 0
+                color_vec = gymapi.Vec3(*get_color_gradient(percentage, "Reds"))
+
+            # color = torch.zeros(3)
+            # color[gender] = 1 - np.clip((humanoid_mass - 70) / 70, 0, 1)
+            if flags.test:
+                color_vec = gymapi.Vec3(*agt_color(env_id + 0))
+            # if env_id == 0:
+            #     color_vec = gymapi.Vec3(0.23192618223760095, 0.5456516724336793, 0.7626143790849673)
+            # elif env_id == 1:
+            #     color_vec = gymapi.Vec3(0.907912341407151, 0.20284505959246443, 0.16032295271049596)
+            for j in range(self.num_bodies):
+                self.gym.set_rigid_body_color(env_ptr, humanoid_handle, j, gymapi.MESH_VISUAL, color_vec)
+
+        elif self.humanoid_type in ['h1']:
+            mesh_colors = [
+                [0.2, 0.2, 0.2],  # pelvis
+                [0.2, 0.2, 0.2],  # left_hip_yaw_link
+                [0.2, 0.2, 0.2],  # left_hip_roll_link
+                [0.2, 0.2, 0.2],  # left_hip_pitch_link
+                [0.2, 0.2, 0.2],  # left_knee_link
+                [0.2, 0.2, 0.2],  # left_ankle_link
+                [0.2, 0.2, 0.2],  # right_hip_yaw_link
+                [0.2, 0.2, 0.2],  # right_hip_roll_link
+                [0.2, 0.2, 0.2],  # right_hip_pitch_link
+                [0.2, 0.2, 0.2],  # right_knee_link
+                [0.2, 0.2, 0.2],  # right_ankle_link
+                [0.2, 0.2, 0.2],  # torso_link
+                [0.2, 0.2, 0.2],  # left_shoulder_pitch_link
+                [0.2, 0.2, 0.2],  # left_shoulder_roll_link
+                [0.2, 0.2, 0.2],  # left_shoulder_yaw_link
+                [0.2, 0.2, 0.2],  # left_elbow_link
+                [0.2, 0.2, 0.2],  # right_shoulder_pitch_link
+                [0.2, 0.2, 0.2],  # right_shoulder_roll_link
+                [0.2, 0.2, 0.2],  # right_shoulder_yaw_link
+                [0.2, 0.2, 0.2]   # right_elbow_link
+            ]
+            for j in range(self.num_bodies):
+                color_vec = gymapi.Vec3(*mesh_colors[j])
+                self.gym.set_rigid_body_color(env_ptr, humanoid_handle, j, gymapi.MESH_VISUAL, color_vec)
+                
+        elif self.humanoid_type in ['g1']:
+            geom_colors = [
+                [0.7, 0.7, 0.7],  # pelvis
+                [0.2, 0.2, 0.2],  # left_hip_pitch_link
+                [0.7, 0.7, 0.7],  # left_hip_roll_link
+                [0.7, 0.7, 0.7],  # left_hip_yaw_link
+                [0.7, 0.7, 0.7],  # left_knee_link
+                [0.7, 0.7, 0.7],  # left_ankle_pitch_link
+                [0.2, 0.2, 0.2],  # left_ankle_roll_link
+                [0.2, 0.2, 0.2],  # right_hip_pitch_link
+                [0.7, 0.7, 0.7],  # right_hip_roll_link
+                [0.7, 0.7, 0.7],  # right_hip_yaw_link
+                [0.7, 0.7, 0.7],  # right_knee_link
+                [0.7, 0.7, 0.7],  # right_ankle_pitch_link
+                [0.2, 0.2, 0.2],  # right_ankle_roll_link
+                [0.7, 0.7, 0.7],  # torso_link
+                [0.7, 0.7, 0.7],  # left_shoulder_pitch_link
+                [0.7, 0.7, 0.7],  # left_shoulder_roll_link
+                [0.7, 0.7, 0.7],  # left_shoulder_yaw_link
+                [0.7, 0.7, 0.7],  # left_elbow_pitch_link
+                [0.7, 0.7, 0.7],  # left_elbow_roll_link
+                [0.7, 0.7, 0.7],  # left_palm_link
+                [0.7, 0.7, 0.7],  # left_zero_link
+                [0.7, 0.7, 0.7],  # left_one_link
+                [0.7, 0.7, 0.7],  # left_two_link
+                [0.7, 0.7, 0.7],  # left_three_link
+                [0.7, 0.7, 0.7],  # left_four_link
+                [0.7, 0.7, 0.7],  # left_five_link
+                [0.7, 0.7, 0.7],  # left_six_link
+                [0.7, 0.7, 0.7],  # right_shoulder_pitch_link
+                [0.7, 0.7, 0.7],  # right_shoulder_roll_link
+                [0.7, 0.7, 0.7],  # right_shoulder_yaw_link
+                [0.7, 0.7, 0.7],  # right_elbow_pitch_link
+                [0.7, 0.7, 0.7],  # right_elbow_roll_link
+                [0.7, 0.7, 0.7],  # right_palm_link
+                [0.7, 0.7, 0.7],  # right_zero_link
+                [0.7, 0.7, 0.7],  # right_one_link
+                [0.7, 0.7, 0.7],  # right_two_link
+                [0.7, 0.7, 0.7],  # right_three_link
+                [0.7, 0.7, 0.7],  # right_four_link
+                [0.7, 0.7, 0.7],  # right_five_link
+                [0.7, 0.7, 0.7],  # right_six_link
+            ]
+            for j in range(self.num_bodies):
+                color_vec = gymapi.Vec3(*geom_colors[j])
+                self.gym.set_rigid_body_color(env_ptr, humanoid_handle, j, gymapi.MESH_VISUAL, color_vec)
+
+        
         self.humanoid_handles.append(humanoid_handle)
 
         return
