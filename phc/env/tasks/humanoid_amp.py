@@ -346,7 +346,7 @@ class HumanoidAMP(Humanoid):
             })
             self._motion_lib = MotionLibSMPL(motion_lib_cfg=motion_lib_cfg)
             self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(), limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=not HACK_MOTION_SYNC)
-        elif self.humanoid_type in ['h1', 'g1', 'e_atlas_nohand']:
+        elif self.humanoid_type in ['h1', 'g1']:
             motion_lib_cfg = EasyDict({
                 "motion_file": motion_train_file,
                 "device": torch.device("cpu"),

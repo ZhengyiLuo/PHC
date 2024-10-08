@@ -86,7 +86,7 @@ class Humanoid(BaseTask):
 
         self.load_humanoid_configs(cfg)
 
-        self.control_mode = self.cfg["env"]["control_mode"]
+        self.control_mode = self.cfg["control"]["control_mode"]
         if self.control_mode in ['isaac_pd']:
             self._pd_control = True
         else:
@@ -124,7 +124,7 @@ class Humanoid(BaseTask):
         self.self_obs_buf = torch.zeros((self.num_envs, self.get_self_obs_size()), device=self.device, dtype=torch.float)
         self.reward_raw = torch.zeros((self.num_envs, 1)).to(self.device)
         
-        if self.humanoid_type in ['h1', 'g1', 'e_atlas_nohand']:
+        if self.humanoid_type in ['h1', 'g1', ]:
             self.gravity_vec = to_torch(get_axis_params(-1., self.up_axis_idx), device=self.device).repeat((self.num_envs, 1))
             self.base_link_id = self._build_key_body_ids_tensor([self.cfg.robot.base_link]).squeeze()
 
@@ -874,7 +874,7 @@ class Humanoid(BaseTask):
                 self.humanoid_shapes = torch.tensor(np.array([gender_beta] * num_envs)).float().to(self.device)
                 self.humanoid_assets = [humanoid_asset] * num_envs
                 self.skeleton_trees = [sk_tree] * num_envs
-        elif self.humanoid_type in ['h1', 'g1', 'e_atlas_nohand']:
+        elif self.humanoid_type in ['h1', 'g1', ]:
             self.humanoid_limb_and_weights = []
             xml_asset_path = os.path.join(asset_root, asset_file)
             
@@ -1312,7 +1312,7 @@ class Humanoid(BaseTask):
                     self._pd_action_offset[self._dof_names.index("L_Shoulder") * 3 + 2] = -np.pi / 2
                     self._pd_action_offset[self._dof_names.index("R_Shoulder") * 3] = -np.pi / 3
                     self._pd_action_offset[self._dof_names.index("R_Shoulder") * 3 + 2] = np.pi / 2
-        elif self.humanoid_type in ['h1', 'g1', 'e_atlas_nohand', ]:
+        elif self.humanoid_type in ['h1', 'g1', , ]:
             self._pd_action_offset[:] = 0
 
         return
@@ -1580,7 +1580,7 @@ class Humanoid(BaseTask):
         return
 
     def _build_key_body_ids_tensor(self, key_body_names):
-        if self.humanoid_type in ['h1', 'g1', 'e_atlas_nohand', 'smpl', 'smplh', 'smplx']:
+        if self.humanoid_type in ['h1', 'g1', , 'smpl', 'smplh', 'smplx']:
             body_ids = [self._body_names.index(name) for name in key_body_names]
             body_ids = to_torch(body_ids, device=self.device, dtype=torch.long)
 
