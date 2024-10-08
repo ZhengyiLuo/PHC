@@ -45,6 +45,7 @@ from isaacgym import gymtorch
 
 from phc.env.tasks.humanoid import Humanoid, dof_to_obs, remove_base_rot, dof_to_obs_smpl
 from phc.env.util import gym_util
+from phc.utils.motion_lib_real import MotionLibReal
 from phc.utils.motion_lib_smpl import MotionLibSMPL 
 from phc.utils.motion_lib_base import FixHeightMode
 from easydict import EasyDict
@@ -261,7 +262,7 @@ class HumanoidAMP(Humanoid):
         motion_ids = motion_ids.view(-1)
         motion_times = motion_times.view(-1)
 
-        if self.humanoid_type in ["smpl", "smplh", "smplx"]:
+        if self.humanoid_type in ['h1', 'g1', "smpl", "smplh", "smplx"]:
             motion_res = self._get_state_from_motionlib_cache(motion_ids, motion_times)
 
             root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel,  smpl_params, limb_weights, pose_aa, rb_pos, rb_rot, body_vel, body_ang_vel = \
@@ -311,6 +312,14 @@ class HumanoidAMP(Humanoid):
                 self._num_amp_obs_per_step += 11 if (asset_file == "mjcf/smpl_humanoid.xml") else 12
             if self._has_limb_weight_obs_disc:
                 self._num_amp_obs_per_step += 10
+         elif self.humanoid_type in ['h1', 'g1']:
+            if self.amp_obs_v == 1:
+                self._num_amp_obs_per_step = 13 + self._dof_obs_size + len(self._dof_names)  + 3 * num_key_bodies  # [root_h, root_rot, root_vel, root_ang_vel, dof_pos, dof_vel, key_body_pos]
+            else:
+                self._num_amp_obs_per_step = 13 + self._dof_obs_size + len(self._dof_names)  + 6 * num_key_bodies  # [root_h, root_rot, root_vel, root_ang_vel, dof_pos, dof_vel, key_body_pos, key_body_vel]
+
+            if not self._amp_root_height_obs:
+                self._num_amp_obs_per_step -= 1
         else:
             print("Unsupported character config file: {s}".format(asset_file))
             assert (False)
@@ -319,7 +328,7 @@ class HumanoidAMP(Humanoid):
             self._num_self_obs += self._num_amp_obs_steps * self._num_amp_obs_per_step
         return
 
-    def _load_motion(self, motion_file):
+    def _load_motion(self, motion_train_file, motion_test_file=[]):
         assert (self._dof_offsets[-1] == self.num_dof)
         if self.humanoid_type in ["smpl", "smplh", "smplx"]:
             motion_lib_cfg = EasyDict({
@@ -337,6 +346,28 @@ class HumanoidAMP(Humanoid):
             })
             self._motion_lib = MotionLibSMPL(motion_lib_cfg=motion_lib_cfg)
             self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(), limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=not HACK_MOTION_SYNC)
+        elif self.humanoid_type in ['h1', 'g1', 'e_atlas_nohand']:
+            motion_lib_cfg = EasyDict({
+                "motion_file": motion_train_file,
+                "device": torch.device("cpu"),
+                "fix_height": FixHeightMode.full_fix,
+                "min_length": self._min_motion_len,
+                "max_length": self.max_len,
+                "im_eval": flags.im_eval,
+                "multi_thread": True ,
+                "smpl_type": self.humanoid_type,
+                "randomrize_heading": True,
+                "device": self.device,
+                "robot": self.cfg.robot,
+            })
+            motion_eval_file = motion_train_file
+            self._motion_train_lib = MotionLibReal(motion_lib_cfg)
+            self._motion_eval_lib = MotionLibReal(motion_lib_cfg)
+            self._motion_lib = self._motion_train_lib
+            
+            self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(), limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=not HACK_MOTION_SYNC)
+            
+            
         else:
             self._motion_lib = MotionLib(motion_file=motion_file, dof_body_ids=self._dof_body_ids, dof_offsets=self._dof_offsets, key_body_ids=self._key_body_ids.cpu().numpy(), device=self.device)
 
@@ -372,7 +403,7 @@ class HumanoidAMP(Humanoid):
         return
 
     def _sample_time(self, motion_ids):
-        if self.humanoid_type in ["smpl", "smplh", "smplx"]:
+        if self.humanoid_type in ['h1', 'g1',"smpl", "smplh", "smplx"]:
             return self._motion_lib.sample_time_interval(motion_ids)
         else:
             return self._motion_lib.sample_time(motion_ids)
@@ -457,6 +488,15 @@ class HumanoidAMP(Humanoid):
         if self.humanoid_type in ["smpl", "smplh", "smplx"]:
             curr_gender_betas = self.humanoid_shapes[env_ids]
             root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel, rb_pos, rb_rot, body_vel, body_ang_vel = self._get_fixed_smpl_state_from_motionlib(motion_ids, motion_times, curr_gender_betas)
+        elif self.humanoid_type in ['h1', 'g1']:
+            curr_gender_betas = self.humanoid_shapes[env_ids]
+            
+            motion_res = self._get_state_from_motionlib_cache(motion_ids, motion_times)
+            
+            root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel, smpl_params, limb_weights, pose_aa, rb_pos, rb_rot, body_vel, body_ang_vel = \
+                motion_res["root_pos"], motion_res["root_rot"], motion_res["dof_pos"], motion_res["root_vel"], motion_res["root_ang_vel"], motion_res["dof_vel"], \
+                 motion_res["motion_bodies"], motion_res["motion_limb_weights"], motion_res["motion_aa"], motion_res["rg_pos"], motion_res["rb_rot"], motion_res["body_vel"], motion_res["body_ang_vel"]
+                 
         else:
             root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel, key_pos = self._motion_lib.get_motion_state_amp(motion_ids, motion_times)
             rb_pos, rb_rot = None, None
@@ -541,7 +581,7 @@ class HumanoidAMP(Humanoid):
         motion_ids = motion_ids.view(-1)
         motion_times = motion_times.view(-1)
 
-        if self.humanoid_type in ["smpl", "smplh", "smplx"] :
+        if self.humanoid_type in ['h1', 'g1',"smpl", "smplh", "smplx"] :
             motion_res = self._get_state_from_motionlib_cache(motion_ids, motion_times)
             root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel, smpl_params, limb_weights, pose_aa, rb_pos, rb_rot, body_vel, body_ang_vel = \
                 motion_res["root_pos"], motion_res["root_rot"], motion_res["dof_pos"], motion_res["root_vel"], motion_res["root_ang_vel"], motion_res["dof_vel"], \
@@ -645,7 +685,7 @@ class HumanoidAMP(Humanoid):
         # print(torch.topk(self._dof_pos.abs().sum(dim=-1), 5))
 
         if (env_ids is None):
-            if self.humanoid_type in ["smpl", "smplh", "smplx"] :
+            if self.humanoid_type in ['h1', 'g1',"smpl", "smplh", "smplx"] :
                 self._curr_amp_obs_buf[:] = self._compute_amp_observations_from_state(self._rigid_body_pos[:, 0, :], self._rigid_body_rot[:, 0, :], self._rigid_body_vel[:, 0, :], self._rigid_body_ang_vel[:, 0, :], self._dof_pos, self._dof_vel, key_body_pos, key_body_vel, self.humanoid_shapes, self.humanoid_limb_and_weights,
                                                                             self.dof_subset, self._local_root_obs, self._amp_root_height_obs, self._has_dof_subset, self._has_shape_obs_disc, self._has_limb_weight_obs_disc, self._has_upright_start)
 
@@ -655,7 +695,7 @@ class HumanoidAMP(Humanoid):
         else:
             if len(env_ids) == 0:
                 return
-            if self.humanoid_type in ["smpl", "smplh", "smplx"] :
+            if self.humanoid_type in ['h1', 'g1',"smpl", "smplh", "smplx"] :
                 self._curr_amp_obs_buf[env_ids] = self._compute_amp_observations_from_state(self._rigid_body_pos[env_ids][:, 0, :], self._rigid_body_rot[env_ids][:, 0, :], self._rigid_body_vel[env_ids][:, 0, :], self._rigid_body_ang_vel[env_ids][:, 0, :], self._dof_pos[env_ids], self._dof_vel[env_ids],
                                                                                   key_body_pos[env_ids], key_body_vel[env_ids], self.humanoid_shapes[env_ids], self.humanoid_limb_and_weights[env_ids], self.dof_subset, self._local_root_obs, self._amp_root_height_obs, self._has_dof_subset, self._has_shape_obs_disc,
                                                                                   self._has_limb_weight_obs_disc, self._has_upright_start)
@@ -668,7 +708,9 @@ class HumanoidAMP(Humanoid):
         if self.amp_obs_v == 1:
             if self.humanoid_type in ["smpl", "smplh", "smplx"]:
                 smpl_params = smpl_params[:, :-6]
-            return build_amp_observations_smpl(root_pos, root_rot, root_vel, root_ang_vel, dof_pos, dof_vel, key_body_pos, smpl_params, limb_weight_params, dof_subset, local_root_obs, root_height_obs, has_dof_subset, has_shape_obs_disc, has_limb_weight_obs, upright)
+                return build_amp_observations_smpl(root_pos, root_rot, root_vel, root_ang_vel, dof_pos, dof_vel, key_body_pos, smpl_params, limb_weight_params, dof_subset, local_root_obs, root_height_obs, has_dof_subset, has_shape_obs_disc, has_limb_weight_obs, upright)
+            elif self.humanoid_type in ['h1', 'g1',]:
+                return build_amp_observations_robot(root_pos, root_rot, root_vel, root_ang_vel, dof_pos, dof_vel, key_body_pos, smpl_params, limb_weight_params, dof_subset, local_root_obs, root_height_obs, has_dof_subset, has_shape_obs_disc, has_limb_weight_obs, upright)
         elif self.amp_obs_v == 2:
             return build_amp_observations_smpl_v2(root_pos, root_rot, root_vel, root_ang_vel, dof_pos, dof_vel, key_body_pos, key_body_vels, smpl_params, limb_weight_params, dof_subset, local_root_obs, root_height_obs, has_dof_subset, has_shape_obs_disc, has_limb_weight_obs, upright)
 
@@ -682,7 +724,7 @@ class HumanoidAMP(Humanoid):
         motion_ids = torch.from_numpy(np.mod(motion_ids, num_motions))
         # motion_ids[:] = 2
         motion_times = torch.tensor([self._hack_motion_time] * self.num_envs, dtype=torch.float32, device=self.device)
-        if self.humanoid_type in ["smpl", "smplh", "smplx"] :
+        if self.humanoid_type in ["smpl", 'h1', 'g1', "smplh", "smplx"] :
             motion_res = self._get_state_from_motionlib_cache(motion_ids, motion_times)
             root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel, smpl_params, limb_weights, pose_aa, rb_pos, rb_rot, body_vel, body_ang_vel = \
                 motion_res["root_pos"], motion_res["root_rot"], motion_res["dof_pos"], motion_res["root_vel"], motion_res["root_ang_vel"], motion_res["dof_vel"], \
@@ -1013,3 +1055,50 @@ def build_amp_observations_smpl_v2(root_pos, root_rot, root_vel, root_ang_vel, d
     obs = torch.cat(obs_list, dim=-1)
     
     return obs
+
+
+@torch.jit.script
+def build_amp_observations_robot(root_pos, root_rot, root_vel, root_ang_vel, dof_pos, dof_vel, key_body_pos, shape_params, limb_weight_params, dof_subset, local_root_obs, root_height_obs, has_dof_subset, has_shape_obs_disc, has_limb_weight_obs, upright):
+    # type: (Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, bool, bool, bool, bool, bool, bool) -> Tensor
+    B, N = root_pos.shape
+    root_h = root_pos[:, 2:3]
+    if not upright:
+        root_rot = remove_base_rot(root_rot)
+    heading_rot_inv = torch_utils.calc_heading_quat_inv(root_rot)
+
+    if (local_root_obs):
+        root_rot_obs = quat_mul(heading_rot_inv, root_rot)
+    else:
+        root_rot_obs = root_rot
+
+    root_rot_obs = torch_utils.quat_to_tan_norm(root_rot_obs)
+
+    local_root_vel = torch_utils.my_quat_rotate(heading_rot_inv, root_vel)
+    local_root_ang_vel = torch_utils.my_quat_rotate(heading_rot_inv, root_ang_vel)
+
+    root_pos_expand = root_pos.unsqueeze(-2)
+    local_key_body_pos = key_body_pos - root_pos_expand
+
+    heading_rot_expand = heading_rot_inv.unsqueeze(-2)
+    heading_rot_expand = heading_rot_expand.repeat((1, local_key_body_pos.shape[1], 1))
+    flat_end_pos = local_key_body_pos.view(local_key_body_pos.shape[0] * local_key_body_pos.shape[1], local_key_body_pos.shape[2])
+    flat_heading_rot = heading_rot_expand.view(heading_rot_expand.shape[0] * heading_rot_expand.shape[1], heading_rot_expand.shape[2])
+    local_end_pos = torch_utils.my_quat_rotate(flat_heading_rot, flat_end_pos)
+    flat_local_key_pos = local_end_pos.view(local_key_body_pos.shape[0], local_key_body_pos.shape[1] * local_key_body_pos.shape[2])
+
+    dof_obs = dof_pos
+        
+    obs_list = []
+    if root_height_obs:
+        obs_list.append(root_h)
+    obs_list += [root_rot_obs, local_root_vel, local_root_ang_vel, dof_obs, dof_vel, flat_local_key_pos]
+    # 1? + 6 + 3 + 3 + 114 + 57 + 12
+    if has_shape_obs_disc:
+        obs_list.append(shape_params)
+    if has_limb_weight_obs:
+        obs_list.append(limb_weight_params)
+    obs = torch.cat(obs_list, dim=-1)
+    
+    return obs
+
+

@@ -7,6 +7,7 @@ import numpy as np
 from phc.utils.torch_utils import quat_to_tan_norm
 import phc.env.tasks.humanoid_amp_task as humanoid_amp_task
 from phc.env.tasks.humanoid_amp import HumanoidAMP, remove_base_rot
+from phc.utils.motion_lib_real import MotionLibReal
 from phc.utils.motion_lib_smpl import MotionLibSMPL
 from phc.utils.motion_lib_base import FixHeightMode
 from easydict import EasyDict
@@ -88,6 +89,10 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         #################### Devs ####################
 
         super().__init__(cfg=cfg, sim_params=sim_params, physics_engine=physics_engine, device_type=device_type, device_id=device_id, headless=headless)
+        
+        if self.humanoid_type in ['h1', 'g1', 'e_atlas_nohand']:
+            self.actions = torch.zeros(self.num_envs, self._dof_obs_size).to(self.device) #### Keeping taps on previous actions
+            
         # Overriding
         self.reward_raw = torch.zeros((self.num_envs, 5 if self.power_reward else 4)).to(self.device)
         self.power_coefficient = cfg["env"].get("power_coefficient", 0.0005)
@@ -328,7 +333,27 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(),
                                           limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=(not flags.test) and (not self.seq_motions),
                                           max_len=-1 if flags.test else self.max_len, start_idx=self.start_idx)
+        elif self.humanoid_type in ['h1', 'g1']:
+            motion_lib_cfg = EasyDict({
+                "motion_file": motion_train_file,
+                "device": torch.device("cpu"),
+                "fix_height": FixHeightMode.full_fix,
+                "min_length": self._min_motion_len,
+                "max_length": self.max_len,
+                "im_eval": flags.im_eval,
+                "multi_thread": True ,
+                "smpl_type": self.humanoid_type,
+                "randomrize_heading": True,
+                "device": self.device,
+                "robot": self.cfg.robot,
+            })
+            motion_eval_file = motion_train_file
+            self._motion_train_lib = MotionLibReal(motion_lib_cfg)
+            self._motion_eval_lib = MotionLibReal(motion_lib_cfg)
 
+            self._motion_lib = self._motion_train_lib
+            self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(), limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=(not flags.test) and (not self.seq_motions), max_len=-1 if flags.test else self.max_len)
+            
         else:
             self._motion_lib = MotionLib(motion_file=motion_train_file, dof_body_ids=self._dof_body_ids, dof_offsets=self._dof_offsets, device=self.device)
 
@@ -407,15 +432,24 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             dof_pos_seg = data_to_dump['dof_pos'][start:end, humanoid_index]
             B, H = dof_pos_seg.shape
             root_states_seg = data_to_dump['root_states'][start:end, humanoid_index]
-            body_quat = torch.cat([root_states_seg[:, None, 3:7], torch_utils.exp_map_to_quat(dof_pos_seg.reshape(B, -1, 3))], dim=1)
+            if self.humanoid_type in ['h1', 'g1', 'e_atlas_nohand', ]:
+                motion_dump = {
+                    "skeleton_tree": self.state_record['skeleton_trees'][humanoid_index].to_dict(),
+                    "trans": root_states_seg[:, :3],
+                    "root_states_seg": root_states_seg,
+                    "dof_pos": dof_pos_seg,
+                }
+            else:
+                body_quat = torch.cat([root_states_seg[:, None, 3:7], torch_utils.exp_map_to_quat(dof_pos_seg.reshape(B, -1, 3))], dim=1)
 
-            motion_dump = {
-                "skeleton_tree": self.state_record['skeleton_trees'][humanoid_index].to_dict(),
-                "body_quat": body_quat,
-                "trans": root_states_seg[:, :3],
-                "root_states_seg": root_states_seg,
-                "dof_pos": dof_pos_seg,
-            }
+                motion_dump = {
+                    "skeleton_tree": self.state_record['skeleton_trees'][humanoid_index].to_dict(),
+                    "body_quat": body_quat,
+                    "trans": root_states_seg[:, :3],
+                    "root_states_seg": root_states_seg,
+                    "dof_pos": dof_pos_seg,
+                }
+                
             motion_dump['fps'] = fps
             motion_dump['betas'] = self.humanoid_shapes[humanoid_index].detach().cpu().numpy()
             motion_dump.update({k: v[start:end, humanoid_index] for k, v in data_to_dump.items() if k not in ['dof_pos', 'root_states', 'skeleton_trees', 'humanoid_betas', "progress"]})
@@ -871,7 +905,16 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
 
         else:
             if self._full_body_reward:
-                self.rew_buf[:], self.reward_raw = compute_imitation_reward(root_pos, root_rot, body_pos, body_rot, body_vel, body_ang_vel, ref_rb_pos, ref_rb_rot, ref_body_vel, ref_body_ang_vel, self.reward_specs)
+                if self.humanoid_type in ['h1', 'g1']:
+                    extend_curr_pos = torch_utils.my_quat_rotate(body_rot[:, self.extend_body_parent_ids].reshape(-1, 4), self.extend_body_pos_in_parent.reshape(-1, 3)).view(self.num_envs, -1, 3) + body_pos[:, self.extend_body_parent_ids]
+                    body_pos_extend = torch.cat([body_pos, extend_curr_pos], dim=1)
+                    body_rot_extend = torch.cat([body_rot, body_rot[:, self.extend_body_parent_ids]], dim=1)
+                    ref_rb_pos_extend = torch.cat([ref_rb_pos, motion_res["rg_pos_t"][:, self.num_bodies:]], dim = 1)
+                    ref_rb_rot_extend = torch.cat([ref_rb_rot, motion_res["rg_rot_t"][:, self.num_bodies:]], dim = 1)
+                    
+                    self.rew_buf[:], self.reward_raw = compute_imitation_reward(root_pos, root_rot, body_pos_extend, body_rot_extend, body_vel, body_ang_vel, ref_rb_pos_extend, ref_rb_rot_extend, ref_body_vel, ref_body_ang_vel, self.reward_specs)
+                else:
+                    self.rew_buf[:], self.reward_raw = compute_imitation_reward(root_pos, root_rot, body_pos, body_rot, body_vel, body_ang_vel, ref_rb_pos, ref_rb_rot, ref_body_vel, ref_body_ang_vel, self.reward_specs)
             else:
                 body_pos_subset = body_pos[..., self._track_bodies_id, :]
                 body_rot_subset = body_rot[..., self._track_bodies_id, :]
@@ -959,7 +1002,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         if flags.test:
             motion_times[:] = 0
         
-        if self.humanoid_type in ["smpl", "smplh", "smplx"] :
+        if self.humanoid_type in ['h1', 'g1',"smpl", "smplh", "smplx"] :
             motion_res = self._get_state_from_motionlib_cache(self._sampled_motion_ids[env_ids], motion_times, self._global_offset[env_ids])
             root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel, smpl_params, limb_weights, pose_aa, ref_rb_pos, ref_rb_rot, ref_body_vel, ref_body_ang_vel = \
                 motion_res["root_pos"], motion_res["root_rot"], motion_res["dof_pos"], motion_res["root_vel"], motion_res["root_ang_vel"], motion_res["dof_vel"], \
@@ -981,7 +1024,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         motion_ids = torch.from_numpy(motion_ids).to(self.device)
         # motion_ids[:] = 2
         motion_times = self._hack_motion_time
-        if self.humanoid_type in ["smpl", "smplh", "smplx"] :
+        if self.humanoid_type in ['h1',"smpl", "smplh", "smplx"] :
             motion_res = self._get_state_from_motionlib_cache(motion_ids, motion_times, self._global_offset)
             root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel, smpl_params, limb_weights, pose_aa, rb_pos, rb_rot, body_vel, body_ang_vel = \
                 motion_res["root_pos"], motion_res["root_rot"], motion_res["dof_pos"], motion_res["root_vel"], motion_res["root_ang_vel"], motion_res["dof_vel"], \
