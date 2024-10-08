@@ -33,6 +33,8 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
+[October 8, 2024] Release support for Unitree H1 and G1 humanoid. 
+
 [August 30, 2024] Release support for SMPLX humanoid. 
 
 [Apirl 5, 2024] Upgrading to use [SMPLSim](https://github.com/ZhengyiLuo/SMPLSim) to automatically create the SMPL humanoid. Please run `pip install git+https://github.com/ZhengyiLuo/SMPLSim.git@master` to SMPLSim. SMPLSim requires python 3.8; for python 3.7, please `pip install git+https://github.com/ZhengyiLuo/SMPLSim.git@isaac37`.
@@ -59,6 +61,8 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 
 ## TODOs
+
+- [x] Add support for Unitree H1 & G1.
 
 - [x] Add support for smplx/h (fingers!!!).
 
@@ -181,6 +185,18 @@ You can use the `render_o3d=True no_virtual_display=True` flag to render the SMP
 to do the above visulaization, press m (to cancel termination based on imitation), and then press j (to apply a large force to the humanoid). 
 
 ### Imitation 
+
+#### H1 and G1
+
+```
+python phc/run_hydra.py project_name=Robot_IM robot=unitree_g1 env=env_im_g1_phc env.motion_file=data/g1/v1/amass_phc.pkl learning=im_pnn_big exp_name=unitree_g1_pnn sim=robot_sim control=robot_control learning.params.network.space.continuous.sigma_init.val=-1.7 
+```
+
+```
+python phc/run_hydra.py  project_name=Robot_IM   robot=unitree_h1      env=env_im_h1_phc env.motion_file=data/h1/v1/amass_phc.pkl learning=im_pnn_big   exp_name=unitree_h1_pnn_realsim_092924 sim=robot_sim control=robot_control 
+```
+
+#### SMPL and SMPL-X
 
 PHC-X-Prim (single primitive model)
 ```

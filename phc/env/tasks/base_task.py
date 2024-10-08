@@ -433,7 +433,7 @@ class BaseTask():
                         self.curr_video_file_name = self._video_path % curr_date_time
                         self.curr_states_file_name = self._states_path % curr_date_time
                         if not flags.server_mode:
-                            self.writer = imageio.get_writer(self.curr_video_file_name, fps=60, macro_block_size=None)
+                            self.writer = imageio.get_writer(self.curr_video_file_name, fps=int(1/self.dt), macro_block_size=None)
                     self.writer.append_data(self.color_image)
                     
                     
