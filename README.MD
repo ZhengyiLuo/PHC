@@ -200,7 +200,7 @@ python phc/run_hydra.py  project_name=Robot_IM   robot=unitree_h1      env=env_i
 
 PHC-X-Prim (single primitive model)
 ```
-python phc/run_hydra.py learning=im_pnn_big exp_name=phc_x_pnn  env=env_im_x_pnn robot=smplx_humanoid env.motion_file=sample_data/standing_x.pkl env.training_prim=0 epoch=-1 test=True 
+python phc/run_hydra.py learning=im_pnn_big exp_name=phc_x_pnn  env=env_im_x_pnn robot=smplx_humanoid env.motion_file=sample_data/standing_x.pkl env.training_prim=0 epoch=-1 test=True  env.num_envs=1  headless=False
 ```
 
 PHC+: keypoint model, can getup from the ground and walk back) | Best model for video/language model

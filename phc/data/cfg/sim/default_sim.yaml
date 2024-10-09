@@ -7,6 +7,7 @@ use_flex: False
 
 substeps: 2
 physx:
+  sim_time_step: 1/60
   num_threads: 4
   solver_type: 1  # 0: pgs, 1: tgs
   num_position_iterations: 4
