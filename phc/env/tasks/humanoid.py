@@ -1190,7 +1190,7 @@ class Humanoid(BaseTask):
             dof_prop['stiffness'] *= pd_scale * self._kp_scale
             dof_prop['damping'] *= pd_scale * self._kd_scale
             
-            if self.humanoid_type in ['h1', 'g1', "e_atlas_nohand"]:
+            if self.humanoid_type in ['h1', 'g1']:
                 dof_prop['stiffness'] = self.p_gains.numpy()
                 dof_prop['damping'] = self.d_gains.numpy()
 
