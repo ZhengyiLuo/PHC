@@ -602,6 +602,7 @@ class Humanoid(BaseTask):
 
         self.gym.set_actor_root_state_tensor_indexed(self.sim, gymtorch.unwrap_tensor(self._root_states), gymtorch.unwrap_tensor(env_ids_int32), len(env_ids_int32))
         self.gym.set_dof_state_tensor_indexed(self.sim, gymtorch.unwrap_tensor(self._dof_state), gymtorch.unwrap_tensor(env_ids_int32), len(env_ids_int32))
+        self.gym.set_dof_position_target_tensor_indexed( self.sim, gymtorch.unwrap_tensor(self._dof_pos.contiguous()), gymtorch.unwrap_tensor(env_ids_int32), len(env_ids_int32)) 
         
         
         # print("#################### refreshing ####################")
@@ -666,7 +667,11 @@ class Humanoid(BaseTask):
                 raise NotImplementedError()
 
             if self._has_shape_obs:
-                self._num_self_obs += 11
+                if self.humanoid_type in ["smpl"]:
+                    self._num_self_obs += 11
+                elif self.humanoid_type in ["smplh", "smplx"]:
+                    self._num_self_obs += 17
+                    
             # if self._has_limb_weight_obs: self._num_self_obs += 23 + 24 if not self._masterfoot else  29 + 30 # 23 + 24 (length + weight)
             if self._has_limb_weight_obs:
                 self._num_self_obs += 10
@@ -939,12 +944,16 @@ class Humanoid(BaseTask):
         self.envs = []
         self.dof_limits_lower = []
         self.dof_limits_upper = []
-
+        
+        max_agg_bodies, max_agg_shapes = 160, 160
         for i in range(self.num_envs):
             # create env instance
             env_ptr = self.gym.create_env(self.sim, lower, upper, num_per_row)
+            self.gym.begin_aggregate(env_ptr, max_agg_bodies, max_agg_shapes, True)
             self._build_env(i, env_ptr, self.humanoid_assets[i])
+            self.gym.end_aggregate(env_ptr)
             self.envs.append(env_ptr)
+            
         self.humanoid_limb_and_weights = torch.stack(self.humanoid_limb_and_weights).to(self.device)
         print("Humanoid Weights", self.humanoid_masses[:10])
 
@@ -1062,9 +1071,10 @@ class Humanoid(BaseTask):
         start_pose.r = gymapi.Quat(0.0, 0.0, 0.0, 1.0)
         
         ######################## DR ########################
-        rigid_shape_props_asset = self.gym.get_asset_rigid_shape_properties(humanoid_asset)
-        rigid_shape_props = self._process_rigid_shape_props(rigid_shape_props_asset, env_id)
-        self.gym.set_asset_rigid_shape_properties(humanoid_asset, rigid_shape_props)
+        if self.cfg.domain_rand.has_domain_rand:    
+            rigid_shape_props_asset = self.gym.get_asset_rigid_shape_properties(humanoid_asset)
+            rigid_shape_props = self._process_rigid_shape_props(rigid_shape_props_asset, env_id)
+            self.gym.set_asset_rigid_shape_properties(humanoid_asset, rigid_shape_props)
         ######################## DR ########################
         
 
@@ -1072,9 +1082,11 @@ class Humanoid(BaseTask):
         self.gym.enable_actor_dof_force_sensors(env_ptr, humanoid_handle)
         
         ######################## DR ########################
-        body_props = self.gym.get_actor_rigid_body_properties(env_ptr, humanoid_handle)
-        body_props = self._process_rigid_body_props(body_props, env_id)
-        self.gym.set_actor_rigid_body_properties(env_ptr, humanoid_handle, body_props, recomputeInertia=True)
+        if self.cfg.domain_rand.has_domain_rand:
+            body_props = self.gym.get_actor_rigid_body_properties(env_ptr, humanoid_handle)
+            body_props = self._process_rigid_body_props(body_props, env_id)
+            self.gym.set_actor_rigid_body_properties(env_ptr, humanoid_handle, body_props, recomputeInertia=True)
+            body_props_new = self.gym.get_actor_rigid_body_properties(env_ptr, humanoid_handle)
         ######################## DR ########################
         
         
@@ -1376,6 +1388,7 @@ class Humanoid(BaseTask):
             self._L_knee_dof_idx = self._dof_names.index("L_Knee") * 3 + 1
             self._R_knee_dof_idx = self._dof_names.index("R_Knee") * 3 + 1
 
+            print("Bumping Kneel. ")
             # ZL: Modified SMPL to give stronger knee
             self._pd_action_scale[self._L_knee_dof_idx] = 5
             self._pd_action_scale[self._R_knee_dof_idx] = 5

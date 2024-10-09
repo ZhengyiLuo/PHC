@@ -71,14 +71,15 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         self._motion_start_times_offset = torch.zeros(self.num_envs).to(self.device)
         self._cycle_counter = torch.zeros(self.num_envs, device=self.device, dtype=torch.int)
         
-        extend_names, extend_pos, extend_rot = [], [], []
-        for extend_config in cfg.robot.extend_config:
-            extend_names.append(extend_config["parent_name"])
-            extend_pos.append(extend_config["pos"])
+        if "extend_config" in cfg.robot:
+            extend_names, extend_pos, extend_rot = [], [], []
+            for extend_config in cfg.robot.extend_config:
+                extend_names.append(extend_config["parent_name"])
+                extend_pos.append(extend_config["pos"])
             
-        self.extend_body_parent_ids = self._build_key_body_ids_tensor(extend_names)
-        self.extend_body_pos_in_parent = torch.tensor(extend_pos).repeat(self.num_envs, 1, 1).to(self.device)
-        self.num_extend_bodies = len(extend_names)
+            self.extend_body_parent_ids = self._build_key_body_ids_tensor(extend_names)
+            self.extend_body_pos_in_parent = torch.tensor(extend_pos).repeat(self.num_envs, 1, 1).to(self.device)
+            self.num_extend_bodies = len(extend_names)
 
         spacing = 5
         side_lenght = torch.ceil(torch.sqrt(torch.tensor(self.num_envs)))
