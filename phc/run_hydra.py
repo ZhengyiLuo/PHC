@@ -35,7 +35,7 @@ os.environ["OMP_NUM_THREADS"] = "1"
 
 sys.path.append(os.getcwd())
 
-from phc.utils.config import set_np_formatting, set_seed, SIM_TIMESTEP
+from phc.utils.config import set_np_formatting, set_seed
 from phc.utils.parse_task import parse_task
 from isaacgym import gymapi
 from isaacgym import gymutil
@@ -76,7 +76,7 @@ cfg_train = None
 def parse_sim_params(cfg):
     # initialize sim
     sim_params = gymapi.SimParams()
-    sim_params.dt = SIM_TIMESTEP
+    sim_params.dt = eval(cfg.sim.physx.sim_time_step)
     sim_params.num_client_threads = cfg.sim.slices
     
     if cfg.sim.use_flex:

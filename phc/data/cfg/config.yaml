@@ -4,6 +4,8 @@ defaults:
   - robot: smpl_humanoid
   - learning: im
   - sim: default_sim
+  - control: default_control
+  - domain_rand: default_dr
 
 project_name: "PHC"
 notes: "Default Notes"

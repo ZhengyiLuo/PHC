@@ -1,0 +1,87 @@
+humanoid_type: g1
+bias_offset: False
+has_self_collision: False
+has_mesh: False
+has_jt_limit: False
+has_dof_subset: True
+has_upright_start: True
+has_smpl_pd_offset: False
+remove_toe: False # For humanoid's geom toe
+motion_sym_loss: False
+sym_loss_coef: 1
+big_ankle: True
+
+has_shape_obs: false
+has_shape_obs_disc: false
+has_shape_variation: False
+
+masterfoot: False
+freeze_toe: false
+freeze_hand: False
+box_body: True
+real_weight: True
+real_weight_porpotion_capsules: True
+real_weight_porpotion_boxes: True
+
+body_names: ['pelvis', 'left_hip_pitch_link', 'left_hip_roll_link', 'left_hip_yaw_link', 'left_knee_link', 'left_ankle_pitch_link', 'left_ankle_roll_link', 'right_hip_pitch_link', 'right_hip_roll_link', 'right_hip_yaw_link', 'right_knee_link', 'right_ankle_pitch_link', 'right_ankle_roll_link', 'torso_link', 'left_shoulder_pitch_link', 'left_shoulder_roll_link', 'left_shoulder_yaw_link', 'left_elbow_pitch_link', 'left_elbow_roll_link', 'left_zero_link', 'left_one_link', 'left_two_link', 'left_three_link', 'left_four_link', 'left_five_link', 'left_six_link', 'right_shoulder_pitch_link', 'right_shoulder_roll_link', 'right_shoulder_yaw_link', 'right_elbow_pitch_link', 'right_elbow_roll_link', 'right_zero_link', 'right_one_link', 'right_two_link', 'right_three_link', 'right_four_link', 'right_five_link', 'right_six_link']
+       
+limb_weight_group: 
+  - ['left_hip_pitch_link', 'left_hip_roll_link', 'left_hip_yaw_link', 'left_knee_link', 'left_ankle_pitch_link', 'left_ankle_roll_link']
+  - ['right_hip_pitch_link', 'right_hip_roll_link', 'right_hip_yaw_link', 'right_knee_link', 'right_ankle_pitch_link', 'right_ankle_roll_link']
+  - ['pelvis', 'torso_link']
+  - ['left_shoulder_pitch_link', 'left_shoulder_roll_link', 'left_shoulder_yaw_link', 'left_elbow_pitch_link', 'left_elbow_roll_link', 'left_zero_link', 'left_one_link', 'left_two_link', 'left_three_link', 'left_four_link', 'left_five_link', 'left_six_link']
+  - ['right_shoulder_pitch_link', 'right_shoulder_roll_link', 'right_shoulder_yaw_link', 'right_elbow_pitch_link', 'right_elbow_roll_link', 'right_zero_link', 'right_one_link', 'right_two_link', 'right_three_link', 'right_four_link', 'right_five_link', 'right_six_link']
+
+dof_names: ['left_hip_pitch_link', 'left_hip_roll_link', 'left_hip_yaw_link', 'left_knee_link', 'left_ankle_pitch_link', 'left_ankle_roll_link', 'right_hip_pitch_link', 'right_hip_roll_link', 'right_hip_yaw_link', 'right_knee_link', 'right_ankle_pitch_link', 'right_ankle_roll_link', 'torso_link', 'left_shoulder_pitch_link', 'left_shoulder_roll_link', 'left_shoulder_yaw_link', 'left_elbow_pitch_link', 'left_elbow_roll_link', 'left_zero_link', 'left_one_link', 'left_two_link', 'left_three_link', 'left_four_link', 'left_five_link', 'left_six_link', 'right_shoulder_pitch_link', 'right_shoulder_roll_link', 'right_shoulder_yaw_link', 'right_elbow_pitch_link', 'right_elbow_roll_link', 'right_zero_link', 'right_one_link', 'right_two_link', 'right_three_link', 'right_four_link', 'right_five_link', 'right_six_link']
+
+right_foot_name: 'r_foot_roll'
+left_foot_name: 'l_foot_roll'
+
+asset:
+  assetRoot: "./"
+  assetFileName: "phc/data/assets/robot/unitree_g1/g1.xml"
+  urdfFileName: "phc/data/assets/robot/unitree_g1/g1.xml"
+
+
+extend_config:
+  - joint_name: "head_link"
+    parent_name: "pelvis"
+    pos: [0.0, 0.0, 0.4]
+    rot: [1.0, 0.0, 0.0, 0.0]
+
+  - joint_name: "left_toe_link"
+    parent_name: "left_ankle_roll_link"
+    pos: [0.08, 0.0, 0.0]
+    rot: [1.0, 0.0, 0.0, 0.0]
+
+  - joint_name: "right_toe_link"
+    parent_name: "right_ankle_roll_link"
+    pos: [0.08, 0.0, 0.0]
+    rot: [1.0, 0.0, 0.0, 0.0]
+
+base_link: "torso_link"
+joint_matches:
+  - ["pelvis", "Pelvis"]
+  - ["left_hip_pitch_link", "L_Hip"]
+  - ["left_knee_link", "L_Knee"]
+  - ["left_ankle_roll_link", "L_Ankle"]
+  - ["right_hip_pitch_link", "R_Hip"]
+  - ["right_knee_link", "R_Knee"]
+  - ["right_ankle_roll_link", "R_Ankle"]
+  - ["left_shoulder_roll_link", "L_Shoulder"]
+  - ["left_elbow_pitch_link", "L_Elbow"]
+  - ["left_zero_link", "L_Hand"]
+  - ["right_shoulder_roll_link", "R_Shoulder"]
+  - ["right_elbow_pitch_link", "R_Elbow"]
+  - ["right_zero_link", "R_Hand"]
+  - ["head_link", "Head"]
+  - ["left_toe_link", "L_Toe"]
+  - ["right_toe_link", "R_Toe"]
+
+
+smpl_pose_modifier:
+  - Pelvis: "[np.pi/2, 0, np.pi/2]"
+  - L_Shoulder: "[0, 0, -np.pi/2]"
+  - R_Shoulder: "[0, 0, np.pi/2]"
+  - L_Elbow: "[0, -np.pi/2, 0]"
+  - R_Elbow: "[0, np.pi/2, 0]"

@@ -89,7 +89,7 @@ class BaseTask():
         self.num_actions = cfg["env"]["numActions"]
         self.is_discrete = cfg["env"].get("is_discrete", False)
 
-        self.control_freq_inv = cfg["env"].get("controlFrequencyInv", 1)
+        self.control_freq_inv = cfg["control"].get("decimation", 2)
 
         # optimization flags for pytorch JIT
         torch._C._jit_set_profiling_mode(False)
@@ -433,7 +433,7 @@ class BaseTask():
                         self.curr_video_file_name = self._video_path % curr_date_time
                         self.curr_states_file_name = self._states_path % curr_date_time
                         if not flags.server_mode:
-                            self.writer = imageio.get_writer(self.curr_video_file_name, fps=60, macro_block_size=None)
+                            self.writer = imageio.get_writer(self.curr_video_file_name, fps=int(1/self.dt), macro_block_size=None)
                     self.writer.append_data(self.color_image)
                     
                     

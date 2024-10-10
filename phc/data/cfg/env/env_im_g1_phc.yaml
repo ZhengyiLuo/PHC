@@ -1,0 +1,73 @@
+task: HumanoidIm
+motion_file: ""
+num_envs: 3072
+env_spacing: 5
+episode_length: 300
+is_flag_run: False
+enable_debug_vis: False
+
+sym_loss_coef: 1
+big_ankle: True
+fut_tracks: False
+obs_v: 6
+self_obs_v: 1
+
+auto_pmcp: False
+auto_pmcp_soft: True
+  
+cycle_motion: False
+hard_negative: False
+
+masterfoot: False
+freeze_toe: false
+
+######## PNN Feats ########
+has_pnn: True
+num_prim: 3
+training_prim: 0
+has_lateral: False
+actors_to_load: 0
+fitting: False
+######## Getup Features. ########
+getup_schedule: False
+recoverySteps: 90
+recoveryEpisodeProb: 0.5
+fallInitProb: 0.3
+getup_udpate_epoch: 270171
+zero_out_far: False
+zero_out_far_train: False
+#######
+
+default_humanoid_mass: 51.436 # H1 config
+real_weight: True
+kp_scale: 1
+remove_toe_im: False # For imitation 
+power_reward: True
+power_coefficient: 0.0005
+
+
+powerScale: 1.0
+
+stateInit: "Random"  
+hybridInitProb: 0.5
+numAMPObsSteps: 10
+
+local_root_obs: True
+root_height_obs: True
+key_bodies: ["left_ankle_roll_link", "right_ankle_roll_link", "left_zero_link",  "right_zero_link"]
+contact_bodies: ["left_ankle_roll_link", "right_ankle_roll_link"]
+reset_bodies:  ['pelvis', 'left_hip_pitch_link', 'left_hip_roll_link', 'left_hip_yaw_link', 'left_knee_link', 'left_ankle_pitch_link', 'left_ankle_roll_link', 'right_hip_pitch_link', 'right_hip_roll_link', 'right_hip_yaw_link', 'right_knee_link', 'right_ankle_pitch_link', 'right_ankle_roll_link', 'torso_link', 'left_shoulder_pitch_link', 'left_shoulder_roll_link', 'left_shoulder_yaw_link', 'left_elbow_pitch_link', 'left_elbow_roll_link', 'left_zero_link', 'left_one_link', 'left_two_link', 'left_three_link', 'left_four_link', 'left_five_link', 'left_six_link', 'right_shoulder_pitch_link', 'right_shoulder_roll_link', 'right_shoulder_yaw_link', 'right_elbow_pitch_link', 'right_elbow_roll_link', 'right_zero_link', 'right_one_link', 'right_two_link', 'right_three_link', 'right_four_link', 'right_five_link', 'right_six_link']
+terminationHeight: 0.15
+enableEarlyTermination: True
+terminationDistance: 0.25
+
+### Fut config
+numTrajSamples: 3
+trajSampleTimestepInv: 30
+enableTaskObs: True
+
+
+plane:
+  staticFriction: 1.0
+  dynamicFriction: 1.0
+  restitution: 0.0
