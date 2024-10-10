@@ -6,7 +6,7 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 <div float="center">
   <img src="assets/phc_teaser.gif" />
-  <img src="assets/phc_x_teaser.gif" />
+  <img src="assets/h1_phc.gif" />
 </div>
 
 # Table of Contents
@@ -189,11 +189,11 @@ to do the above visulaization, press m (to cancel termination based on imitation
 #### H1 and G1
 
 ```
-python phc/run_hydra.py project_name=Robot_IM robot=unitree_g1 env=env_im_g1_phc env.motion_file=data/g1/v1/amass_phc.pkl learning=im_pnn_big exp_name=unitree_g1_pnn sim=robot_sim control=robot_control learning.params.network.space.continuous.sigma_init.val=-1.7 
+python phc/run_hydra.py project_name=Robot_IM robot=unitree_g1 env=env_im_g1_phc env.motion_file=sample_data/sample_dance_g1.pkl learning=im_pnn_big exp_name=unitree_g1_pnn sim=robot_sim control=robot_control learning.params.network.space.continuous.sigma_init.val=-1.7 
 ```
 
 ```
-python phc/run_hydra.py  project_name=Robot_IM   robot=unitree_h1      env=env_im_h1_phc env.motion_file=data/h1/v1/amass_phc.pkl learning=im_pnn_big   exp_name=unitree_h1_pnn_realsim_092924 sim=robot_sim control=robot_control 
+python phc/run_hydra.py  project_name=Robot_IM   robot=unitree_h1      env=env_im_h1_phc env.motion_file=sample_data/sample_dance_h1.pkl learning=im_pnn_big   exp_name=unitree_h1_pnn_realsim_092924 sim=robot_sim control=robot_control 
 ```
 
 #### SMPL and SMPL-X
