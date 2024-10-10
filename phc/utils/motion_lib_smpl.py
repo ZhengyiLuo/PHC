@@ -109,9 +109,9 @@ class MotionLibSMPL(MotionLibBase):
         assert (len(ids) == len(motion_data_list))
         
         if pid == 0 and not config.multi_thread:
-            pbar = tqdm(len(motion_data_list))
+            pbar = tqdm(range(len(motion_data_list)))
         else:
-            pbar = len(motion_data_list)
+            pbar = range(len(motion_data_list))
         
         for f in pbar:
             curr_id = ids[f]  # id for this datasample

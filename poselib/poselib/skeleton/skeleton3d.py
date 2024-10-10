@@ -174,7 +174,7 @@ class SkeletonTree(Serializable):
         def _add_xml_node(xml_node, parent_index, node_index):
             node_name = xml_node.attrib.get("name")
             # parse the local translation into float list
-            pos = np.fromstring(xml_node.attrib.get("pos"), dtype=float, sep=" ")
+            pos = np.fromstring(xml_node.attrib.get("pos", "0 0 0"), dtype=float, sep=" ")
             node_names.append(node_name)
             parent_indices.append(parent_index)
             local_translation.append(pos)

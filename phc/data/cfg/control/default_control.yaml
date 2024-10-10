@@ -1,0 +1,6 @@
+action_filter: False
+action_scale : 1
+decimation : 2 # 4
+action_cutfreq : 4.0
+
+control_mode: "isaac_pd"

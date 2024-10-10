@@ -86,12 +86,12 @@ class Humanoid(BaseTask):
 
         self.load_humanoid_configs(cfg)
 
-        self.control_mode = self.cfg["env"]["control_mode"]
+        self.control_mode = self.cfg["control"]["control_mode"]
         if self.control_mode in ['isaac_pd']:
             self._pd_control = True
         else:
             self._pd_control = False
-        self.power_scale = self.cfg["env"]["power_scale"]
+        self.power_scale = self.cfg["control"].get("powerScale", 1.0)
 
         self.debug_viz = self.cfg["env"]["enable_debug_vis"]
         self.plane_static_friction = self.cfg["env"]["plane"]["staticFriction"]
@@ -123,6 +123,10 @@ class Humanoid(BaseTask):
         self._setup_tensors()
         self.self_obs_buf = torch.zeros((self.num_envs, self.get_self_obs_size()), device=self.device, dtype=torch.float)
         self.reward_raw = torch.zeros((self.num_envs, 1)).to(self.device)
+        
+        if self.humanoid_type in ['h1', 'g1', ]:
+            self.gravity_vec = to_torch(get_axis_params(-1., self.up_axis_idx), device=self.device).repeat((self.num_envs, 1))
+            self.base_link_id = self._build_key_body_ids_tensor([self.cfg.robot.base_link]).squeeze()
 
         return
 
@@ -247,9 +251,11 @@ class Humanoid(BaseTask):
         self.humanoid_type = cfg.robot.humanoid_type
         if self.humanoid_type in ["smpl", "smplh", "smplx"]:
             self.load_smpl_configs(cfg)
+        elif self.humanoid_type in ['h1', 'g1']:
+            self.load_robot_configs(cfg)
         else:
             raise NotImplementedError
-            
+        
             
     def load_common_humanoid_configs(self, cfg):
         self._divide_group = cfg["env"].get("divide_group", False)
@@ -412,6 +418,25 @@ class Humanoid(BaseTask):
         self.right_lower_indexes = [idx for idx , name in enumerate(self._dof_names) if name.startswith("R") and name[2:] in ["Hip", "Knee", "Ankle", "Toe"]]
         
         self._load_amass_gender_betas()
+        
+    def load_robot_configs(self, cfg):
+        self.load_common_humanoid_configs(cfg)
+        self._has_upright_start = cfg["robot"].get("has_upright_start", True)
+        self._real_weight = True
+        self._body_names_orig = cfg["robot"].get("body_names", []) 
+        
+        _body_names_orig_copy = self._body_names_orig.copy()
+        self._full_track_bodies = _body_names_orig_copy
+
+        _body_names_orig_copy = self._body_names_orig.copy()
+        self._eval_bodies = _body_names_orig_copy # default eval bodies
+        self._body_names = self._body_names_orig
+        self._masterfoot_config = None
+        self.dof_subset = torch.tensor([]).long()
+        
+        self._dof_names = cfg["robot"].get("dof_names", [])
+        self.limb_weight_group = cfg["robot"].get("limb_weight_group", []) 
+        self.limb_weight_group = [[self._body_names.index(g) for g in group] for group in self.limb_weight_group]
 
     def _clear_recorded_states(self):
         del self.state_record
@@ -577,6 +602,7 @@ class Humanoid(BaseTask):
 
         self.gym.set_actor_root_state_tensor_indexed(self.sim, gymtorch.unwrap_tensor(self._root_states), gymtorch.unwrap_tensor(env_ids_int32), len(env_ids_int32))
         self.gym.set_dof_state_tensor_indexed(self.sim, gymtorch.unwrap_tensor(self._dof_state), gymtorch.unwrap_tensor(env_ids_int32), len(env_ids_int32))
+        self.gym.set_dof_position_target_tensor_indexed( self.sim, gymtorch.unwrap_tensor(self._dof_pos.contiguous()), gymtorch.unwrap_tensor(env_ids_int32), len(env_ids_int32)) 
         
         
         # print("#################### refreshing ####################")
@@ -641,7 +667,11 @@ class Humanoid(BaseTask):
                 raise NotImplementedError()
 
             if self._has_shape_obs:
-                self._num_self_obs += 11
+                if self.humanoid_type in ["smpl"]:
+                    self._num_self_obs += 11
+                elif self.humanoid_type in ["smplh", "smplx"]:
+                    self._num_self_obs += 17
+                    
             # if self._has_limb_weight_obs: self._num_self_obs += 23 + 24 if not self._masterfoot else  29 + 30 # 23 + 24 (length + weight)
             if self._has_limb_weight_obs:
                 self._num_self_obs += 10
@@ -651,7 +681,24 @@ class Humanoid(BaseTask):
             
             if self.self_obs_v == 3:
                 self._num_self_obs += 6 * len(self.force_sensor_joints)
+        elif self.humanoid_type in ['h1', 'g1']:
+            self._dof_obs_size = len(self._dof_names) # H1's each dof is 1 dof
+            self._dof_offsets = np.arange(len(self._dof_names) + 1)
+            self._num_actions = len(self._dof_names)
 
+            if self.self_obs_v == 3:
+                self._num_self_obs = 1 + len(self._body_names) * (3 + 6)  - 3 + 3 + 3 + self._dof_obs_size * 2  # height + num_bodies * 9 (pos + rot) - root_pos + root_vel + root_ang_vel + dof_pos + dof_vel
+            elif self.self_obs_v == 4:
+                self._num_self_obs = 1 + self._dof_obs_size * 2 + 3 + 3 + 3
+            else:
+                if (ENABLE_MAX_COORD_OBS):
+                    self._num_self_obs = 1 + len(self._body_names) * (3 + 6 + 3 + 3) - 3  # height + num_bodies * 15 (pos + vel + rot + ang_vel) - root_pos
+                else:
+                    self._num_self_obs = 13 + self._dof_obs_size + 28 + 3 * num_key_bodies  # [root_h, root_rot, root_vel, root_ang_vel, dof_pos, dof_vel, key_body_pos]
+            
+            if not self._root_height_obs:
+                self._num_self_obs -= 1
+                
         else:
             print("Unsupported character config file: {s}".format(asset_file))
             assert (False)
@@ -722,6 +769,7 @@ class Humanoid(BaseTask):
         lower = gymapi.Vec3(-spacing, -spacing, 0.0)
         upper = gymapi.Vec3(spacing, spacing, spacing)
 
+        
         asset_root = self.cfg.robot.asset["assetRoot"]
         asset_file = self.cfg.robot.asset["assetFileName"]
         self.humanoid_masses = []
@@ -832,7 +880,40 @@ class Humanoid(BaseTask):
                 self.humanoid_shapes = torch.tensor(np.array([gender_beta] * num_envs)).float().to(self.device)
                 self.humanoid_assets = [humanoid_asset] * num_envs
                 self.skeleton_trees = [sk_tree] * num_envs
+        elif self.humanoid_type in ['h1', 'g1', ]:
+            self.humanoid_limb_and_weights = []
+            xml_asset_path = os.path.join(asset_root, asset_file)
+            
+            robot_file = os.path.join(asset_root, self.cfg.robot.asset.urdfFileName)
+            asset_root = os.path.dirname(robot_file) # use urdf file. 
+            asset_file = os.path.basename(robot_file)
+            sk_tree = SkeletonTree.from_mjcf(xml_asset_path)
 
+            asset_options = gymapi.AssetOptions()
+            asset_options.angular_damping = 0.01
+            asset_options.max_angular_velocity = 100.0
+            asset_options.default_dof_drive_mode = gymapi.DOF_MODE_NONE
+            #asset_options.fix_base_link = True
+            asset_options.replace_cylinder_with_capsule = True
+            
+            humanoid_asset = self.gym.load_asset(self.sim, asset_root, asset_file, asset_options)
+
+            actuator_props = self.gym.get_asset_actuator_properties(humanoid_asset)
+            
+            # motor_efforts = [prop.motor_effort for prop in actuator_props]
+            motor_efforts = [360] * 19
+
+            # create force sensors at the feet
+            right_foot_idx = self.gym.find_asset_rigid_body_index(humanoid_asset, self.cfg.robot.right_foot_name)
+            left_foot_idx = self.gym.find_asset_rigid_body_index(humanoid_asset, self.cfg.robot.left_foot_name)
+            sensor_pose = gymapi.Transform()
+
+            self.gym.create_asset_force_sensor(humanoid_asset, right_foot_idx, sensor_pose)
+            self.gym.create_asset_force_sensor(humanoid_asset, left_foot_idx, sensor_pose)
+            self.humanoid_shapes = torch.tensor(np.zeros((num_envs, 10))).float().to(self.device)
+            self.humanoid_assets = [humanoid_asset] * num_envs
+            self.skeleton_trees = [sk_tree] * num_envs
+            
         else:
 
             asset_path = os.path.join(asset_root, asset_file)
@@ -863,12 +944,16 @@ class Humanoid(BaseTask):
         self.envs = []
         self.dof_limits_lower = []
         self.dof_limits_upper = []
-
+        
+        max_agg_bodies, max_agg_shapes = 160, 160
         for i in range(self.num_envs):
             # create env instance
             env_ptr = self.gym.create_env(self.sim, lower, upper, num_per_row)
+            self.gym.begin_aggregate(env_ptr, max_agg_bodies, max_agg_shapes, True)
             self._build_env(i, env_ptr, self.humanoid_assets[i])
+            self.gym.end_aggregate(env_ptr)
             self.envs.append(env_ptr)
+            
         self.humanoid_limb_and_weights = torch.stack(self.humanoid_limb_and_weights).to(self.device)
         print("Humanoid Weights", self.humanoid_masses[:10])
 
@@ -879,22 +964,69 @@ class Humanoid(BaseTask):
         # self.gym.set_actor_dof_properties(self.envs[0], self.humanoid_handles[0], dof_prop)
 
         for j in range(self.num_dof):
+            
             if dof_prop['lower'][j] > dof_prop['upper'][j]:
                 self.dof_limits_lower.append(dof_prop['upper'][j])
                 self.dof_limits_upper.append(dof_prop['lower'][j])
+            elif dof_prop['lower'][j] == dof_prop['upper'][j]:
+                print("Warning: DOF limits are the same")
+                if dof_prop['lower'][j] == 0:
+                    self.dof_limits_lower.append(-np.pi)
+                    self.dof_limits_upper.append(np.pi)
             else:
                 self.dof_limits_lower.append(dof_prop['lower'][j])
                 self.dof_limits_upper.append(dof_prop['upper'][j])
-
+        
         self.dof_limits_lower = to_torch(self.dof_limits_lower, device=self.device)
         self.dof_limits_upper = to_torch(self.dof_limits_upper, device=self.device)
+        self.dof_limits = torch.stack([self.dof_limits_lower, self.dof_limits_upper], dim=-1)
+        self.torque_limits = to_torch(dof_prop['effort'], device = self.device)
         
-        if self.control_mode == "pd":
-            self.torque_limits = torch.ones_like(self.dof_limits_upper) * 1000 # ZL: hacking 
+        if self.humanoid_type in ['h1', 'g1']:
+            self._process_dof_props(dof_prop)
 
         if self.control_mode in ["pd", "isaac_pd"]:
             self._build_pd_action_offset_scale()
         return
+    
+    def _process_dof_props(self, props):
+        """ Callback allowing to store/change/randomize the DOF properties of each environment.
+            Called During environment creation.
+            Base behavior: stores position, velocity and torques limits defined in the URDF
+
+        Args:
+            props (numpy.array): Properties of each DOF of the asset
+            env_id (int): Environment id
+
+        Returns:
+            [numpy.array]: Modified DOF properties
+        """
+        self.dof_pos_limits = torch.zeros(self.num_dof, 2, dtype=torch.float, device=self.device, requires_grad=False)
+        self.dof_vel_limits = torch.zeros(self.num_dof, dtype=torch.float, device=self.device, requires_grad=False)
+        self.torque_limits = torch.zeros(self.num_dof, dtype=torch.float, device=self.device, requires_grad=False)
+        for i in range(len(props)):
+            self.dof_pos_limits[i, 0] = props["lower"][i].item()
+            self.dof_pos_limits[i, 1] = props["upper"][i].item()
+            
+            
+            if self.dof_pos_limits[i, 0] == 0 and self.dof_pos_limits[i, 1] == 0:
+                self.dof_pos_limits[i, 0] = -np.pi
+                self.dof_pos_limits[i, 1] = np.pi
+            
+            self.dof_vel_limits[i] = props["velocity"][i].item()
+            self.torque_limits[i] = props["effort"][i].item()
+            
+            if "torque_limits_hard_coded" in self.__dict__:
+                self.torque_limits[i] = self.torque_limits_hard_coded[i]
+            else:   
+                self.torque_limits[i] = 350; print("No torque limit, set to 350")
+            # soft limits
+            m = (self.dof_pos_limits[i, 0] + self.dof_pos_limits[i, 1]) / 2
+            r = self.dof_pos_limits[i, 1] - self.dof_pos_limits[i, 0]
+            self.dof_pos_limits[i, 0] = m - 0.5 * r * 1
+            self.dof_pos_limits[i, 1] = m + 0.5 * r * 1
+            
+        return props
 
     def create_humanoid_force_sensors(self, humanoid_asset, sensor_joint_names):
         for jt in sensor_joint_names:
@@ -909,6 +1041,12 @@ class Humanoid(BaseTask):
             
         return
     
+    def _process_rigid_body_props(self, props, env_id):
+        return props
+    
+    def _process_rigid_shape_props(self, rigid_shape_props_asset, env_id):
+        return rigid_shape_props_asset
+    
     def _build_env(self, env_id, env_ptr, humanoid_asset):
         if self._divide_group or flags.divide_group:
             col_group = self._group_ids[env_id]
@@ -916,7 +1054,7 @@ class Humanoid(BaseTask):
             col_group = env_id  # no inter-environment collision
 
         col_filter = 0
-        if (self.humanoid_type in ["smpl", "smplh", "smplx"] ) and (not self._has_self_collision):
+        if (self.humanoid_type in ['h1', 'g1', 'smpl', 'smplh', 'smplx'] ) and (not self._has_self_collision):
             col_filter = 1
 
         start_pose = gymapi.Transform()
@@ -931,9 +1069,27 @@ class Humanoid(BaseTask):
 
         start_pose.p = gymapi.Vec3(*pos)
         start_pose.r = gymapi.Quat(0.0, 0.0, 0.0, 1.0)
+        
+        ######################## DR ########################
+        if self.cfg.domain_rand.has_domain_rand:    
+            rigid_shape_props_asset = self.gym.get_asset_rigid_shape_properties(humanoid_asset)
+            rigid_shape_props = self._process_rigid_shape_props(rigid_shape_props_asset, env_id)
+            self.gym.set_asset_rigid_shape_properties(humanoid_asset, rigid_shape_props)
+        ######################## DR ########################
+        
 
         humanoid_handle = self.gym.create_actor(env_ptr, humanoid_asset, start_pose, "humanoid", col_group, col_filter, 0)
         self.gym.enable_actor_dof_force_sensors(env_ptr, humanoid_handle)
+        
+        ######################## DR ########################
+        if self.cfg.domain_rand.has_domain_rand:
+            body_props = self.gym.get_actor_rigid_body_properties(env_ptr, humanoid_handle)
+            body_props = self._process_rigid_body_props(body_props, env_id)
+            self.gym.set_actor_rigid_body_properties(env_ptr, humanoid_handle, body_props, recomputeInertia=True)
+            body_props_new = self.gym.get_actor_rigid_body_properties(env_ptr, humanoid_handle)
+        ######################## DR ########################
+        
+        
         mass_ind = [prop.mass for prop in self.gym.get_actor_rigid_body_properties(env_ptr, humanoid_handle)]
         humanoid_mass = np.sum(mass_ind)
         self.humanoid_masses.append(humanoid_mass)
@@ -948,6 +1104,126 @@ class Humanoid(BaseTask):
         masses = [masses[group].sum() for group in self.limb_weight_group]
         humanoid_limb_weight = torch.tensor(limb_lengths + masses)
         self.humanoid_limb_and_weights.append(humanoid_limb_weight)  # ZL: attach limb lengths and full body weight.
+
+        pd_scale = 1
+        dof_prop = self.gym.get_asset_dof_properties(humanoid_asset)
+        
+        
+        if self.humanoid_type in ['h1']:
+            if self.cfg.env.get("pd_v", 1) == 1:
+                self.p_gains = to_torch([200.0, 200.0, 300.0, 200.0, 200.0, 300.0, 120.0, 200.0, 200.0, 60.0, 60.0, 40.0, 40.0, 40.0, 20.0, 40.0, 40.0, 40.0, 20.0], device = self.device)
+                self.d_gains = to_torch([5.0, 5.0, 7.5, 5.0, 5.0, 7.5, 3.0, 5.0, 5.0, 1.5, 1.5, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 0.5], device = self.device)
+            elif self.cfg.env.get("pd_v", 1) == 2:
+                self.p_gains = to_torch([200, 200, 200, 300,  40, 200, 200, 200, 300,  40, 300, 100, 100, 100, 100, 100, 100, 100, 100], device = self.device)
+                self.d_gains = to_torch([5, 5, 5, 6, 2, 5, 5, 5, 6, 2, 6, 2, 2, 2, 2, 2, 2, 2, 2], device = self.device)
+            
+            self.p_gains, self.d_gains = to_torch(self.p_gains), to_torch(self.d_gains)
+            self.default_dof_pos = torch.tensor([[0, 0, -0.4, 0.8, -0.4,  0, 0, -0.4, 0.8, -0.4,  0,  0, 0, 0, 0,  0, 0, 0, 0]]).to(self.device)
+            
+        elif self.humanoid_type in ["g1"]:
+            if self.cfg.env.get("pd_v", 1) == 1:
+                self.p_gains = to_torch([
+                    # Pelvis is not controlled
+                    200.0, 200.0, 200.0,  # Left hip (pitch, roll, yaw)
+                    300.0,                # Left knee
+                    200.0, 200.0,         # Left ankle (pitch, roll)
+                    200.0, 200.0, 200.0,  # Right hip (pitch, roll, yaw)
+                    300.0,                # Right knee
+                    200.0, 200.0,         # Right ankle (pitch, roll)
+                    120.0,                # Torso
+                    40.0, 40.0, 40.0,     # Left shoulder (pitch, roll, yaw)
+                    60.0,                 # Left elbow pitch
+                    40.0,                 # Left elbow roll
+                    20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0,  # Left hand (zero to six)
+                    40.0, 40.0, 40.0,     # Right shoulder (pitch, roll, yaw)
+                    60.0,                 # Right elbow pitch
+                    40.0,                 # Right elbow roll
+                    20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0   # Right hand (zero to six)
+                ], device=self.device)
+                
+                self.d_gains = to_torch([
+                    # Pelvis is not controlled
+                    5.0, 5.0, 5.0,    # Left hip (pitch, roll, yaw)
+                    7.5,              # Left knee
+                    5.0, 5.0,         # Left ankle (pitch, roll)
+                    5.0, 5.0, 5.0,    # Right hip (pitch, roll, yaw)
+                    7.5,              # Right knee
+                    5.0, 5.0,         # Right ankle (pitch, roll)
+                    3.0,              # Torso
+                    1.0, 1.0, 1.0,    # Left shoulder (pitch, roll, yaw)
+                    1.5,              # Left elbow pitch
+                    1.0,              # Left elbow roll
+                    0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5,  # Left hand (zero to six)
+                    1.0, 1.0, 1.0,    # Right shoulder (pitch, roll, yaw)
+                    1.5,              # Right elbow pitch
+                    1.0,              # Right elbow roll
+                    0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5   # Right hand (zero to six)
+                ], device=self.device)
+                self.torque_limits_hard_coded = to_torch([
+                        88, 88, 88,       # Left hip (pitch, roll, yaw)
+                        139,              # Left knee
+                        40, 40,           # Left ankle (pitch, roll)
+                        88, 88, 88,       # Right hip (pitch, roll, yaw)
+                        139,              # Right knee
+                        40, 40,           # Right ankle (pitch, roll)
+                        88,               # Torso
+                        20, 20, 20,       # Left shoulder (pitch, roll, yaw)
+                        20,               # Left elbow pitch
+                        20,               # Left elbow roll
+                        0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7,  # Left hand (zero to six)
+                        20, 20, 20,       # Right shoulder (pitch, roll, yaw)
+                        20,               # Right elbow pitch
+                        20,               # Right elbow roll
+                        0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7   # Right hand (zero to six)
+                    ], device=self.device)
+            
+            self.p_gains, self.d_gains = to_torch(self.p_gains), to_torch(self.d_gains)
+            self.default_dof_pos = torch.zeros(1, self.num_dof).to(self.device)
+        
+        
+        dof_prop = self.gym.get_asset_dof_properties(humanoid_asset)
+        if self.control_mode in ["isaac_pd"]:
+            dof_prop["driveMode"] = gymapi.DOF_MODE_POS
+            pd_scale = 1
+            if self.has_shape_variation:
+                pd_scale = humanoid_mass / self.cfg['env'].get('default_humanoid_mass', 77.0 if self._real_weight else 35.0)
+            dof_prop['stiffness'] *= pd_scale * self._kp_scale
+            dof_prop['damping'] *= pd_scale * self._kd_scale
+            
+            if self.humanoid_type in ['h1', 'g1']:
+                dof_prop['stiffness'] = self.p_gains.numpy()
+                dof_prop['damping'] = self.d_gains.numpy()
+
+        elif self.control_mode in ["pd", "force"]:
+            dof_prop["driveMode"] = gymapi.DOF_MODE_EFFORT
+            
+        self.gym.set_actor_dof_properties(env_ptr, humanoid_handle, dof_prop)
+        
+        
+        
+
+        if self.humanoid_type in ['h1', 'g1', "smpl", "smplh", "smplx"] and self._has_self_collision:
+            # compliance_vals = [0.1] * 24
+            # thickness_vals = [1.0] * 24
+            if self._has_mesh:
+                filter_ints = [0, 1, 224, 512, 384, 1, 1792, 64, 1056, 4096, 6, 6168, 0, 2048, 0, 20, 0, 0, 0, 0, 10, 0, 0, 0]
+            else:
+                if self.humanoid_type == "smpl":
+                    filter_ints = [0, 0, 7, 16, 12, 0, 56, 2, 33, 128, 0, 192, 0, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                elif self.humanoid_type in ["smplh", "smplx"]:
+                    filter_ints = [0, 0, 7, 16, 12, 0, 56, 2, 33, 128, 0, 192, 0, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                elif self.humanoid_type in ['h1']:
+                    filter_ints = [0, 2, 0, 2, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                elif self.humanoid_type in ['g1']:
+                    filter_ints = [0, 0, 2688, 0, 8192, 0, 8192, 0, 1344, 0, 4096, 0, 4096, 3072, 768, 192, 1, 0, 1, 0, 32, 8, 40, 0, 0, 0, 0, 0, 2, 0, 2, 0, 16, 4, 20, 0, 0, 0, 0, 0]
+
+                    
+            props = self.gym.get_actor_rigid_shape_properties(env_ptr, humanoid_handle)
+            assert (len(filter_ints) == len(props))
+
+            for p_idx in range(len(props)):
+                props[p_idx].filter = filter_ints[p_idx]
+            self.gym.set_actor_rigid_shape_properties(env_ptr, humanoid_handle, props)
 
         if self.humanoid_type in ["smpl", "smplh", "smplx"]:
             gender = self.humanoid_shapes[env_id, 0].long()
@@ -970,59 +1246,84 @@ class Humanoid(BaseTask):
             #     color_vec = gymapi.Vec3(0.23192618223760095, 0.5456516724336793, 0.7626143790849673)
             # elif env_id == 1:
             #     color_vec = gymapi.Vec3(0.907912341407151, 0.20284505959246443, 0.16032295271049596)
+            for j in range(self.num_bodies):
+                self.gym.set_rigid_body_color(env_ptr, humanoid_handle, j, gymapi.MESH_VISUAL, color_vec)
 
-        else:
-            color_vec = gymapi.Vec3(0.54, 0.85, 0.2)
-
-        for j in range(self.num_bodies):
-            self.gym.set_rigid_body_color(env_ptr, humanoid_handle, j, gymapi.MESH_VISUAL, color_vec)
-        pd_scale = 1
-        dof_prop = self.gym.get_asset_dof_properties(humanoid_asset)
-        if self.has_shape_variation:
-            pd_scale = humanoid_mass / self.cfg['env'].get('default_humanoid_mass', 77.0 if self._real_weight else 35.0)
-        else:
-            pd_scale = 1
-        if (self.control_mode == "isaac_pd"):
-            dof_prop["driveMode"][:] = gymapi.DOF_MODE_POS
-            dof_prop['stiffness'] *= pd_scale * self._kp_scale
-            dof_prop['damping'] *= pd_scale * self._kd_scale
-        else:
-            if self.control_mode == "pd":
-                # self.kp_gains = to_torch(self._kp_scale * dof_prop['stiffness'], device=self.device)
-                # self.kd_gains = to_torch(self._kd_scale * dof_prop['damping'], device=self.device)
-                self.kp_gains = to_torch(self._kp_scale * dof_prop['stiffness']/4, device=self.device)
-                self.kd_gains = to_torch(self._kd_scale * dof_prop['damping']/4, device=self.device)
-                dof_prop['velocity'][:] = 100
-                dof_prop['stiffness'][:] = 0
-                dof_prop['friction'][:] = 1
-                dof_prop['damping'][:] = 0.001
-            elif self.control_mode == "force":
-                dof_prop['velocity'][:] = 100
-                dof_prop['stiffness'][:] = 0
-                dof_prop['friction'][:] = 1
-                dof_prop['damping'][:] = 0.001
+        elif self.humanoid_type in ['h1']:
+            mesh_colors = [
+                [0.2, 0.2, 0.2],  # pelvis
+                [0.2, 0.2, 0.2],  # left_hip_yaw_link
+                [0.2, 0.2, 0.2],  # left_hip_roll_link
+                [0.2, 0.2, 0.2],  # left_hip_pitch_link
+                [0.2, 0.2, 0.2],  # left_knee_link
+                [0.2, 0.2, 0.2],  # left_ankle_link
+                [0.2, 0.2, 0.2],  # right_hip_yaw_link
+                [0.2, 0.2, 0.2],  # right_hip_roll_link
+                [0.2, 0.2, 0.2],  # right_hip_pitch_link
+                [0.2, 0.2, 0.2],  # right_knee_link
+                [0.2, 0.2, 0.2],  # right_ankle_link
+                [0.2, 0.2, 0.2],  # torso_link
+                [0.2, 0.2, 0.2],  # left_shoulder_pitch_link
+                [0.2, 0.2, 0.2],  # left_shoulder_roll_link
+                [0.2, 0.2, 0.2],  # left_shoulder_yaw_link
+                [0.2, 0.2, 0.2],  # left_elbow_link
+                [0.2, 0.2, 0.2],  # right_shoulder_pitch_link
+                [0.2, 0.2, 0.2],  # right_shoulder_roll_link
+                [0.2, 0.2, 0.2],  # right_shoulder_yaw_link
+                [0.2, 0.2, 0.2]   # right_elbow_link
+            ]
+            for j in range(self.num_bodies):
+                color_vec = gymapi.Vec3(*mesh_colors[j])
+                self.gym.set_rigid_body_color(env_ptr, humanoid_handle, j, gymapi.MESH_VISUAL, color_vec)
                 
-            dof_prop["driveMode"][:] = gymapi.DOF_MODE_EFFORT
-        self.gym.set_actor_dof_properties(env_ptr, humanoid_handle, dof_prop)
+        elif self.humanoid_type in ['g1']:
+            geom_colors = [
+                [0.7, 0.7, 0.7],  # pelvis
+                [0.2, 0.2, 0.2],  # left_hip_pitch_link
+                [0.7, 0.7, 0.7],  # left_hip_roll_link
+                [0.7, 0.7, 0.7],  # left_hip_yaw_link
+                [0.7, 0.7, 0.7],  # left_knee_link
+                [0.7, 0.7, 0.7],  # left_ankle_pitch_link
+                [0.2, 0.2, 0.2],  # left_ankle_roll_link
+                [0.2, 0.2, 0.2],  # right_hip_pitch_link
+                [0.7, 0.7, 0.7],  # right_hip_roll_link
+                [0.7, 0.7, 0.7],  # right_hip_yaw_link
+                [0.7, 0.7, 0.7],  # right_knee_link
+                [0.7, 0.7, 0.7],  # right_ankle_pitch_link
+                [0.2, 0.2, 0.2],  # right_ankle_roll_link
+                [0.7, 0.7, 0.7],  # torso_link
+                [0.7, 0.7, 0.7],  # left_shoulder_pitch_link
+                [0.7, 0.7, 0.7],  # left_shoulder_roll_link
+                [0.7, 0.7, 0.7],  # left_shoulder_yaw_link
+                [0.7, 0.7, 0.7],  # left_elbow_pitch_link
+                [0.7, 0.7, 0.7],  # left_elbow_roll_link
+                [0.7, 0.7, 0.7],  # left_palm_link
+                [0.7, 0.7, 0.7],  # left_zero_link
+                [0.7, 0.7, 0.7],  # left_one_link
+                [0.7, 0.7, 0.7],  # left_two_link
+                [0.7, 0.7, 0.7],  # left_three_link
+                [0.7, 0.7, 0.7],  # left_four_link
+                [0.7, 0.7, 0.7],  # left_five_link
+                [0.7, 0.7, 0.7],  # left_six_link
+                [0.7, 0.7, 0.7],  # right_shoulder_pitch_link
+                [0.7, 0.7, 0.7],  # right_shoulder_roll_link
+                [0.7, 0.7, 0.7],  # right_shoulder_yaw_link
+                [0.7, 0.7, 0.7],  # right_elbow_pitch_link
+                [0.7, 0.7, 0.7],  # right_elbow_roll_link
+                [0.7, 0.7, 0.7],  # right_palm_link
+                [0.7, 0.7, 0.7],  # right_zero_link
+                [0.7, 0.7, 0.7],  # right_one_link
+                [0.7, 0.7, 0.7],  # right_two_link
+                [0.7, 0.7, 0.7],  # right_three_link
+                [0.7, 0.7, 0.7],  # right_four_link
+                [0.7, 0.7, 0.7],  # right_five_link
+                [0.7, 0.7, 0.7],  # right_six_link
+            ]
+            for j in range(self.num_bodies):
+                color_vec = gymapi.Vec3(*geom_colors[j])
+                self.gym.set_rigid_body_color(env_ptr, humanoid_handle, j, gymapi.MESH_VISUAL, color_vec)
 
-        if self.humanoid_type in ["smpl", "smplh", "smplx"] and self._has_self_collision:
-            # compliance_vals = [0.1] * 24
-            # thickness_vals = [1.0] * 24
-            if self._has_mesh:
-                filter_ints = [0, 1, 224, 512, 384, 1, 1792, 64, 1056, 4096, 6, 6168, 0, 2048, 0, 20, 0, 0, 0, 0, 10, 0, 0, 0]
-            else:
-                if self.humanoid_type == "smpl":
-                    filter_ints = [0, 0, 7, 16, 12, 0, 56, 2, 33, 128, 0, 192, 0, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                elif self.humanoid_type in ["smplh", "smplx"]:
-                    filter_ints = [0, 0, 7, 16, 12, 0, 56, 2, 33, 128, 0, 192, 0, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                    
-            props = self.gym.get_actor_rigid_shape_properties(env_ptr, humanoid_handle)
-
-            assert (len(filter_ints) == len(props))
-            for p_idx in range(len(props)):
-                props[p_idx].filter = filter_ints[p_idx]
-            self.gym.set_actor_rigid_shape_properties(env_ptr, humanoid_handle, props)
-
+        
         self.humanoid_handles.append(humanoid_handle)
 
         return
@@ -1087,6 +1388,7 @@ class Humanoid(BaseTask):
             self._L_knee_dof_idx = self._dof_names.index("L_Knee") * 3 + 1
             self._R_knee_dof_idx = self._dof_names.index("R_Knee") * 3 + 1
 
+            print("Bumping Kneel. ")
             # ZL: Modified SMPL to give stronger knee
             self._pd_action_scale[self._L_knee_dof_idx] = 5
             self._pd_action_scale[self._R_knee_dof_idx] = 5
@@ -1101,6 +1403,8 @@ class Humanoid(BaseTask):
                     self._pd_action_offset[self._dof_names.index("L_Shoulder") * 3 + 2] = -np.pi / 2
                     self._pd_action_offset[self._dof_names.index("R_Shoulder") * 3] = -np.pi / 3
                     self._pd_action_offset[self._dof_names.index("R_Shoulder") * 3 + 2] = np.pi / 2
+        elif self.humanoid_type in ['h1', 'g1', ]:
+            self._pd_action_offset[:] = 0
 
         return
 
@@ -1160,7 +1464,7 @@ class Humanoid(BaseTask):
                 
                 
                 
-                if self.humanoid_type in ["smpl", "smplh", "smplx"] :
+                if self.humanoid_type in ["'h1', 'g1', smpl", "smplh", "smplx"] :
                     if (env_ids is None):
                         body_shape_params = self.humanoid_shapes[:, :-6] if self.humanoid_type in ["smpl", "smplh", "smplx"] else self.humanoid_shapes
                         limb_weights = self.humanoid_limb_and_weights
@@ -1247,7 +1551,10 @@ class Humanoid(BaseTask):
                     if self._freeze_toe:
                         pd_tar[:, self._dof_names.index("L_Toe") * 3:(self._dof_names.index("L_Toe") * 3 + 3)] = 0
                         pd_tar[:, self._dof_names.index("R_Toe") * 3:(self._dof_names.index("R_Toe") * 3 + 3)] = 0
-                        
+            elif self.humanoid_type in ['h1','g1', ]:
+                pd_tar = self._action_to_pd_targets(self.actions)
+                
+                
             pd_tar_tensor = gymtorch.unwrap_tensor(pd_tar)
             self.gym.set_dof_position_target_tensor(self.sim, pd_tar_tensor)
         
@@ -1258,7 +1565,9 @@ class Humanoid(BaseTask):
                 force_tensor = gymtorch.unwrap_tensor(forces)
                 self.gym.set_dof_actuation_force_tensor(self.sim, force_tensor)
             elif self.control_mode == "pd":
-                self.pd_tar = self._action_to_pd_targets(self.actions)
+                clip_actions = 10
+                self.actions = torch.clip(self.actions, -clip_actions, clip_actions).to(self.device) # -10 , 10
+                
         return
     
     
@@ -1272,25 +1581,33 @@ class Humanoid(BaseTask):
             [torch.Tensor]: Torques sent to the simulation
         """
         #pd controller
-        action_scale = 1
         control_type = "P" # self.cfg.control.control_type
+        actions_scaled = actions * self.cfg.control.action_scale # 0.5
+        # print(actions)
         if control_type=="P": # default 
-            torques = self.kp_gains*(actions - self._dof_pos) - self.kd_gains*self._dof_vel
+            
+            torques = self.p_gains*(actions_scaled + self.default_dof_pos - self._dof_pos) - self.d_gains*self._dof_vel
+        elif control_type=="V":
+            torques = self.p_gains*(actions_scaled - self.dof_vel) - self.d_gains*(self.dof_vel - self.last_dof_vel)/self.sim_params.dt
+        elif control_type=="T":
+            torques = actions_scaled
         else:
             raise NameError(f"Unknown controller type: {control_type}")
         # if self.cfg.domain_rand.randomize_torque_rfi:
             # torques = torques + (torch.rand_like(torques)*2.-1.) * self.cfg.domain_rand.rfi_lim * self.torque_limits
-        
         return torch.clip(torques, -self.torque_limits, self.torque_limits)
     
     
     def _physics_step(self):
+        self.render(i = 0) # Render outside of the step function.
         for i in range(self.control_freq_inv):
-            self.control_i = i
-            self.render()
+            # self.render(i = i) # Render outside of the step function.
+            
             if not self.paused and self.enable_viewer_sync:
-                if self.control_mode == "pd": #### Using simple pd controller. 
-                    self.torques = self._compute_torques(self.pd_tar)
+                if self.control_mode in ["pd"]:
+                    
+                    self.torques = self._compute_torques(self.actions)
+                    
                     self.gym.set_dof_actuation_force_tensor(self.sim, gymtorch.unwrap_tensor(self.torques))
                     self.gym.simulate(self.sim)
                     if self.device == 'cpu':
@@ -1298,11 +1615,7 @@ class Humanoid(BaseTask):
                     self.gym.refresh_dof_state_tensor(self.sim)
                 else:
                     self.gym.simulate(self.sim)
-                    
         return
-    
-    
-    
     
     def _init_tensor_history(self, env_ids):
         self._rigid_body_pos_hist[env_ids] = self._rigid_body_pos[env_ids].unsqueeze(1).repeat(1, self.past_track_steps, 1, 1)
@@ -1358,7 +1671,7 @@ class Humanoid(BaseTask):
         return
 
     def _build_key_body_ids_tensor(self, key_body_names):
-        if self.humanoid_type in ["smpl", "smplh", "smplx"] :
+        if self.humanoid_type in ['h1', 'g1',  'smpl', 'smplh', 'smplx']:
             body_ids = [self._body_names.index(name) for name in key_body_names]
             body_ids = to_torch(body_ids, device=self.device, dtype=torch.long)
 
