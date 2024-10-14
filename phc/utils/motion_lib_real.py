@@ -122,7 +122,6 @@ class MotionLibReal(MotionLibBase):
 
         motion_data_list = self._motion_data_list[sample_idxes.cpu().numpy()]
         torch.set_num_threads(1)
-        mp.set_sharing_strategy('file_descriptor')
         
 
         manager = mp.Manager()
