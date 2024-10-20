@@ -185,16 +185,13 @@ def process_motion(key_names, key_name_to_pkls, cfg):
 
 @hydra.main(version_base=None, config_path="../../phc/data/cfg", config_name="config")
 def main(cfg : DictConfig) -> None:
-    all_pkls = glob.glob("/hdd/zen/data/ActBound/AMASS/AMASS_Complete/**/*.npz", recursive=True)
-    key_name_to_pkls = {"0-" + "_".join(data_path.split("/")[7:]).replace(".npz", ""): data_path for data_path in all_pkls}
-    key_names = ["0-" + "_".join(data_path.split("/")[7:]).replace(".npz", "") for data_path in all_pkls]
+    amass_root = "/hdd/zen/data/ActBound/AMASS/AMASS_Complete"
+    all_pkls = glob.glob(f"{amass_root}/**/*.npz", recursive=True)
+    split_len = len(amass_root.split("/"))
+    key_name_to_pkls = {"0-" + "_".join(data_path.split("/")[split_len:]).replace(".npz", ""): data_path for data_path in all_pkls}
+    key_names = ["0-" + "_".join(data_path.split("/")[split_len:]).replace(".npz", "") for data_path in all_pkls]
     if not cfg.get("fit_all", False):
-        # key_names = ['0-KIT_3_walking_slow08_poses']
-        # key_names = ['0-ACCAD_Female1Gestures_c3d_D3 - Conversation Gestures_poses']
-        # key_names = ['0-ACCAD_Female1Gestures_c3d_D2 - Wait 1_poses']
-        # key_names = ["0-ACCAD_Male1General_c3d_General A2 - Sway t3_poses"]
         key_names = ["0-Transitions_mocap_mazen_c3d_dance_stand_poses"]
-        # key_names = ['0-ACCAD_Female1Gestures_c3d_D5 - Random Stuff 2_poses']
     
     from multiprocessing import Pool
     jobs = key_names
