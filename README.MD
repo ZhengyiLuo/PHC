@@ -286,27 +286,7 @@ We train on a subset of the [AMASS](https://amass.is.tue.mpg.de/) dataset.
 
 For processing the AMASS, first, download the AMASS dataset from [AMASS](https://amass.is.tue.mpg.de/). Then, run the following script on the unzipped data:
 
-
-```
-python scripts/data_process/process_amass_raw.py --dir [path_to_amass] --out_dir [out_dir]
-```
-
-which dumps the data into the `amass_db_smplh.pt` file. Then, run 
-
-```
-python scripts/data_process/process_amass_db.py
-```
-
-We further process these data into Motionlib format by running the following script:
-
-```
-python scripts/data_process/convert_amass_isaac.py
-```
-
-Which should give you 11313 sequences for trainig. 
-
-
-You can also directly using the script `python scripts/data_process/convert_amass_data.py`
+`python scripts/data_process/convert_amass_data.py`
 
 ### Training PHC
 
