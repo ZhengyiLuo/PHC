@@ -136,7 +136,7 @@ class CommonAgent(a2c_continuous.A2CAgent):
 
                 self.writer.add_scalar('performance/total_fps', curr_frames / scaled_time, frame)
                 self.writer.add_scalar('performance/step_fps', curr_frames / scaled_play_time, frame)
-                self.writer.add_scalar('info/epochs', epoch_num, frame)
+                self.writer.add_scalar('episode_lengths/epochs', epoch_num, frame)
                 train_info_dict = self._assemble_train_info(train_info, frame)
                 self.algo_observer.after_print_stats(frame, epoch_num, total_time)
                 if self.save_freq > 0:
@@ -165,7 +165,7 @@ class CommonAgent(a2c_continuous.A2CAgent):
                         eval_info = self.eval()
                         train_info_dict.update(eval_info)
                     
-                    train_info_dict.update({"episode_lengths": mean_lengths, "mean_rewards": np.mean(mean_rewards)})
+                    train_info_dict.update({"episode_lengths/episode_lengths": mean_lengths, "rewards/mean_rewards": np.mean(mean_rewards)})
                     self._log_train_info(train_info_dict, frame)
 
                     epoch_end = time.time()
@@ -603,22 +603,22 @@ class CommonAgent(a2c_continuous.A2CAgent):
     
     def _assemble_train_info(self, train_info, frame):
         train_info_dict = {
-            "update_time": train_info['update_time'],
-            "play_time": train_info['play_time'],
-            "last_lr": train_info['last_lr'][-1] * train_info['lr_mul'][-1],
-            "lr_mul": train_info['lr_mul'][-1],
-            "e_clip": self.e_clip * train_info['lr_mul'][-1],
+            "performance/update_time": train_info['update_time'],
+            "performance/play_time": train_info['play_time'],
+            "learning_rate/last_lr": train_info['last_lr'][-1] * train_info['lr_mul'][-1],
+            "learning_rate/lr_mul": train_info['lr_mul'][-1],
+            "learning_rate/e_clip": self.e_clip * train_info['lr_mul'][-1],
         }
         
         if "actor_loss" in train_info:
             train_info_dict.update(
                 {
-                    "a_loss": torch_ext.mean_list(train_info['actor_loss']).item(),
-                    "c_loss": torch_ext.mean_list(train_info['critic_loss']).item(),
-                    "bounds_loss": torch_ext.mean_list(train_info['b_loss']).item(),
-                    "entropy": torch_ext.mean_list(train_info['entropy']).item(),
-                    "clip_frac": torch_ext.mean_list(train_info['actor_clip_frac']).item(),
-                    "kl": torch_ext.mean_list(train_info['kl']).item(),
+                    "loss/actor_loss": torch_ext.mean_list(train_info['actor_loss']).item(),
+                    "loss/critic_loss": torch_ext.mean_list(train_info['critic_loss']).item(),
+                    "loss/bounds_loss": torch_ext.mean_list(train_info['b_loss']).item(),
+                    "loss/entropy": torch_ext.mean_list(train_info['entropy']).item(),
+                    "loss/clip_frac": torch_ext.mean_list(train_info['actor_clip_frac']).item(),
+                    "loss/kl": torch_ext.mean_list(train_info['kl']).item(),
                 }
             )
         
@@ -738,7 +738,7 @@ class CommonDiscreteAgent(a2c_discrete.DiscreteA2CAgent):
 
                 self.writer.add_scalar('performance/total_fps', curr_frames / scaled_time, frame)
                 self.writer.add_scalar('performance/step_fps', curr_frames / scaled_play_time, frame)
-                self.writer.add_scalar('info/epochs', epoch_num, frame)
+                self.writer.add_scalar('episode_lengths/epochs', epoch_num, frame)
                 train_info_dict = self._assemble_train_info(train_info, frame)
                 self.algo_observer.after_print_stats(frame, epoch_num, total_time)
                 if self.save_freq > 0:
@@ -1085,16 +1085,16 @@ class CommonDiscreteAgent(a2c_discrete.DiscreteA2CAgent):
     
     def _assemble_train_info(self, train_info, frame):
         train_info_dict = {
-            "update_time": train_info['update_time'],
-            "play_time": train_info['play_time'],
-            "a_loss": torch_ext.mean_list(train_info['actor_loss']).item(),
-            "c_loss": torch_ext.mean_list(train_info['critic_loss']).item(),
-            "entropy": torch_ext.mean_list(train_info['entropy']).item(),
-            "last_lr": train_info['last_lr'][-1] * train_info['lr_mul'][-1],
-            "lr_mul": train_info['lr_mul'][-1],
-            "e_clip": self.e_clip * train_info['lr_mul'][-1],
-            "clip_frac": torch_ext.mean_list(train_info['actor_clip_frac']).item(),
-            "kl": torch_ext.mean_list(train_info['kl']).item(),
+            "performance/update_time": train_info['update_time'],
+            "performance/play_time": train_info['play_time'],
+            "loss/actor_loss": torch_ext.mean_list(train_info['actor_loss']).item(),
+            "loss/critic_loss": torch_ext.mean_list(train_info['critic_loss']).item(),
+            "loss/entropy": torch_ext.mean_list(train_info['entropy']).item(),
+            "learning_rate/last_lr": train_info['last_lr'][-1] * train_info['lr_mul'][-1],
+            "learning_rate/lr_mul": train_info['lr_mul'][-1],
+            "learning_rate/e_clip": self.e_clip * train_info['lr_mul'][-1],
+            "loss/clip_frac": torch_ext.mean_list(train_info['actor_clip_frac']).item(),
+            "loss/kl": torch_ext.mean_list(train_info['kl']).item(),
         }
         
         return train_info_dict
