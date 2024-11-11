@@ -61,11 +61,11 @@ def process_motion(key_names, key_name_to_pkls, cfg):
     robot_joint_names_augment = humanoid_fk.body_names_augment 
     robot_joint_pick = [i[0] for i in cfg.robot.joint_matches]
     smpl_joint_pick = [i[1] for i in cfg.robot.joint_matches]
-    robot_joint_pick_idx = [ robot_joint_names_augment.index(j) for j in robot_joint_pick]
+    robot_joint_pick_idx = [robot_joint_names_augment.index(j) for j in robot_joint_pick]
     smpl_joint_pick_idx = [SMPL_BONE_ORDER_NAMES.index(j) for j in smpl_joint_pick]
     
     smpl_parser_n = SMPL_Parser(model_path="data/smpl", gender="neutral")
-    shape_new, scale = joblib.load(f"data/{cfg.robot.humanoid_type}/shape_optimized_v1.pkl")
+    shape_new, scale = joblib.load(f"data/{cfg.robot.humanoid_type}/shape_optimized_v1.pkl") # TODO: run fit_smple_shape to get this
     
     
     all_data = {}
@@ -103,8 +103,9 @@ def process_motion(key_names, key_name_to_pkls, cfg):
         dof_pos_new = Variable(dof_pos.clone(), requires_grad=True)
         root_rot_new = Variable(gt_root_rot.clone(), requires_grad=True)
         root_pos_offset = Variable(torch.zeros(1, 3), requires_grad=True)
-        optimizer_pose = torch.optim.Adadelta([dof_pos_new],lr=100)
-        optimizer_root = torch.optim.Adam([root_rot_new, root_pos_offset],lr=0.01)
+        # optimizer_pose = torch.optim.Adam([dof_pos_new],lr=0.01)
+        # optimizer_root = torch.optim.Adam([root_rot_new, root_pos_offset],lr=0.01)
+        optimizer = torch.optim.Adam([dof_pos_new, root_rot_new, root_pos_offset],lr=0.02)
 
 
         kernel_size = 5  # Size of the Gaussian kernel
@@ -122,14 +123,16 @@ def process_motion(key_names, key_name_to_pkls, cfg):
             else:
                 diff = fk_return.global_translation[:, :, robot_joint_pick_idx] - joints[:, smpl_joint_pick_idx]
                 
-            loss_g = diff.norm(dim = -1).mean() 
+            loss_g = diff.norm(dim = -1).mean() + 0.01 * torch.mean(torch.square(dof_pos_new))
             loss = loss_g
             
-            optimizer_pose.zero_grad()
-            optimizer_root.zero_grad()
+            optimizer.zero_grad()
+            # optimizer_pose.zero_grad()
+            # optimizer_root.zero_grad()
             loss.backward()
-            optimizer_pose.step()
-            optimizer_root.step()
+            optimizer.step()
+            # optimizer_pose.step()
+            # optimizer_root.step()
             
             dof_pos_new.data.clamp_(humanoid_fk.joints_range[:, 0, None], humanoid_fk.joints_range[:, 1, None])
 
@@ -160,10 +163,13 @@ def process_motion(key_names, key_name_to_pkls, cfg):
         dof_pos_new.data.clamp_(humanoid_fk.joints_range[:, 0, None], humanoid_fk.joints_range[:, 1, None])
         pose_aa_h1_new = torch.cat([root_rot_new[None, :, None], humanoid_fk.dof_axis * dof_pos_new, torch.zeros((1, N, num_augment_joint, 3)).to(device)], axis = 2)
 
-        height_diff = fk_return.global_translation[..., 2].min().item() 
         root_trans_offset_dump = (root_trans_offset + root_pos_offset ).clone()
-        
-        
+
+        # move to ground
+        # 1.using the lowest body pos in motion
+        # height_diff = fk_return.global_translation[..., 2].min().item() 
+
+        # 2.using the lowest point of mesh in motion
         combined_mesh = humanoid_fk.mesh_fk(pose_aa_h1_new[:, :1].detach(), root_trans_offset_dump[None, :1].detach())
         height_diff = np.asarray(combined_mesh.vertices)[..., 2].min()
         
@@ -185,7 +191,7 @@ def process_motion(key_names, key_name_to_pkls, cfg):
 
 @hydra.main(version_base=None, config_path="../../phc/data/cfg", config_name="config")
 def main(cfg : DictConfig) -> None:
-    amass_root = "/hdd/zen/data/ActBound/AMASS/AMASS_Complete"
+    amass_root = "/hdd/zen/data/ActBound/AMASS/AMASS_Complete" # TODO: change this to your local dataset path
     all_pkls = glob.glob(f"{amass_root}/**/*.npz", recursive=True)
     split_len = len(amass_root.split("/"))
     key_name_to_pkls = {"0-" + "_".join(data_path.split("/")[split_len:]).replace(".npz", ""): data_path for data_path in all_pkls}
@@ -211,7 +217,7 @@ def main(cfg : DictConfig) -> None:
         all_data = {}
         for data_dict in all_data_list:
             all_data.update(data_dict)
-    import ipdb; ipdb.set_trace()
+    # import ipdb; ipdb.set_trace()
     if len(all_data) == 1:
         data_key = list(all_data.keys())[0]
         os.makedirs(f"data/{cfg.robot.humanoid_type}/v1/singles", exist_ok=True)
