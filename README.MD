@@ -297,7 +297,8 @@ python phc/run_hydra.py project_name=Robot_IM robot=unitree_g1 env=env_im_g1_phc
 ```
 
 ```
-python phc/run_hydra.py  project_name=Robot_IM   robot=unitree_h1      env=env_im_h1_phc env.motion_file=sample_data/sample_dance_h1.pkl learning=im_pnn_big   exp_name=unitree_h1_pnn_realsim_092924 sim=robot_sim control=robot_control 
+python phc/run_hydra.py  project_name=Robot_IM   robot=unitree_h1      env=env_im_h1_phc env.motion_file=sample_data/sample_dance_h1.pkl learning=im_pnn_big   exp_name=unitree_h1_pnn_realsim_092924 sim=robot_sim control=robot_control learning.params.network.space.continuous.sigma_init.val=-1.7 
+
 ```
 
 #### Train single primitive
