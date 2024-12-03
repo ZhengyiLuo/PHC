@@ -904,32 +904,36 @@ class AMPAgent(common_agent.CommonAgent):
         if "disc_loss" in train_info:
             disc_reward_std, disc_reward_mean = torch.std_mean(train_info['disc_rewards'])
             train_info_dict.update({
-                "disc_loss": torch_ext.mean_list(train_info['disc_loss']).item(),
-                "disc_agent_acc": torch_ext.mean_list(train_info['disc_agent_acc']).item(),
-                "disc_demo_acc": torch_ext.mean_list(train_info['disc_demo_acc']).item(),
-                "disc_agent_logit": torch_ext.mean_list(train_info['disc_agent_logit']).item(),
-                "disc_demo_logit": torch_ext.mean_list(train_info['disc_demo_logit']).item(),
-                "disc_grad_penalty": torch_ext.mean_list(train_info['disc_grad_penalty']).item(),
-                "disc_logit_loss": torch_ext.mean_list(train_info['disc_logit_loss']).item(),
-                "disc_reward_mean": disc_reward_mean.item(),
-                "disc_reward_std": disc_reward_std.item(),
+                "disc/loss": torch_ext.mean_list(train_info['disc_loss']).item(),
+                "disc/agent_acc": torch_ext.mean_list(train_info['disc_agent_acc']).item(),
+                "disc/demo_acc": torch_ext.mean_list(train_info['disc_demo_acc']).item(),
+                "disc/agent_logit": torch_ext.mean_list(train_info['disc_agent_logit']).item(),
+                "disc/demo_logit": torch_ext.mean_list(train_info['disc_demo_logit']).item(),
+                "disc/grad_penalty": torch_ext.mean_list(train_info['disc_grad_penalty']).item(),
+                "disc/logit_loss": torch_ext.mean_list(train_info['disc_logit_loss']).item(),
+                "disc/reward_mean": disc_reward_mean.item(),
+                "disc/reward_std": disc_reward_std.item(),
             })
         
         if "returns" in train_info:
-            train_info_dict['returns'] = train_info['returns'].mean().item()
+            train_info_dict['rewards/returns'] = train_info['returns'].mean().item()
             
         if "mb_rewards" in train_info:
-            train_info_dict['mb_rewards'] = train_info['mb_rewards'].mean().item()
+            train_info_dict['rewards/mb_rewards'] = train_info['mb_rewards'].mean().item()
         
         # if 'terminated_flags' in train_info:
         #     train_info_dict["success_rate"] =  1 - torch.mean((train_info['terminated_flags'] > 0).float()).item()
         
         if "reward_raw" in train_info:
-            for idx, v in enumerate(train_info['reward_raw'].cpu().numpy().tolist()):
-                train_info_dict[f"ind_reward.{idx}"] =  v
+            reward_raw=train_info['reward_raw'].cpu().numpy().tolist()
+            train_info_dict["rewards/body_pos"] =  reward_raw[0]
+            train_info_dict["rewards/body_rot"] =  reward_raw[1]
+            train_info_dict["rewards/lin_vel"] =  reward_raw[2]
+            train_info_dict["rewards/ang_vel"] =  reward_raw[3]
+            train_info_dict["rewards/power"] =  reward_raw[4]
         
         if "sym_loss" in train_info:
-            train_info_dict['sym_loss'] = torch_ext.mean_list(train_info['sym_loss']).item()
+            train_info_dict['loss/sym_loss'] = torch_ext.mean_list(train_info['sym_loss']).item()
         return train_info_dict
 
     def _amp_debug(self, info):
