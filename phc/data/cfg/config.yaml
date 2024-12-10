@@ -36,7 +36,7 @@ disable_multiprocessing: True
 ####### Testing Configs. ########
 server_mode: False
 has_eval: True
-no_virtual_display: False
+no_virtual_display: True
 render_o3d: False
 debug: False
 follow: False
