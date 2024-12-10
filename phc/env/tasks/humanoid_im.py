@@ -312,10 +312,6 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
                 # w, h = math.floor(w / 2.) * 2, math.floor(h / 2.) * 2
                 # rgb = rgb[:w, :h, :]
                 self._video_queue_o3d.append(rgb)
-                
-                
-                
-
 
     def _load_motion(self, motion_train_file, motion_test_file=[]):
         assert (self._dof_offsets[-1] == self.num_dof)

@@ -70,7 +70,6 @@ def main(cfg : DictConfig) -> None:
     root_trans_offset = trans + offset
 
     fk_return = humanoid_fk.fk_batch(pose_aa_robot[None, ], root_trans_offset[None, 0:1])
-    
 
     shape_new = Variable(torch.zeros([1, 10]).to(device), requires_grad=True)
     scale = Variable(torch.ones([1]).to(device), requires_grad=True)

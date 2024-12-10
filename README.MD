@@ -33,6 +33,8 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
+[December 9, 2024] Release retargeting documentation. 
+
 [October 8, 2024] Release support for Unitree H1 and G1 humanoid. 
 
 [August 30, 2024] Release support for SMPLX humanoid. 
@@ -92,6 +94,7 @@ We present a physics-based humanoid controller that achieves high-fidelity motio
 - [Docker Instructions](docs/docker_instruction.MD) (from [@kexul](https://github.com/kexul))
 - [Webcam Demo](docs/video_to_control_demo.md) 
 - [Language Demo](docs/language_to_control_demo.md) 
+- [Retargeting to Your Own Humanoids](docs/retargeting.md)
 
 ### Current Results on Cleaned AMASS (11313 Sequences)
 
