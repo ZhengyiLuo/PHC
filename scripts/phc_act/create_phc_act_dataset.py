@@ -10,17 +10,24 @@ import numpy as np
 import h5py
 from tqdm import tqdm
 from collections import defaultdict
+import argparse
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset_path", type=str, default="data/amass/pkls/amass_isaac_run_upright_slim.pkl")
+    parser.add_argument("--exp_name", type=str, default="phc_comp_3")
+    parser.add_argument("--num_runs", type=int, default=10)
+    parser.add_argument("--action_noise_std", type=int, default=0.05)
+    args = parser.parse_args()
+
     add_action_noise = True
     action_noise_std = 0.05
-    # dataset_path = "/hdd/zen/dev/meta/EgoQuest/data/amass/pkls/amass_isaac_im_train_take6_upright_slim.pkl"
-    dataset_path = "/hdd/zen/dev/meta/EgoQuest/data/amass/pkls/amass_isaac_run_upright_slim.pkl"
+    dataset_path = args.dataset_path
     motion_file_name = dataset_path.split("/")[-1].split(".")[0]
-    exp_name = "phc_comp_3"
+    exp_name = args.exp_name
     dataset_full = joblib.load(dataset_path)
     num_envs = len(dataset_full) if len(dataset_full)  < 512 else 512
-    num_runs = 10
+    num_runs = args.num_runs
 
     # Creating dataset
     for i in range(num_runs):
@@ -73,7 +80,8 @@ if __name__ == "__main__":
         joblib.dump(metadata_dump, f'output/HumanoidIm/{exp_name}/phc_act/phc_act_{motion_file_name}_metadata.pkl', compress=True)
                 
 
-    import ipdb; ipdb.set_trace()
     
-    joblib.dump(full_dataset, f'output/HumanoidIm/{exp_name}/phc_act/phc_act_{motion_file_name}.pkl', compress=True)
+    dumping_dir = f'output/HumanoidIm/{exp_name}/phc_act/phc_act_{motion_file_name}.pkl'
+    print(f"Dumping dataset to {dumping_dir}")
+    joblib.dump(full_dataset, dumping_dir, compress=True)
 

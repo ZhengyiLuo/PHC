@@ -27,9 +27,9 @@ from tqdm import tqdm
 import joblib
 import numpy as np
 import random
+import argparse
 
-
-wandb.login()
+# wandb.login()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
 
@@ -163,16 +163,16 @@ def sample_pkl(directory):
     return f'{save_file}/{time}.pkl'
 
 def train_model(model, device, criterion, optimizer, batch_size,
-                dataset_path, metadata_path, sample_pkl_or_not,
+                dataset_path, metadata_path, sample_pkl,
                 start_epoch, num_epochs, foldername, save_frequency = 100):
     model.to(device)
     pbar = tqdm(range(start_epoch, num_epochs))
-    if not sample_pkl_or_not:
+    if not sample_pkl:
         dataset = HumanoidDataset(dataset_path, metadata_path)
         data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=32)
     for epoch in pbar:
-        if epoch%save_frequency == 0 and sample_pkl_or_not:
-            dataset = HumanoidDataset(dataset_path, metadata_path, sample_pkl = sample_pkl_or_not,
+        if epoch%save_frequency == 0 and sample_pkl:
+            dataset = HumanoidDataset(dataset_path, metadata_path, sample_pkl = sample_pkl,
                                       directory="output/HumanoidIm/phc_comp_3/phc_act/amass_isaac_im_train_take6_upright_slim/")
             data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=32)
         for batch_obs, batch_actions in data_loader:
@@ -195,32 +195,33 @@ def train_model(model, device, criterion, optimizer, batch_size,
         if (epoch + 1) % save_frequency == 0:
             #torch.save(model.state_dict(), f'{foldername}/{epoch+1:05d}.pth')
             save_checkpoint(model, optimizer, epoch, loss, foldername, filename=f"{epoch+1:05d}.pth")
-            del data_loader
-            del dataset
+            if sample_pkl:
+                del data_loader
+                del dataset
     print("Training complete.")
     return model
 
 
 
-def train(dataset_path, metadata_path, sample_pkl_or_not, output_path, ckpt_path="checkpoint.pth"):
+def train(dataset_path, metadata_path, sample_pkl, output_path, ckpt_path="checkpoint.pth"):
     units = [2048, 1024, 512]  # Example hidden layer size
     batch_size = 16384
     num_epochs = 100000
     save_frequency = 100
     learning_rate = 2e-5
 
-    run = wandb.init(
-        # Set the project where this run will be logged
-        project="PHC_Act",
-        # Track hyperparameters and run metadata
-        config={
-            "learning_rate": learning_rate,
-            "hidden_size": units,
-            "batch_size": batch_size,
-            "num_epochs": num_epochs,
-            "dataset": dataset_path,
-        },
-    )
+    # run = wandb.init(
+    #     # Set the project where this run will be logged
+    #     project="PHC_Act",
+    #     # Track hyperparameters and run metadata
+    #     config={
+    #         "learning_rate": learning_rate,
+    #         "hidden_size": units,
+    #         "batch_size": batch_size,
+    #         "num_epochs": num_epochs,
+    #         "dataset": dataset_path,
+    #     },
+    # )
     model = MLP(934, 69, units, "silu")
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
@@ -228,16 +229,23 @@ def train(dataset_path, metadata_path, sample_pkl_or_not, output_path, ckpt_path
     model, optimizer, start_epoch, loss = load_checkpoint(model, optimizer, output_path, ckpt=ckpt_path)
 
     # Train the model
-    train_model(model, device, criterion, optimizer, batch_size, dataset_path, metadata_path, sample_pkl_or_not, start_epoch, num_epochs, output_path, save_frequency = save_frequency)
+    train_model(model, device, criterion, optimizer, batch_size, dataset_path, metadata_path, sample_pkl, start_epoch, num_epochs, output_path, save_frequency = save_frequency)
 
 
 if __name__ == "__main__":
-    dataset_path = "/data/kangnil/PHC/output/HumanoidIm/phc_comp_3/phc_act/amass_isaac_im_train_take6_upright_slim/0_and_0.05_noise/six_0.05/combined_pkl/2024-09-08-04:30:47.pkl"
-    #dataset_path = "/data/kangnil/PHC/output/HumanoidIm/phc_comp_3/phc_act/amass_isaac_im_train_take6_upright_slim/noise_True_0.1_2024-09-05-05:59:22.pkl"
-    metadata_path = "/data/kangnil/PHC/output/HumanoidIm/phc_comp_3/phc_act/phc_act_amass_isaac_im_train_take6_upright_slim_metadata.pkl"
-    output_path = f"/data/kangnil/PHC/output/HumanoidIm/phc_comp_3/phc_act/amass_isaac_im_train_take6_upright_slim/models/"
-    ckpt_path = "01600.pth"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset_path", type=str, default="")
+    parser.add_argument("--metadata_path", type=str, default="")
+    parser.add_argument("--output_path", type=str, default="")
+    parser.add_argument("--sample_pkl", type=bool, default=False)
+    parser.add_argument("--ckpt_path", type=str, default="01600.pth")
+    args = parser.parse_args()
+    
+    dataset_path = args.dataset_path
+    metadata_path = args.metadata_path
+    output_path = args.output_path
+    ckpt_path = args.ckpt_path
     os.makedirs(output_path, exist_ok=True)
-    sample_pkl_or_not = True
-    train(dataset_path, metadata_path, sample_pkl_or_not, output_path, ckpt_path)
+    sample_pkl = args.sample_pkl
+    train(dataset_path, metadata_path, sample_pkl, output_path, ckpt_path)
 
