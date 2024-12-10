@@ -33,6 +33,8 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
+[December 10, 2024] Release process for generating offline dataset for offline RL or behavior cloning (developed by @kangnil). See [docs/offline_dataset.md](docs/offline_dataset.md) for more details. 
+
 [December 9, 2024] Release retargeting [documentation](docs/retargeting.md) (for retargeting to your own humanoids using SMPL data). 
 
 [October 8, 2024] Release support for Unitree H1 and G1 humanoid. 
