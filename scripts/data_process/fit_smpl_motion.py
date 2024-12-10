@@ -185,7 +185,11 @@ def process_motion(key_names, key_name_to_pkls, cfg):
 
 @hydra.main(version_base=None, config_path="../../phc/data/cfg", config_name="config")
 def main(cfg : DictConfig) -> None:
-    amass_root = "/hdd/zen/data/ActBound/AMASS/AMASS_Complete"
+    if "amass_root" in cfg:
+        amass_root = cfg.amass_root
+    else:
+        raise ValueError("amass_root is not specified in the config")
+    
     all_pkls = glob.glob(f"{amass_root}/**/*.npz", recursive=True)
     split_len = len(amass_root.split("/"))
     key_name_to_pkls = {"0-" + "_".join(data_path.split("/")[split_len:]).replace(".npz", ""): data_path for data_path in all_pkls}
