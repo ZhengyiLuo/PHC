@@ -33,7 +33,7 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
-[December 9, 2024] Release retargeting documentation. 
+[December 9, 2024] Release retargeting [documentation](docs/retargeting.md) (for retargeting to your own humanoids using SMPL data). 
 
 [October 8, 2024] Release support for Unitree H1 and G1 humanoid. 
 
