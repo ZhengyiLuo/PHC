@@ -330,14 +330,14 @@ class IMAmpAgent(amp_agent.AMPAgent):
                 end = True
                 
                 eval_info = {
-                    "eval_success_rate": self.success_rate,
-                    "eval_mpjpe_all": metrics_all_print['mpjpe_g'],
-                    "eval_mpjpe_succ": metrics_succ_print['mpjpe_g'],
-                    "accel_dist": metrics_succ_print['accel_dist'], 
-                    "vel_dist": metrics_succ_print['vel_dist'], 
-                    "mpjpel_all": metrics_all_print['mpjpe_l'],
-                    "mpjpel_succ": metrics_succ_print['mpjpe_l'],
-                    "mpjpe_pa": metrics_succ_print['mpjpe_pa'], 
+                    "eval/success_rate": self.success_rate,
+                    "eval/mpjpe_all": metrics_all_print['mpjpe_g'],
+                    "eval/mpjpe_succ": metrics_succ_print['mpjpe_g'],
+                    "eval/accel_dist": metrics_succ_print['accel_dist'], 
+                    "eval/vel_dist": metrics_succ_print['vel_dist'], 
+                    "eval/mpjpel_all": metrics_all_print['mpjpe_l'],
+                    "eval/mpjpel_succ": metrics_succ_print['mpjpe_l'],
+                    "eval/mpjpe_pa": metrics_succ_print['mpjpe_pa'], 
                 }
                 # failed_keys = humanoid_env._motion_lib._motion_data_keys[terminate_hist[:humanoid_env._motion_lib._num_unique_motions]]
                 # success_keys = humanoid_env._motion_lib._motion_data_keys[~terminate_hist[:humanoid_env._motion_lib._num_unique_motions]]

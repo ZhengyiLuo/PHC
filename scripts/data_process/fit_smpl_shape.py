@@ -33,10 +33,7 @@ from tqdm import tqdm
 @hydra.main(version_base=None, config_path="../../phc/data/cfg", config_name="config")
 def main(cfg : DictConfig) -> None:
     
-    robot_name = "h1"
     humanoid_fk = Humanoid_Batch(cfg.robot) # load forward kinematics model
-
-    robot_joint_names = humanoid_fk.body_names
 
     #### Define corresonpdances between h1 and smpl joints
     robot_joint_names_augment = humanoid_fk.body_names_augment 
@@ -75,9 +72,11 @@ def main(cfg : DictConfig) -> None:
     scale = Variable(torch.ones([1]).to(device), requires_grad=True)
     optimizer_shape = torch.optim.Adam([shape_new, scale],lr=0.1)
     
-    pbar = tqdm(range(1000))
+    train_iterations=3000
+    print("start fitting shapes")
+    pbar = tqdm(range(train_iterations))
     for iteration in pbar:
-        verts, joints = smpl_parser_n.get_joints_verts(pose_aa_stand, shape_new, trans[0:1])
+        verts, joints = smpl_parser_n.get_joints_verts(pose_aa_stand, shape_new, trans[0:1]) # fitted smpl shape
         root_pos = joints[:, 0]
         joints = (joints - joints[:, 0]) * scale + root_pos
         if len(cfg.robot.extend_config) > 0:
@@ -85,27 +84,34 @@ def main(cfg : DictConfig) -> None:
         else:
             diff = fk_return.global_translation[:, :, robot_joint_pick_idx] - joints[:, smpl_joint_pick_idx]
 
-        loss_g = diff.norm(dim = -1).mean() 
+        # loss_g = diff.norm(dim = -1).mean() 
+        loss_g = diff.norm(dim = -1).square().sum()
+        
         loss = loss_g
         pbar.set_description_str(f"{iteration} - Loss: {loss.item() * 1000}")
 
         optimizer_shape.zero_grad()
         loss.backward()
         optimizer_shape.step()
+
+    # print the fitted shape and scale parameters
+    print("shape:",shape_new.detach())
+    print("scale:",scale)
+
     if cfg.get("vis", False):
         from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
         import matplotlib.pyplot as plt
         
-        j3d = fk_return.global_translation_extend[0, :, :, :].detach().numpy()
+        j3d = fk_return.global_translation_extend[0, :, robot_joint_pick_idx, :].detach().numpy()
         j3d = j3d - j3d[:, 0:1]
-        j3d_joints = joints.detach().numpy()
+        j3d_joints = joints[:, smpl_joint_pick_idx].detach().numpy()
         j3d_joints = j3d_joints - j3d_joints[:, 0:1]
         idx = 0
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         ax.view_init(90, 0)
-        ax.scatter(j3d[idx, :,0], j3d[idx, :,1], j3d[idx, :,2])
-        ax.scatter(j3d_joints[idx, :,0], j3d_joints[idx, :,1], j3d_joints[idx, :,2])
+        ax.scatter(j3d[idx, :,0], j3d[idx, :,1], j3d[idx, :,2], label='Humanoid Shape', c='blue')
+        ax.scatter(j3d_joints[idx, :,0], j3d_joints[idx, :,1], j3d_joints[idx, :,2], label='Fitted Shape', c='red')
 
         ax.set_xlabel('X Label')
         ax.set_ylabel('Y Label')
@@ -114,6 +120,7 @@ def main(cfg : DictConfig) -> None:
         ax.set_xlim(-drange, drange)
         ax.set_ylim(-drange, drange)
         ax.set_zlim(-drange, drange)
+        ax.legend()
         plt.show()
 
     os.makedirs(f"data/{cfg.robot.humanoid_type}", exist_ok=True)
