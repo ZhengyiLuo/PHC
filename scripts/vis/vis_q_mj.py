@@ -63,8 +63,7 @@ def main(cfg : DictConfig) -> None:
     
     curr_start, num_motions, motion_id, motion_acc, time_step, dt, paused = 0, 1, 0, set(), 0, 1/30, False
     
-    motion_file = f"data/{cfg.robot.humanoid_type}/v1/singles/{cfg.get('motion_name', '0-KIT_3_walking_slow08_poses')}.pkl"
-    motion_file = "data/h1/v1/amass_phc.pkl"
+    motion_file = f"data/{cfg.robot.humanoid_type}/v1/singles/{cfg.motion_name}.pkl"
     print(motion_file)
     motion_data = joblib.load(motion_file)
     motion_data_keys = list(motion_data.keys())
@@ -86,7 +85,6 @@ def main(cfg : DictConfig) -> None:
         while viewer.is_running():
             step_start = time.time()
             curr_motion_key = motion_data_keys[motion_id]
-            curr_motion_key = "0-KIT_183_walking_run08_poses"
             curr_motion = motion_data[curr_motion_key]
             curr_time = int(time_step/dt) % curr_motion['dof'].shape[0]
             
