@@ -115,7 +115,7 @@ class MotionLibBase():
 
     def __init__(self, motion_lib_cfg):
         self.m_cfg = motion_lib_cfg
-        self._sim_fps = np.ceil(1/self.m_cfg.get("step_dt", 1/30))
+        self._sim_fps = 1/self.m_cfg.get("step_dt", 1/30)
         print("SIM FPS:", self._sim_fps)
         self._device = self.m_cfg.device
         
