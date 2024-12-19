@@ -328,6 +328,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
                 "smpl_type": self.humanoid_type,
                 "randomrize_heading": True,
                 "device": self.device,
+                "step_dt": self.dt,
             })
             motion_eval_file = motion_train_file
             self._motion_train_lib = MotionLibSMPL(motion_lib_cfg)
@@ -351,6 +352,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
                 "randomrize_heading": True,
                 "device": self.device,
                 "robot": self.cfg.robot,
+                "step_dt": self.dt,
             })
             motion_eval_file = motion_train_file
             self._motion_train_lib = MotionLibReal(motion_lib_cfg)
