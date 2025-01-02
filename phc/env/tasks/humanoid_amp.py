@@ -343,6 +343,7 @@ class HumanoidAMP(Humanoid):
                 "randomrize_heading": True,
                 "device": self.device,
                 "min_length": self._min_motion_len, 
+                "step_dt": self.dt,
             })
             self._motion_lib = MotionLibSMPL(motion_lib_cfg=motion_lib_cfg)
             self._motion_lib.load_motions(skeleton_trees=self.skeleton_trees, gender_betas=self.humanoid_shapes.cpu(), limb_weights=self.humanoid_limb_and_weights.cpu(), random_sample=not HACK_MOTION_SYNC)
@@ -359,6 +360,7 @@ class HumanoidAMP(Humanoid):
                 "randomrize_heading": True,
                 "device": self.device,
                 "robot": self.cfg.robot,
+                "step_dt": self.dt,
             })
             motion_eval_file = motion_train_file
             self._motion_train_lib = MotionLibReal(motion_lib_cfg)
