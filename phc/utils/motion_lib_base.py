@@ -115,6 +115,8 @@ class MotionLibBase():
 
     def __init__(self, motion_lib_cfg):
         self.m_cfg = motion_lib_cfg
+        self._sim_fps = 1/self.m_cfg.get("step_dt", 1/30)
+        print("SIM FPS:", self._sim_fps)
         self._device = self.m_cfg.device
         
         self.mesh_parsers = None
@@ -428,9 +430,9 @@ class MotionLibBase():
 
     def get_motion_num_steps(self, motion_ids=None):
         if motion_ids is None:
-            return (self._motion_num_frames * 30 / self._motion_fps).int()
+            return (self._motion_num_frames * self._sim_fps / self._motion_fps).ceil().int()
         else:
-            return (self._motion_num_frames[motion_ids] * 30 / self._motion_fps).int()
+            return (self._motion_num_frames[motion_ids] * self._sim_fps / self._motion_fps).ceil().int()
 
     def get_motion_state(self, motion_ids, motion_times, offset=None):
         n = len(motion_ids)

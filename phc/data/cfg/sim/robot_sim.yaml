@@ -6,7 +6,7 @@ slices: 0 # Number of client threads that process env slices
 use_flex: False
 
 physx:
-  sim_time_step: 1/200
+  step_dt: 1/200
   num_threads: 4
   solver_type: 1  # 0: pgs, 1: tgs
   num_position_iterations: 4
