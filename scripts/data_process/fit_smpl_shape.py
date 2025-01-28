@@ -101,7 +101,7 @@ def main(cfg : DictConfig) -> None:
         from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
         import matplotlib.pyplot as plt
         
-        j3d = fk_return.global_translation_extend[0, :, robot_joint_pick_idx, :].detach().numpy()
+        j3d = fk_return.global_translation_extend[0, :, robot_joint_pick_idx, :] .detach().numpy()
         j3d = j3d - j3d[:, 0:1]
         j3d_joints = joints[:, smpl_joint_pick_idx].detach().numpy()
         j3d_joints = j3d_joints - j3d_joints[:, 0:1]

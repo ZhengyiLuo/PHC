@@ -144,14 +144,6 @@ pip install -r requirement.txt
 ```
 
 
-Make sure you have the SMPL paramters properly setup by running the following scripts:
-```
-python scripts/vis/vis_motion_mj.py
-python scripts/joint_monkey_smpl.py
-```
-
-The SMPL model is used to adjust the height the humanoid robot to avoid penetnration with the ground during data loading. 
-
 4. Use the following script to download trained models and sample data.
 
 ```
@@ -161,6 +153,14 @@ bash download_data.sh
 this will download amass_isaac_standing_upright_slim.pkl, which is a standing still pose for testing. 
 
 To evaluate with your own SMPL data, see the script `scripts/data_process/convert_data_smpl.py`. Pay speical attention to make sure the coordinate system is the same as the one used  in simulaiton (with negative z as gravity direction). 
+
+Make sure you have the SMPL paramters properly setup by running the following scripts:
+```
+python scripts/vis/vis_motion_mj.py
+python scripts/joint_monkey_smpl.py
+```
+
+The SMPL model is used to adjust the height the humanoid robot to avoid penetnration with the ground during data loading. 
 
 
 ## Evaluation 
