@@ -1,0 +1,671 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="right_hand_base_link">
+    <inertial>
+      <origin xyz="-0.0115277 0.00544665 0.0438351" rpy="0.0 0.0 0.0" />
+      <mass value="0.303824" />
+      <inertia ixx="0.000671133" ixy="3.0752e-05" ixz="-3.94284e-05" iyy="0.000414095" iyz="4.12353e-05" izz="0.000365755" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_hand_base_link.STL" />
+      </geometry>
+      <material name="base_material">
+        <color rgba="0.9 0.92 0.93 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.031 0.0 0.072" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <box size="0.07 0.1 0.1" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_first_finger_joint" type="fixed">
+    <origin xyz="0.0125 -0.0301 0.06902597" rpy="0.0 -0.05235987755982989 1.5707963267948966" />
+    <parent link="right_hand_base_link" />
+    <child link="right_first_finger_link" />
+  </joint>
+  <link name="right_first_finger_link">
+    <inertial>
+      <origin xyz="1.41028e-05 -0.00138132 0.012191" rpy="0.0 0.0 0.0" />
+      <mass value="0.0623184" />
+      <inertia ixx="2.69318e-05" ixy="-6.82829e-09" ixz="-3.70732e-09" iyy="1.89349e-05" iyz="-3.38259e-06" izz="9.1672e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/finger_link.STL" />
+      </geometry>
+      <material name="finger_material">
+        <color rgba="0.65 0.62 0.59 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_first_q1" type="revolute">
+    <origin xyz="0.0 0.003 0.049" rpy="-1.5708 -0.10531 1.5708" />
+    <parent link="right_first_finger_link" />
+    <child link="right_first_q1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.6642" effort="0.001" velocity="1.0" />
+  </joint>
+  <link name="right_first_q1_link">
+    <inertial>
+      <origin xyz="-0.00108233 -0.0223853 3.25131e-18" rpy="0.0 0.0 0.0" />
+      <mass value="0.0113769" />
+      <inertia ixx="4.45629e-06" ixy="2.87678e-07" ixz="0.0" iyy="2.8082e-07" iyz="0.0" izz="4.39682e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/q1_link.STL" />
+      </geometry>
+      <material name="q1_material">
+        <color rgba="1.0 0.66 0.33 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 -0.035 0.0" rpy="1.57 0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.005" length="0.023" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_first_q2" type="revolute">
+    <origin xyz="0.0 -0.05 0.0" rpy="0.0 0.0 -1.5708" />
+    <parent link="right_first_q1_link" />
+    <child link="right_first_q2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.3737" effort="0.001" velocity="1.0" />
+  </joint>
+  <link name="right_first_q2_link">
+    <inertial>
+      <origin xyz="0.0136499 5.85876e-05 -4.0207e-18" rpy="0.0 0.0 0.0" />
+      <mass value="0.00645066" />
+      <inertia ixx="1.14612e-07" ixy="-1.97658e-08" ixz="0.0" iyy="9.24394e-07" iyz="0.0" izz="8.62155e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/q2_link.STL" />
+      </geometry>
+      <material name="q2_material">
+        <color rgba="1.0 0.66 0.33 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.01397 0.0 0.0" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.005" length="0.012" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_first_q3" type="revolute">
+    <origin xyz="0.027956 0.001575 0.0" rpy="0.0 0.0 0.056278" />
+    <parent link="right_first_q2_link" />
+    <child link="right_first_q3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.2654" effort="0.001" velocity="1.0" />
+  </joint>
+  <link name="right_first_q3_link">
+    <inertial>
+      <origin xyz="0.0130988 -0.00350493 5.1053e-07" rpy="0.0 0.0 0.0" />
+      <mass value="0.0131077" />
+      <inertia ixx="4.05146e-07" ixy="7.10882e-08" ixz="1.25856e-10" iyy="6.74981e-07" iyz="-4.14391e-11" izz="5.73179e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/q3_link.STL" />
+      </geometry>
+      <material name="q3_material">
+        <color rgba="0.79 0.82 0.93 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.012 -0.003 0.0" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.007" length="0.01" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_first_ee" type="fixed">
+    <origin xyz="0.022 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="right_first_q3_link" />
+    <child link="right_first_ee" />
+  </joint>
+  <link name="right_first_ee" />
+  <joint name="right_hand_palm_rest_joint" type="fixed">
+    <origin xyz="-0.024 0.0 0.064" rpy="1.57 0.0 2.97" />
+    <parent link="right_hand_base_link" />
+    <child link="right_hand_palm_rest_link" />
+  </joint>
+  <link name="right_hand_palm_rest_link">
+    <inertial>
+      <origin xyz="1.41028e-05 -0.00138132 0.012191" rpy="0.0 0.0 0.0" />
+      <mass value="0.0623184" />
+      <inertia ixx="2.69318e-05" ixy="-6.82829e-09" ixz="-3.70732e-09" iyy="1.89349e-05" iyz="-3.38259e-06" izz="9.1672e-06" />
+    </inertial>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.003" length="0.08" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_hand_root_ee" type="fixed">
+    <origin xyz="-0.01 0.0 0.099" rpy="1.5708 -1.5708 0.0" />
+    <parent link="right_hand_base_link" />
+    <child link="right_hand_root_ee" />
+  </joint>
+  <link name="right_hand_root_ee">
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14159" />
+      <geometry>
+        <mesh filename="../../../arrow/meshes/arrow.stl" scale="0.25 0.25 0.25" />
+      </geometry>
+      <material name="x_axis">
+        <color rgba="1.0 0.0 0.0 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 -1.5708" />
+      <geometry>
+        <mesh filename="../../../arrow/meshes/arrow.stl" scale="0.25 0.25 0.25" />
+      </geometry>
+      <material name="y_axis">
+        <color rgba="0.0 1.0 0.0 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <mesh filename="../../../arrow/meshes/arrow.stl" scale="0.25 0.25 0.25" />
+      </geometry>
+      <material name="z_axis">
+        <color rgba="0.0 0.0 1.0 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_middle_finger_joint" type="fixed">
+    <origin xyz="0.0125 -0.0091 0.084" rpy="0.0 0.0 1.5707963267948966" />
+    <parent link="right_hand_base_link" />
+    <child link="right_middle_finger_link" />
+  </joint>
+  <link name="right_middle_finger_link">
+    <inertial>
+      <origin xyz="1.41028e-05 -0.00138132 0.012191" rpy="0.0 0.0 0.0" />
+      <mass value="0.0623184" />
+      <inertia ixx="2.69318e-05" ixy="-6.82829e-09" ixz="-3.70732e-09" iyy="1.89349e-05" iyz="-3.38259e-06" izz="9.1672e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/finger_link.STL" />
+      </geometry>
+      <material name="finger_material">
+        <color rgba="0.65 0.62 0.59 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_middle_q1" type="revolute">
+    <origin xyz="0.0 0.003 0.049" rpy="-1.5708 -0.10531 1.5708" />
+    <parent link="right_middle_finger_link" />
+    <child link="right_middle_q1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.6642" effort="0.001" velocity="1.0" />
+  </joint>
+  <link name="right_middle_q1_link">
+    <inertial>
+      <origin xyz="-0.00108233 -0.0223853 3.25131e-18" rpy="0.0 0.0 0.0" />
+      <mass value="0.0113769" />
+      <inertia ixx="4.45629e-06" ixy="2.87678e-07" ixz="0.0" iyy="2.8082e-07" iyz="0.0" izz="4.39682e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/q1_link.STL" />
+      </geometry>
+      <material name="q1_material">
+        <color rgba="1.0 0.66 0.33 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 -0.035 0.0" rpy="1.57 0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.005" length="0.023" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_middle_q2" type="revolute">
+    <origin xyz="0.0 -0.05 0.0" rpy="0.0 0.0 -1.5708" />
+    <parent link="right_middle_q1_link" />
+    <child link="right_middle_q2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.3737" effort="0.001" velocity="1.0" />
+  </joint>
+  <link name="right_middle_q2_link">
+    <inertial>
+      <origin xyz="0.0136499 5.85876e-05 -4.0207e-18" rpy="0.0 0.0 0.0" />
+      <mass value="0.00645066" />
+      <inertia ixx="1.14612e-07" ixy="-1.97658e-08" ixz="0.0" iyy="9.24394e-07" iyz="0.0" izz="8.62155e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/q2_link.STL" />
+      </geometry>
+      <material name="q2_material">
+        <color rgba="1.0 0.66 0.33 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.01397 0.0 0.0" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.005" length="0.012" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_middle_q3" type="revolute">
+    <origin xyz="0.027956 0.001575 0.0" rpy="0.0 0.0 0.056278" />
+    <parent link="right_middle_q2_link" />
+    <child link="right_middle_q3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.2654" effort="0.001" velocity="1.0" />
+  </joint>
+  <link name="right_middle_q3_link">
+    <inertial>
+      <origin xyz="0.0130988 -0.00350493 5.1053e-07" rpy="0.0 0.0 0.0" />
+      <mass value="0.0131077" />
+      <inertia ixx="4.05146e-07" ixy="7.10882e-08" ixz="1.25856e-10" iyy="6.74981e-07" iyz="-4.14391e-11" izz="5.73179e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/q3_link.STL" />
+      </geometry>
+      <material name="q3_material">
+        <color rgba="0.79 0.82 0.93 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.012 -0.003 0.0" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.007" length="0.01" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_middle_ee" type="fixed">
+    <origin xyz="0.022 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="right_middle_q3_link" />
+    <child link="right_middle_ee" />
+  </joint>
+  <link name="right_middle_ee" />
+  <joint name="right_pinky_finger_joint" type="fixed">
+    <origin xyz="0.0125 0.03388 0.06902597" rpy="0.0 0.05235987755982989 1.5707963267948966" />
+    <parent link="right_hand_base_link" />
+    <child link="right_pinky_finger_link" />
+  </joint>
+  <link name="right_pinky_finger_link">
+    <inertial>
+      <origin xyz="1.41028e-05 -0.00138132 0.012191" rpy="0.0 0.0 0.0" />
+      <mass value="0.0623184" />
+      <inertia ixx="2.69318e-05" ixy="-6.82829e-09" ixz="-3.70732e-09" iyy="1.89349e-05" iyz="-3.38259e-06" izz="9.1672e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/finger_link.STL" />
+      </geometry>
+      <material name="finger_material">
+        <color rgba="0.65 0.62 0.59 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_pinky_q1" type="revolute">
+    <origin xyz="0.0 0.003 0.049" rpy="-1.5708 -0.10531 1.5708" />
+    <parent link="right_pinky_finger_link" />
+    <child link="right_pinky_q1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.6642" effort="0.001" velocity="1.0" />
+  </joint>
+  <link name="right_pinky_q1_link">
+    <inertial>
+      <origin xyz="-0.00108233 -0.0223853 3.25131e-18" rpy="0.0 0.0 0.0" />
+      <mass value="0.0113769" />
+      <inertia ixx="4.45629e-06" ixy="2.87678e-07" ixz="0.0" iyy="2.8082e-07" iyz="0.0" izz="4.39682e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/q1_link.STL" />
+      </geometry>
+      <material name="q1_material">
+        <color rgba="1.0 0.66 0.33 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 -0.035 0.0" rpy="1.57 0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.005" length="0.023" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_pinky_q2" type="revolute">
+    <origin xyz="0.0 -0.05 0.0" rpy="0.0 0.0 -1.5708" />
+    <parent link="right_pinky_q1_link" />
+    <child link="right_pinky_q2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.3737" effort="0.001" velocity="1.0" />
+  </joint>
+  <link name="right_pinky_q2_link">
+    <inertial>
+      <origin xyz="0.0136499 5.85876e-05 -4.0207e-18" rpy="0.0 0.0 0.0" />
+      <mass value="0.00645066" />
+      <inertia ixx="1.14612e-07" ixy="-1.97658e-08" ixz="0.0" iyy="9.24394e-07" iyz="0.0" izz="8.62155e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/q2_link.STL" />
+      </geometry>
+      <material name="q2_material">
+        <color rgba="1.0 0.66 0.33 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.01397 0.0 0.0" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.005" length="0.012" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_pinky_q3" type="revolute">
+    <origin xyz="0.027956 0.001575 0.0" rpy="0.0 0.0 0.056278" />
+    <parent link="right_pinky_q2_link" />
+    <child link="right_pinky_q3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.2654" effort="0.001" velocity="1.0" />
+  </joint>
+  <link name="right_pinky_q3_link">
+    <inertial>
+      <origin xyz="0.0130988 -0.00350493 5.1053e-07" rpy="0.0 0.0 0.0" />
+      <mass value="0.0131077" />
+      <inertia ixx="4.05146e-07" ixy="7.10882e-08" ixz="1.25856e-10" iyy="6.74981e-07" iyz="-4.14391e-11" izz="5.73179e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/q3_link.STL" />
+      </geometry>
+      <material name="q3_material">
+        <color rgba="0.79 0.82 0.93 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.012 -0.003 0.0" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.007" length="0.01" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_pinky_ee" type="fixed">
+    <origin xyz="0.022 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="right_pinky_q3_link" />
+    <child link="right_pinky_ee" />
+  </joint>
+  <link name="right_pinky_ee" />
+  <joint name="right_ring_finger_joint" type="fixed">
+    <origin xyz="0.0125 0.01288 0.069" rpy="0.0 0.0 1.5707963267948966" />
+    <parent link="right_hand_base_link" />
+    <child link="right_ring_finger_link" />
+  </joint>
+  <link name="right_ring_finger_link">
+    <inertial>
+      <origin xyz="1.41028e-05 -0.00138132 0.012191" rpy="0.0 0.0 0.0" />
+      <mass value="0.0623184" />
+      <inertia ixx="2.69318e-05" ixy="-6.82829e-09" ixz="-3.70732e-09" iyy="1.89349e-05" iyz="-3.38259e-06" izz="9.1672e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/finger_link.STL" />
+      </geometry>
+      <material name="finger_material">
+        <color rgba="0.65 0.62 0.59 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_ring_q1" type="revolute">
+    <origin xyz="0.0 0.003 0.049" rpy="-1.5708 -0.10531 1.5708" />
+    <parent link="right_ring_finger_link" />
+    <child link="right_ring_q1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.6642" effort="0.001" velocity="1.0" />
+  </joint>
+  <link name="right_ring_q1_link">
+    <inertial>
+      <origin xyz="-0.00108233 -0.0223853 3.25131e-18" rpy="0.0 0.0 0.0" />
+      <mass value="0.0113769" />
+      <inertia ixx="4.45629e-06" ixy="2.87678e-07" ixz="0.0" iyy="2.8082e-07" iyz="0.0" izz="4.39682e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/q1_link.STL" />
+      </geometry>
+      <material name="q1_material">
+        <color rgba="1.0 0.66 0.33 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 -0.035 0.0" rpy="1.57 0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.005" length="0.023" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_ring_q2" type="revolute">
+    <origin xyz="0.0 -0.05 0.0" rpy="0.0 0.0 -1.5708" />
+    <parent link="right_ring_q1_link" />
+    <child link="right_ring_q2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.3737" effort="0.001" velocity="1.0" />
+  </joint>
+  <link name="right_ring_q2_link">
+    <inertial>
+      <origin xyz="0.0136499 5.85876e-05 -4.0207e-18" rpy="0.0 0.0 0.0" />
+      <mass value="0.00645066" />
+      <inertia ixx="1.14612e-07" ixy="-1.97658e-08" ixz="0.0" iyy="9.24394e-07" iyz="0.0" izz="8.62155e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/q2_link.STL" />
+      </geometry>
+      <material name="q2_material">
+        <color rgba="1.0 0.66 0.33 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.01397 0.0 0.0" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.005" length="0.012" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_ring_q3" type="revolute">
+    <origin xyz="0.027956 0.001575 0.0" rpy="0.0 0.0 0.056278" />
+    <parent link="right_ring_q2_link" />
+    <child link="right_ring_q3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.2654" effort="0.001" velocity="1.0" />
+  </joint>
+  <link name="right_ring_q3_link">
+    <inertial>
+      <origin xyz="0.0130988 -0.00350493 5.1053e-07" rpy="0.0 0.0 0.0" />
+      <mass value="0.0131077" />
+      <inertia ixx="4.05146e-07" ixy="7.10882e-08" ixz="1.25856e-10" iyy="6.74981e-07" iyz="-4.14391e-11" izz="5.73179e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/q3_link.STL" />
+      </geometry>
+      <material name="q3_material">
+        <color rgba="0.79 0.82 0.93 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.012 -0.003 0.0" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.007" length="0.01" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_ring_ee" type="fixed">
+    <origin xyz="0.022 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="right_ring_q3_link" />
+    <child link="right_ring_ee" />
+  </joint>
+  <link name="right_ring_ee" />
+  <joint name="right_thumb_finger_joint" type="fixed">
+    <origin xyz="-0.0242 0.01242 0.008" rpy="0.0 0.0 0.0" />
+    <parent link="right_hand_base_link" />
+    <child link="right_thumb_finger_link" />
+  </joint>
+  <link name="right_thumb_finger_link">
+    <inertial>
+      <origin xyz="0.0101663 0.0251607 0.00414214" rpy="0.0 0.0 0.0" />
+      <mass value="0.036875" />
+      <inertia ixx="8.87e-06" ixy="-2.50868e-06" ixz="-1.72478e-08" iyy="2.97024e-06" iyz="-9.46688e-07" izz="1.12169e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/thumb_finger_link.STL" />
+      </geometry>
+      <material name="base_material">
+        <color rgba="0.65 0.62 0.59 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_thumb_q0" type="revolute">
+    <origin xyz="0.0086356 -0.031339 0.041613" rpy="-0.042045 -0.1904 -1.8228" />
+    <parent link="right_thumb_finger_link" />
+    <child link="right_thumb_q0_link" />
+    <axis xyz="0.0 0.0 -1.0" />
+    <limit lower="0.0" upper="1.4835" effort="0.6" velocity="1.42" />
+  </joint>
+  <link name="right_thumb_q0_link">
+    <inertial>
+      <origin xyz="-0.011437 0.00011227 -0.010742" rpy="0.0 0.0 0.0" />
+      <mass value="0.062417" />
+      <inertia ixx="6.4594e-06" ixy="2.2303e-06" ixz="2.6826e-07" iyy="1.9227e-05" iyz="-1.9015e-07" izz="1.7062e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/thumb_q0_link.STL" />
+      </geometry>
+      <material name="q0_material">
+        <color rgba="0.79 0.82 0.93 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_thumb_q1" type="revolute">
+    <origin xyz="0.019 0.0 -0.012" rpy="1.5708 1.5708 0.0" />
+    <parent link="right_thumb_q0_link" />
+    <child link="right_thumb_q1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="0.97808" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_thumb_q1_link">
+    <inertial>
+      <origin xyz="0.0220893 -0.00401821 4.36369e-13" rpy="0.0 0.0 0.0" />
+      <mass value="0.0108858" />
+      <inertia ixx="2.48518e-07" ixy="1.99166e-07" ixz="0.0" iyy="4.19926e-06" iyz="-1.72068e-16" izz="4.11274e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/thumb_q1_link.STL" />
+      </geometry>
+      <material name="q1_material">
+        <color rgba="0.65 0.62 0.59 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.003 0.025 0.0" rpy="1.708 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.005" length="0.03" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_thumb_q2" type="revolute">
+    <origin xyz="0.0069408 0.049516 0.0" rpy="0.0 0.0 1.4315" />
+    <parent link="right_thumb_q1_link" />
+    <child link="right_thumb_q2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="0.98664" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_thumb_q2_link">
+    <inertial>
+      <origin xyz="0.0150197 -0.000178385 -2.75496e-06" rpy="0.0 0.0 0.0" />
+      <mass value="0.00489048" />
+      <inertia ixx="8.48042e-08" ixy="-1.63736e-08" ixz="2.28777e-10" iyy="7.49638e-07" iyz="2.40339e-12" izz="6.81052e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/thumb_q2_link.STL" />
+      </geometry>
+      <material name="q2_material">
+        <color rgba="0.65 0.62 0.59 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0146 0.0 0.0" rpy="0.0 1.57 0.0" />
+      <geometry>
+        <cylinder radius="0.005" length="0.02" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_thumb_q3" type="revolute">
+    <origin xyz="0.032 0.0 -5e-05" rpy="0.0 0.0 0.0" />
+    <parent link="right_thumb_q2_link" />
+    <child link="right_thumb_q3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.3097" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_thumb_q3_link">
+    <inertial>
+      <origin xyz="0.0129637 -0.00395072 4.9289e-05" rpy="0.0 0.0 0.0" />
+      <mass value="0.00979561" />
+      <inertia ixx="3.42233e-07" ixy="5.60658e-08" ixz="-4.91493e-11" iyy="5.41569e-07" iyz="6.75519e-12" izz="4.57001e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/thumb_q3_link.STL" />
+      </geometry>
+      <material name="q3_material">
+        <color rgba="0.79 0.82 0.93 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.012 0.0 0.0" rpy="0.0 1.57 0.0" />
+      <geometry>
+        <cylinder radius="0.007" length="0.01" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_thumb_ee" type="fixed">
+    <origin xyz="0.022 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="right_thumb_q3_link" />
+    <child link="right_thumb_ee" />
+  </joint>
+  <link name="right_thumb_ee" />
+</robot>

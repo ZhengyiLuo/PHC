@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="april_tag_base_link">
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/april_tag_base_link.STL" />
+      </geometry>
+      <material name="april_tag_base_material">
+        <color rgba="1.0 1.0 1.0 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="april_tag_back" type="fixed">
+    <origin xyz="0.0 -0.04 0.041" rpy="-1.5708 -1.5708 0.0" />
+    <parent link="april_tag_base_link" />
+    <child link="april_tag_back_link" />
+  </joint>
+  <link name="april_tag_back_link">
+    <inertial>
+      <origin xyz="-1.73472e-18 -2.33581e-19 0.0156082" rpy="0.0 0.0 0.0" />
+      <mass value="0.169983" />
+      <inertia ixx="0.000254806" ixy="0.0" ixz="0.0" iyy="0.000114694" iyz="0.0" izz="0.000321726" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/april_tag_back_link.STL" />
+      </geometry>
+      <material name="april_tag_back_material">
+        <color rgba="0.0 0.0 0.0 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.061125" rpy="0.0 -1.5708 0.0" />
+      <geometry>
+        <box size="0.12225 0.101 0.08" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="hand_april_tag_l" type="fixed">
+    <origin xyz="0.051 0.0425984 0.0411049" rpy="1.5708 0.0 1.5708" />
+    <parent link="april_tag_base_link" />
+    <child link="hand_april_tag_l_link" />
+  </joint>
+  <link name="hand_april_tag_l_link">
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/hand_april_tag_l_link.STL" />
+      </geometry>
+      <material name="hand_april_tag_l_material">
+        <color rgba="0.0 0.0 0.0 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="hand_april_tag_r" type="fixed">
+    <origin xyz="-0.051 0.0427989 0.0412325" rpy="1.5708 0.0 -1.5708" />
+    <parent link="april_tag_base_link" />
+    <child link="hand_april_tag_r_link" />
+  </joint>
+  <link name="hand_april_tag_r_link">
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="-1.5708 1.5708 0.0" />
+      <geometry>
+        <mesh filename="../meshes/hand_april_tag_r_link.STL" />
+      </geometry>
+      <material name="hand_april_tag_r_material">
+        <color rgba="0.0 0.0 0.0 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="hand_april_tag_t" type="fixed">
+    <origin xyz="0.0 0.08225 0.0409851" rpy="1.5708 0.0 3.14159" />
+    <parent link="april_tag_base_link" />
+    <child link="hand_april_tag_t_link" />
+  </joint>
+  <link name="hand_april_tag_t_link">
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/hand_april_tag_t_link.STL" />
+      </geometry>
+      <material name="hand_april_tag_t_material">
+        <color rgba="0.0 0.0 0.0 1.0" />
+      </material>
+    </visual>
+  </link>
+</robot>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-0.0356843 -0.000197981 0.0962196" rpy="0.0 0.0 0.0" />
+      <mass value="12.4154" />
+      <inertia ixx="0.323049" ixy="-0.000216211" ixz="-0.00538345" iyy="0.29517" iyz="0.00051089" izz="0.0973281" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.009" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/base_link.STL" />
+      </geometry>
+      <material name="base_material">
+        <color rgba="0.2 0.2 0.2 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.0206726 0.0 0.12724" rpy="0.0 -1.5708 0.0" />
+      <geometry>
+        <box size="0.51 0.32 0.23" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="aruco_camera_calibration" type="fixed">
+    <origin xyz="0.4637 0.0 -0.15976" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="aruco_camera_calibration_link" />
+  </joint>
+  <link name="aruco_camera_calibration_link" />
+  <joint name="center" type="fixed">
+    <origin xyz="0.0187 0.0 -0.12276" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="center" />
+  </joint>
+  <link name="center" />
+  <joint name="imu" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="imu_link" />
+  </joint>
+  <link name="imu_link">
+    <inertial>
+      <origin xyz="-0.00564954 -0.0076969 0.00128756" rpy="0.0 0.0 0.0" />
+      <mass value="0.0102286" />
+      <inertia ixx="9.63262e-07" ixy="-1.77855e-10" ixz="3.76127e-08" iyy="7.46825e-07" iyz="4.92881e-11" izz="1.45547e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/imu.STL" />
+      </geometry>
+      <material name="imu_material">
+        <color rgba="0.2 0.2 0.2 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="l_shoulder_ee" type="fixed">
+    <origin xyz="-0.0233 0.0525 0.25224" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="l_shoulder_ee_link" />
+  </joint>
+  <link name="l_shoulder_ee_link" />
+  <joint name="pelvis_ee" type="fixed">
+    <origin xyz="-0.0233 0.0 -0.14876" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="pelvis_ee_link" />
+  </joint>
+  <link name="pelvis_ee_link" />
+  <joint name="r_shoulder_ee" type="fixed">
+    <origin xyz="-0.0233 -0.0525 0.25224" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="r_shoulder_ee_link" />
+  </joint>
+  <link name="r_shoulder_ee_link" />
+  <joint name="zed" type="fixed">
+    <origin xyz="0.07302701 0.0 0.29255511" rpy="0.0 0.61087 0.0" />
+    <parent link="base_link" />
+    <child link="zed_camera_ee" />
+  </joint>
+  <link name="zed_camera_ee" />
+  <joint name="zed_upper" type="fixed">
+    <origin xyz="0.082577 0.0 0.34327" rpy="0.0 -0.013439 0.0" />
+    <parent link="base_link" />
+    <child link="zed_camera_upper_ee" />
+  </joint>
+  <link name="zed_camera_upper_ee" />
+</robot>

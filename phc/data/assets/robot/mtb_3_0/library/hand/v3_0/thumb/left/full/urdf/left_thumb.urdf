@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-0.0197483 0.000268865 -0.0109463" rpy="0.0 0.0 0.0" />
+      <mass value="0.0785983" />
+      <inertia ixx="1.23528e-05" ixy="-7.07931e-06" ixz="-5.43462e-06" iyy="4.66614e-05" iyz="-4.59884e-07" izz="4.62459e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/base_link/component_10_89-21.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/base_link/component_13_89-411.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/base_link/component_16_129.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/base_link/component_20_89-285.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="b1" type="prismatic">
+    <origin xyz="-0.0180278 0.0 -0.0155" rpy="0.0 1.5708 0.0" />
+    <parent link="base_link" />
+    <child link="b1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="0.023" effort="20.0" velocity="0.013" />
+  </joint>
+  <link name="b1_link">
+    <inertial>
+      <origin xyz="-0.000435994 3.76803e-06 0.00138378" rpy="0.0 0.0 0.0" />
+      <mass value="0.0174065" />
+      <inertia ixx="9.95149e-07" ixy="-1.80459e-10" ixz="-9.74469e-09" iyy="8.80933e-07" iyz="8.42007e-11" izz="8.19888e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/b1_link/component_1_89-450.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/b1_link/component_2_89-449.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="b2" type="revolute">
+    <origin xyz="0.0 0.0 0.0121" rpy="1.5708 0.0 0.0" />
+    <parent link="b1_link" />
+    <child link="b2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="b2_link">
+    <inertial>
+      <origin xyz="0.0019899 0.00904437 -0.000103061" rpy="0.0 0.0 0.0" />
+      <mass value="0.0053954" />
+      <inertia ixx="5.05961e-07" ixy="1.45264e-08" ixz="1.7896e-09" iyy="3.11289e-07" iyz="3.74476e-10" izz="3.1485e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/b2_link/component_0_89-235.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/b2_link/component_3_89-484.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/b2_link/component_4_89-485.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="b3" type="revolute">
+    <origin xyz="-0.0015 0.0179374 0.0" rpy="0.0 0.0 1.65423" />
+    <parent link="b2_link" />
+    <child link="b3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="b3_link">
+    <inertial>
+      <origin xyz="0.00951523 -0.00276336 1.56092e-11" rpy="0.0 0.0 0.0" />
+      <mass value="0.00488675" />
+      <inertia ixx="2.11067e-07" ixy="1.57806e-08" ixz="3.70609e-16" iyy="2.21604e-07" iyz="5.76957e-16" izz="2.32584e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/b3_link/component_0_89-25.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/b3_link/component_1_89-261.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="b3f1" type="revolute">
+    <origin xyz="0.0135702 0.00639138 0.0" rpy="0.0 0.0 -0.0834301" />
+    <parent link="b3_link" />
+    <child link="b3f1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="b3f1_link" />
+  <joint name="b4" type="revolute">
+    <origin xyz="0.0123202 -0.00855644 0.0" rpy="0.0 0.0 -0.640368" />
+    <parent link="b3_link" />
+    <child link="b4_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="b4_link">
+    <inertial>
+      <origin xyz="0.0152251 0.0145923 -1.07625e-07" rpy="0.0 0.0 0.0" />
+      <mass value="0.00922059" />
+      <inertia ixx="1.0334e-06" ixy="-8.06629e-07" ixz="1.32549e-11" iyy="1.1985e-06" iyz="8.32913e-12" izz="1.74082e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/b4_link/component_0_89-245.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/b4_link/component_1_89-415.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="b4f2" type="revolute">
+    <origin xyz="0.0305373 0.0285241 0.0" rpy="3.14159 0.0 0.751325" />
+    <parent link="b4_link" />
+    <child link="b4f2_link" />
+    <axis xyz="0.0 0.0 -1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="b4f2_link" />
+  <joint name="f1" type="revolute">
+    <origin xyz="0.025 0.0 -0.0065" rpy="1.5708 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="f1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.2217" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="f1_link">
+    <inertial>
+      <origin xyz="0.0225652 0.00153793 0.000247973" rpy="0.0 0.0 0.0" />
+      <mass value="0.0153056" />
+      <inertia ixx="4.03982e-07" ixy="-4.16719e-08" ixz="8.56415e-08" iyy="2.85807e-06" iyz="5.83691e-09" izz="2.70036e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/f1_link/component_0_89-281.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/f1_link/component_2_89-317-21.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/f1_link/component_3_89-366.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/f1_link/component_1_89-317-22.STL" />
+      </geometry>
+      <material name="Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.022 -0.005 0.0" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.011" length="0.014" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="f2" type="revolute">
+    <origin xyz="0.045 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="f1_link" />
+    <child link="f2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.0472" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="f2_link">
+    <inertial>
+      <origin xyz="0.0199925 -0.00349348 -0.00022078" rpy="0.0 0.0 0.0" />
+      <mass value="0.0276566" />
+      <inertia ixx="1.15633e-06" ixy="-2.54883e-07" ixz="-1.66773e-09" iyy="6.40548e-06" iyz="-9.5759e-09" izz="6.34345e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/f2_link/component_6_89-492.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/f2_link/component_7_89-495.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/f2_link/component_3_89-520-22.STL" />
+      </geometry>
+      <material name="Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0365951 -0.00188703 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.009" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0124972 -0.0024282 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.009" />
+      </geometry>
+    </collision>
+  </link>
+</robot>

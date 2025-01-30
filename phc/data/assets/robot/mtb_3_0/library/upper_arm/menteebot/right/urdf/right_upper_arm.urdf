@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-2.69610E-7 -2.92350E-2 3.54660E-8" rpy="0 0 0" />
+      <mass value="1.1857" />
+      <inertia ixx="1.38850E-3" ixy="-1.19230E-8" ixz="4.67880E-6" iyy="1.97520E-3" iyz="1.57080E-9" izz="1.38080E-3" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_base_link.STL" />
+      </geometry>
+      <material name="right_shoulder_base_material">
+        <color rgba="7.00000E-1 7.00000E-1 7.00000E-1 1" />
+      </material>
+    </visual>
+  </link>
+  <link name="right_shoulder_pitch_link">
+    <inertial>
+      <origin xyz="-1.15007E-3 -4.92047E-4 -3.49184E-2" rpy="0 0 0" />
+      <mass value="2.06973" />
+      <inertia ixx="5.37429E-3" ixy="-4.33741E-5" ixz="-1.89620E-4" iyy="5.19562E-3" iyz="-4.97462E-5" izz="2.09906E-3" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_pitch_link.STL" />
+      </geometry>
+      <material name="right_shoulder_pitch_material">
+        <color rgba="9.00000E-1 9.20000E-1 9.30000E-1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-5.00000E-5 0 0" rpy="0 0 0" />
+      <geometry>
+        <sphere radius="5.50000E-2" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_shoulder_pitch" type="revolute">
+    <origin xyz="0 -1.49900E-1 0" rpy="-1.5708 0 3.1416" />
+    <parent link="base_link" />
+    <child link="right_shoulder_pitch_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.71" upper="1.71" effort="50" velocity="4.2" />
+  </joint>
+  <link name="right_shoulder_roll_link">
+    <inertial>
+      <origin xyz="1.05410E-1 1.74870E-3 1.19348E-3" rpy="0 0 0" />
+      <mass value="1.34828" />
+      <inertia ixx="1.88520E-3" ixy="-1.53115E-4" ixz="1.66686E-4" iyy="4.74853E-3" iyz="2.16212E-6" izz="4.25179E-3" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_roll_link.STL" />
+      </geometry>
+      <material name="right_shoulder_roll_material">
+        <color rgba="1.90000E-1 2.00000E-1 2.00000E-1 1" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_shoulder_roll" type="revolute">
+    <origin xyz="0 0 0" rpy="-1.5708 5.23600E-1 1.5708" />
+    <parent link="right_shoulder_pitch_link" />
+    <child link="right_shoulder_roll_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.49" upper="9.00000E-2" effort="50" velocity="4.2" />
+  </joint>
+  <link name="right_shoulder_yaw_link">
+    <inertial>
+      <origin xyz="1.88977E-4 6.74883E-5 2.23728E-1" rpy="0 0 0" />
+      <mass value="1.6675" />
+      <inertia ixx="8.00362E-3" ixy="-4.09407E-5" ixz="3.41443E-5" iyy="8.01670E-3" iyz="3.48625E-5" izz="1.23422E-3" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_yaw_link.STL" />
+      </geometry>
+      <material name="right_shoulder_yaw_material">
+        <color rgba="7.90000E-1 8.20000E-1 9.30000E-1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="3.27327E-5 -3.77964E-5 2.13400E-1" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="5.50000E-2" length="1.45000E-1" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_shoulder_yaw" type="revolute">
+    <origin xyz="0 0 0" rpy="-1.5708 -7.13720E-1 -1.5708" />
+    <parent link="right_shoulder_roll_link" />
+    <child link="right_shoulder_yaw_link" />
+    <axis xyz="0 0 -1" />
+    <limit lower="-1.71" upper="1.71" effort="18" velocity="14.6" />
+  </joint>
+  <link name="right_elbow_link">
+    <inertial>
+      <origin xyz="-3.13510E-15 -3.33067E-16 1.48178E-2" rpy="0 0 0" />
+      <mass value="1.75091E-1" />
+      <inertia ixx="3.92585E-5" ixy="0" ixz="0" iyy="3.92585E-5" iyz="0" izz="3.88980E-5" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="../meshes/right_elbow_link.STL" />
+      </geometry>
+      <material name="right_elbow_material">
+        <color rgba="8.70000E-1 8.70000E-1 8.90000E-1 1" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_elbow" type="revolute">
+    <origin xyz="3.27330E-5 -3.77960E-5 3.02900E-1" rpy="-1.5708 0 2.2845" />
+    <parent link="right_shoulder_yaw_link" />
+    <child link="right_elbow_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-2.1" upper="2.1" effort="18" velocity="14.6" />
+  </joint>
+  <link name="right_forearm_ee_link" />
+  <joint name="right_forearm_ee" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="right_elbow_link" />
+    <child link="right_forearm_ee_link" />
+  </joint>
+</robot>

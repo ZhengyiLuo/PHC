@@ -1,0 +1,49 @@
+out_dir: .
+save_pdf: true
+components:
+  base: ../../base/right/urdf/right_hand_base.urdf
+  sub:
+  - link_name: right_index_finger_link
+    path: ../../finger/full/urdf/finger.urdf
+    add_prefix: right_index_finger
+    joints:
+      right_index_finger:
+        origin:
+          rpy:
+          - -1.5708
+          - -1.5708
+          - 0.0
+  - link_name: right_middle_finger_link
+    path: ../../finger/full/urdf/finger.urdf
+    add_prefix: right_middle_finger
+    joints:
+      right_middle_finger:
+        origin:
+          rpy:
+          - -1.5708
+          - -1.5708
+          - 0.0
+  - link_name: right_ring_finger_link
+    path: ../../finger/full/urdf/finger.urdf
+    add_prefix: right_ring_finger
+    joints:
+      right_ring_finger:
+        origin:
+          rpy:
+          - -1.5708
+          - -1.5708
+          - 0.0
+  - link_name: right_pinky_link
+    path: ../../finger/full/urdf/finger.urdf
+    add_prefix: right_pinky
+    joints:
+      right_pinky:
+        origin:
+          rpy:
+          - -1.5708
+          - -1.5708
+          - 0.0
+  - link_name: right_thumb_yaw_link
+    path: ../../thumb/right/full/urdf/right_thumb.urdf
+    add_prefix: right_thumb
+out_name: hand_full

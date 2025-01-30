@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="right_hand">
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_hand.STL" />
+      </geometry>
+      <material name="right_hand_material">
+        <color rgba="0.18 0.18 0.18 1.0" />
+      </material>
+    </visual>
+  </link>
+</robot>

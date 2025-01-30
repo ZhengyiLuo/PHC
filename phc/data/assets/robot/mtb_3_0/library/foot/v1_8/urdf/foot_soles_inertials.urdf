@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="foot">
+    <inertial>
+      <origin xyz="5.97358E-2 0.0 -6.75131E-2" rpy="0 0 0" />
+      <mass value="0.284" />
+      <inertia ixx="1.19153E-3" ixy="3.90082E-10" ixz="-6.16918E-4" iyy="3.74147E-3" iyz="-7.49833E-9" izz="3.15328E-3" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/ankle_roll_link.STL" />
+      </geometry>
+      <material name="ankle_roll_material">
+        <color rgba="0.2 0.4 0.698039 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="sole_ee" type="fixed">
+    <origin xyz="0.03445 0.0 -0.097" rpy="0.0 0.0 0.0" />
+    <parent link="foot" />
+    <child link="sole_ee_link" />
+  </joint>
+  <link name="sole_ee_link" />
+  <joint name="front_right" type="fixed">
+    <origin xyz="0.14445 -0.04 -0.097" rpy="0.0 0.0 0.0" />
+    <parent link="foot" />
+    <child link="front_right" />
+  </joint>
+  <link name="front_right">
+    <inertial>
+      <origin xyz="-0.084714 0.04 0.029487" rpy="0.0 0.0 0.0" />
+      <mass value="0.15" />
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0" />
+    </inertial>
+    <collision>
+      <origin xyz="-0.04 0.015 0.011" rpy="0.0 1.57 0.0" />
+      <geometry>
+        <box size="0.021 0.03 0.08" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="front_left" type="fixed">
+    <origin xyz="0.14445 0.04 -0.097" rpy="0.0 0.0 0.0" />
+    <parent link="foot" />
+    <child link="front_left" />
+    <axis xyz="0.5052 0.0 -0.863" />
+    <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="front_left">
+    <inertial>
+      <origin xyz="-0.084714 -0.04 0.029487" rpy="0.0 0.0 0.0" />
+      <mass value="0.15" />
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0" />
+    </inertial>
+    <collision>
+      <origin xyz="-0.04 -0.015 0.011" rpy="0.0 1.57 0.0" />
+      <geometry>
+        <box size="0.021 0.03 0.08" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="back_right_sole" type="fixed">
+    <origin xyz="-0.07555 -0.04 -0.097" rpy="0.0 0.0 0.0" />
+    <parent link="foot" />
+    <child link="back_right_sole" />
+  </joint>
+  <link name="back_right_sole">
+    <inertial>
+      <origin xyz="0.135286 0.04 0.029487" rpy="0.0 0.0 0.0" />
+      <mass value="0.15" />
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0" />
+    </inertial>
+    <collision>
+      <origin xyz="0.04 0.015 0.011" rpy="0.0 1.57 0.0" />
+      <geometry>
+        <box size="0.021 0.03 0.08" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="back_left_sole" type="fixed">
+    <origin xyz="-0.07555 0.04 -0.097" rpy="0.0 0.0 0.0" />
+    <parent link="foot" />
+    <child link="back_left_sole" />
+  </joint>
+  <link name="back_left_sole">
+    <inertial>
+      <origin xyz="0.135286 -0.04 0.029487" rpy="0.0 0.0 0.0" />
+      <mass value="0.15" />
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0" />
+    </inertial>
+    <collision>
+      <origin xyz="0.04 -0.015 0.011" rpy="0.0 1.57 0.0" />
+      <geometry>
+        <box size="0.021 0.03 0.08" />
+      </geometry>
+    </collision>
+  </link>
+</robot>

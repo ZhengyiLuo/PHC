@@ -97,7 +97,7 @@ def main(cfg : DictConfig) -> None:
     print("shape:",shape_new.detach())
     print("scale:",scale)
 
-    if cfg.get("vis", False):
+    if True:
         from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
         import matplotlib.pyplot as plt
         

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="center">
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/base_link_center.STL" />
+      </geometry>
+      <material name="base_link_center_material">
+        <color rgba="1.0 1.0 1.0 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="big_qr_center" type="fixed">
+    <origin xyz="0.445 0.0 -0.01" rpy="0.0 0.0 0.0" />
+    <parent link="center" />
+    <child link="big_qr_center" />
+  </joint>
+  <link name="big_qr_center">
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/big_qr_center.STL" />
+      </geometry>
+      <material name="big_qr_center_material">
+        <color rgba="0.0 0.0 0.0 1.0" />
+      </material>
+    </visual>
+  </link>
+</robot>

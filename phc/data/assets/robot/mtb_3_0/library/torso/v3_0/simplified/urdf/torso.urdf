@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-0.0276412 0.000163302 0.0674305" rpy="0.0 0.0 0.0" />
+      <mass value="4.97822" />
+      <inertia ixx="0.011587" ixy="1.08017e-05" ixz="0.000423949" iyy="0.0108768" iyz="-1.16909e-05" izz="0.0160386" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/base_link/component_13_22-32-101-30.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/base_link/component_14_22-32-101-21.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/base_link/component_17_22-32-101-631.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/base_link/component_18_22-32-101-208.STL" />
+      </geometry>
+      <material name="MI_WhitePlastic">
+        <color rgba="0.888 0.888 0.888 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.0234 0.0 0.0502825" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.075" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="center_ee" type="fixed">
+    <origin xyz="0.052483 0.0 0.06129" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="center_ee" />
+  </joint>
+  <link name="center_ee" />
+  <joint name="imu_pelvis" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="imu_pelvis" />
+  </joint>
+  <link name="imu_pelvis">
+    <inertial>
+      <origin xyz="-0.00564954 -0.0076969 0.00128756" rpy="0.0 0.0 0.0" />
+      <mass value="0.0102286" />
+      <inertia ixx="9.63262e-07" ixy="-1.77855e-10" ixz="3.76127e-08" iyy="7.46825e-07" iyz="4.92881e-11" izz="1.45547e-06" />
+    </inertial>
+  </link>
+  <joint name="left_leg_ee" type="fixed">
+    <origin xyz="-0.0273 0.083309 0.039036" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="left_leg_ee_link" />
+  </joint>
+  <link name="left_leg_ee_link" />
+  <joint name="right_leg_ee" type="fixed">
+    <origin xyz="-0.0273 -0.083309 0.039036" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="right_leg_ee_link" />
+  </joint>
+  <link name="right_leg_ee_link" />
+  <joint name="torso_yaw" type="revolute">
+    <origin xyz="-0.0273 0.0 0.16379" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="torso_yaw_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-0.785" upper="0.785" effort="149.0" velocity="5.9" />
+  </joint>
+  <link name="torso_yaw_link">
+    <inertial>
+      <origin xyz="-0.0360644 0.000606603 -0.0161462" rpy="0.0 0.0 0.0" />
+      <mass value="1.3581" />
+      <inertia ixx="0.00250315" ixy="4.26364e-05" ixz="0.000929157" iyy="0.00425813" iyz="-4.67911e-05" izz="0.00385223" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link/component_0_22-32-101-78-103.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link/component_1_22-32-101-78-186.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link/component_2_22-32-153.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link/component_3_22-32-159.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link/component_4_22-32-135-27-21.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link/component_5_22-32-135-21.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link/component_6_22-32-135-27-22.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link/component_7_22-32-131-27-22.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link/component_8_22-32-131-21.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link/component_9_22-32-131-27-21.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link/component_17_22-32-101-78-236.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link/component_18_22-32-101-78-235.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link/component_21_22-32-101-78-245.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link/component_22_22-32-101-78-220.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link/component_23_22-32-101-78-23.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="torso_pitch" type="revolute">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.5708 0.0 0.0" />
+    <parent link="torso_yaw_link" />
+    <child link="torso_pitch_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-0.262" upper="0.785" effort="143.0" velocity="7.4" />
+  </joint>
+  <link name="torso_pitch_link">
+    <inertial>
+      <origin xyz="-1.68688e-07 1.27546e-09 -1.34191e-08" rpy="0.0 0.0 0.0" />
+      <mass value="0.151575" />
+      <inertia ixx="3.09164e-05" ixy="-4.39002e-10" ixz="-2.56572e-10" iyy="5.49713e-05" iyz="1.13278e-11" izz="3.09182e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso_pitch_link/component_0_22-32-101-78-281.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="torso_roll" type="revolute">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.5708 0.0 -1.5708" />
+    <parent link="torso_pitch_link" />
+    <child link="torso" />
+    <axis xyz="0.0 0.0 -1.0" />
+    <limit lower="-0.262" upper="0.262" effort="143.0" velocity="7.4" />
+  </joint>
+  <link name="torso">
+    <inertial>
+      <origin xyz="0.1877 0.00124427 -0.00943932" rpy="0.0 0.0 0.0" />
+      <mass value="22.5771" />
+      <inertia ixx="0.230546" ixy="0.000873064" ixz="0.00740999" iyy="0.645895" iyz="0.0014399" izz="0.605122" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_7_22-133-298.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_11_22-74-219.STL" />
+      </geometry>
+      <material name="Plastic_ABS">
+        <color rgba="0.222 0.222 0.222 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_12_22-23-1598-21.STL" />
+      </geometry>
+      <material name="Plastic_ABS">
+        <color rgba="0.222 0.222 0.222 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_15_22-23-1599-21.STL" />
+      </geometry>
+      <material name="Plastic_ABS">
+        <color rgba="0.222 0.222 0.222 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_20_22-74-1085-21.STL" />
+      </geometry>
+      <material name="Plastic_ABS">
+        <color rgba="0.222 0.222 0.222 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_21_22-25-1061-22.STL" />
+      </geometry>
+      <material name="Plastic_ABS">
+        <color rgba="0.222 0.222 0.222 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_4_22-133-828-28.STL" />
+      </geometry>
+      <material name="MI_WhitePlastic">
+        <color rgba="0.888 0.888 0.888 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_6_22-133-542.STL" />
+      </geometry>
+      <material name="MI_WhitePlastic">
+        <color rgba="0.888 0.888 0.888 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_8_22-133-315.STL" />
+      </geometry>
+      <material name="MI_WhitePlastic">
+        <color rgba="0.888 0.888 0.888 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_24_22-805.STL" />
+      </geometry>
+      <material name="MI_WhitePlastic">
+        <color rgba="0.888 0.888 0.888 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_25_22-808.STL" />
+      </geometry>
+      <material name="MI_WhitePlastic">
+        <color rgba="0.888 0.888 0.888 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_10_22-133-885.STL" />
+      </geometry>
+      <material name="Clear_Glass">
+        <color rgba="0.988 0.988 0.988 0.1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_5_22-133-884.STL" />
+      </geometry>
+      <material name="Aluminum_Anodized_Black">
+        <color rgba="0.112 0.112 0.112 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_13_22-74-394.STL" />
+      </geometry>
+      <material name="Aluminum_Anodized_Black">
+        <color rgba="0.112 0.112 0.112 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_3_22-133-295.STL" />
+      </geometry>
+      <material name="Polymethylmethacrylate_Clear">
+        <color rgba="0.333 0.333 0.333 0.5" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/torso/component_9_22-133-296.STL" />
+      </geometry>
+      <material name="Polymethylmethacrylate_Clear">
+        <color rgba="0.333 0.333 0.333 0.5" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.533639 0.0 0.0352469" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.095" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.186794 0.0 -0.0053567" rpy="-1.5708 0.0 0.0" />
+      <geometry>
+        <box size="0.42 0.3 0.284" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="imu_torso" type="fixed">
+    <origin xyz="0.29201 0.0 0.1147" rpy="3.14159 -1.5708 0.0" />
+    <parent link="torso" />
+    <child link="imu_torso" />
+  </joint>
+  <link name="imu_torso">
+    <inertial>
+      <origin xyz="-0.00564954 -0.0076969 0.00128756" rpy="0.0 0.0 0.0" />
+      <mass value="0.0102286" />
+      <inertia ixx="9.63262e-07" ixy="-1.77855e-10" ixz="3.76127e-08" iyy="7.46825e-07" iyz="4.92881e-11" izz="1.45547e-06" />
+    </inertial>
+  </link>
+  <joint name="left_arm_ee" type="fixed">
+    <origin xyz="0.320542 -0.121136 0.0039" rpy="0.0 -1.5708 0.0" />
+    <parent link="torso" />
+    <child link="left_arm_ee_link" />
+  </joint>
+  <link name="left_arm_ee_link" />
+  <joint name="right_arm_ee" type="fixed">
+    <origin xyz="0.320542 0.121136 0.0039" rpy="0.0 -1.5708 0.0" />
+    <parent link="torso" />
+    <child link="right_arm_ee_link" />
+  </joint>
+  <link name="right_arm_ee_link" />
+  <joint name="zed_lower_ee" type="fixed">
+    <origin xyz="0.438759 -0.00025 0.0712677" rpy="0.0 -0.959931 -3.14159" />
+    <parent link="torso" />
+    <child link="zed_lower_ee" />
+  </joint>
+  <link name="zed_lower_ee" />
+  <joint name="zed_upper_ee" type="fixed">
+    <origin xyz="0.561639 -0.00025 0.0915332" rpy="0.0 -1.5708 0.0" />
+    <parent link="torso" />
+    <child link="zed_upper_ee" />
+  </joint>
+  <link name="zed_upper_ee" />
+</robot>

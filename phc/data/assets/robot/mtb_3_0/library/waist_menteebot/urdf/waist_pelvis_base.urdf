@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="waist_base_link">
+  </link>
+  <link name="torso_yaw_link">
+    <inertial>
+      <origin xyz="-1.40943E-2 7.96132E-7 -2.98464E-2" rpy="0 0 0" />
+      <mass value="3.67875" />
+      <inertia ixx="2.77442E-2" ixy="-3.09792E-5" ixz="-1.00967E-3" iyy="8.85756E-3" iyz="2.38430E-5" izz="2.91653E-2" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="../meshes/torso_yaw_link.STL" />
+      </geometry>
+      <material name="torso_yaw_material">
+        <color rgba="7.00000E-1 7.00000E-1 7.00000E-1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-3.00000E-2 1.28925E-5 -2.40000E-2" rpy="-1.5708 4.29752E-4 -4.29752E-4" />
+      <geometry>
+        <cylinder radius="4.90000E-2" length="1.81400E-1" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="torso_yaw" type="revolute">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="waist_base_link" />
+    <child link="torso_yaw_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-7.80000E-1" upper="7.80000E-1" effort="79" velocity="6.28" />
+  </joint>
+
+  <link name="waist_link">
+    <inertial>
+      <origin xyz="3.49234E-8 6.10379E-9 -3.19177E-8" rpy="0 0 0" />
+      <mass value="1.50002E-1" />
+      <inertia ixx="2.99380E-5" ixy="3.91827E-12" ixz="1.84666E-11" iyy="4.90236E-5" iyz="-5.60101E-11" izz="2.58558E-5" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="../meshes/waist_link.STL" />
+      </geometry>
+      <material name="waist_material">
+        <color rgba="6.50000E-1 6.20000E-1 5.90000E-1 1" />
+      </material>
+    </visual>
+  </link>
+  <joint name="torso_pitch" type="revolute">
+    <origin xyz="0 0 0" rpy="-1.5708 0 -4.29750E-4" />
+    <parent link="torso_yaw_link" />
+    <child link="waist_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-0.1" upper="7.80000E-1" effort="100" velocity="4.2" />
+  </joint>
+
+  <link name="torso_connector" />
+
+  <joint name="torso_roll" type="revolute">
+    <origin xyz="0 0 0" rpy="1.5708  0 0" />
+    <parent link="waist_link" />
+    <child link="torso_connector" />
+    <axis xyz="1 0 0" />
+    <limit lower="-0.15" upper="0.15" effort="100" velocity="4.2" />
+  </joint>
+
+  <link name="torso_ee_link" />
+
+  <joint name="pelvis_link_ee" type="fixed">
+    <origin xyz="7.75500E-2 7.70000E-3 2.48760E-1" rpy="0 0 0" />
+    <parent link="torso_connector" />
+    <child link="torso_ee_link" />
+  </joint>
+
+
+</robot>

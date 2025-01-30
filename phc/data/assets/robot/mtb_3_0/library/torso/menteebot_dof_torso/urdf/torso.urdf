@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-6.90645E-2 -7.54901E-3 -9.41596E-3" rpy="0 0 0" />
+      <mass value="14.7981" />
+      <inertia ixx="2.96646E-1" ixy="4.40315E-4" ixz="-3.31080E-3" iyy="2.83733E-1" iyz="-4.64159E-5" izz="7.62542E-2" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="../meshes/base_link.STL" />
+      </geometry>
+      <material name="base_material">
+        <color rgba="7.00000E-1 7.00000E-1 7.00000E-1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-7.18000E-2 -7.70000E-3 3.62400E-2" rpy="-2.03607 -1.5708 -1.10552" />
+      <geometry>
+        <box size="4.50000E-1 2.55000E-1 1.60000E-1" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="imu">
+    <inertial>
+      <origin xyz="-5.64954E-3 -7.69690E-3 1.28756E-3" rpy="0 0 0" />
+      <mass value="1.02286E-2" />
+      <inertia ixx="9.63262E-7" ixy="-1.77855E-10" ixz="3.76127E-8" iyy="7.46825E-7" iyz="4.92881E-11" izz="1.45547E-6" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="../meshes/imu.STL" />
+      </geometry>
+      <material name="imu_material">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+  </link>
+  <joint name="imu" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="imu" />
+  </joint>
+  <link name="zed2i">
+    <inertial>
+      <origin xyz="-4.29357E-3 8.96146E-7 1.48033E-2" rpy="0 0 0" />
+      <mass value="1.70323E-1" />
+      <inertia ixx="3.94515E-4" ixy="3.26327E-9" ixz="-3.60166E-7" iyy="3.31631E-5" iyz="1.49916E-9" izz="4.02747E-4" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="../meshes/zed2i.STL" />
+      </geometry>
+      <material name="zed2i_material">
+        <color rgba="3.70000E-1 7.00000E-1 1 1" />
+      </material>
+    </visual>
+  </link>
+  <joint name="zed2i" type="fixed">
+    <origin xyz="2.97998E-2 -7.70000E-3 2.11446E-1" rpy="0 3.83972E-1 0" />
+    <parent link="base_link" />
+    <child link="zed2i" />
+  </joint>
+  <link name="right_shoulder_ee" />
+  <joint name="right_shoulder_ee" type="fixed">
+    <origin xyz="-7.03000E-2 -1.02262E-1 4.38355E-2" rpy="-5.23599E-1 0 0" />
+    <parent link="base_link" />
+    <child link="right_shoulder_ee" />
+  </joint>
+  <link name="left_shoulder_ee" />
+  <joint name="left_shoulder_ee" type="fixed">
+    <origin xyz="-7.03000E-2 8.68620E-2 4.38350E-2" rpy="5.23600E-1 0 0" />
+    <parent link="base_link" />
+    <child link="left_shoulder_ee" />
+  </joint>
+  <link name="waist_ee_torso_link" />
+  <joint name="waist_ee_torso" type="fixed">
+    <origin xyz="-7.75500E-2 -7.70000E-3 -2.48760E-1" rpy="1.57 0.0 -1.57" />
+    <parent link="base_link" />
+    <child link="waist_ee_torso_link" />
+  </joint>
+
+
+</robot>

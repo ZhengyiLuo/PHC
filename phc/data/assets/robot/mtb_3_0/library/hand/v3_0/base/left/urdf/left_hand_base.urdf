@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="left_hand_base_link">
+    <inertial>
+      <origin xyz="0.000138626 -0.00366042 0.0529181" rpy="0.0 0.0 0.0" />
+      <mass value="0.380568" />
+      <inertia ixx="0.00107911" ixy="1.81567e-05" ixz="-2.31642e-06" iyy="0.000643663" iyz="-6.12953e-06" izz="0.000617102" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/left_hand_base_link/component_1.STL" />
+      </geometry>
+      <material name="MI_WhitePlastic">
+        <color rgba="0.888 0.888 0.888 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/left_hand_base_link/component_2.STL" />
+      </geometry>
+      <material name="MI_WhitePlastic">
+        <color rgba="0.888 0.888 0.888 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/left_hand_base_link/component_3.STL" />
+      </geometry>
+      <material name="MI_WhitePlastic">
+        <color rgba="0.888 0.888 0.888 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0112609 0.000301747 0.0624879" rpy="-0.0138595 -1.30868 -3.095" />
+      <geometry>
+        <box size="0.105 0.095 0.03" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_hand_ee" type="fixed">
+    <origin xyz="0.0235 0.0 0.075" rpy="3.14159 0.0 0.0" />
+    <parent link="left_hand_base_link" />
+    <child link="left_hand_ee" />
+  </joint>
+  <link name="left_hand_ee" />
+  <joint name="left_index_finger" type="fixed">
+    <origin xyz="0.0 -0.0345 0.1267" rpy="1.5708 -1.5708 0.0" />
+    <parent link="left_hand_base_link" />
+    <child link="left_index_finger_link" />
+  </joint>
+  <link name="left_index_finger_link" />
+  <joint name="left_middle_finger" type="fixed">
+    <origin xyz="0.0 -0.0115 0.1267" rpy="1.5708 -1.5708 0.0" />
+    <parent link="left_hand_base_link" />
+    <child link="left_middle_finger_link" />
+  </joint>
+  <link name="left_middle_finger_link" />
+  <joint name="left_pinky" type="fixed">
+    <origin xyz="0.0 0.0345 0.1267" rpy="1.5708 -1.5708 0.0" />
+    <parent link="left_hand_base_link" />
+    <child link="left_pinky_link" />
+  </joint>
+  <link name="left_pinky_link" />
+  <joint name="left_ring_finger" type="fixed">
+    <origin xyz="0.0 0.0115 0.1267" rpy="1.5708 -1.5708 0.0" />
+    <parent link="left_hand_base_link" />
+    <child link="left_ring_finger_link" />
+  </joint>
+  <link name="left_ring_finger_link" />
+  <joint name="left_thumb_yaw" type="revolute">
+    <origin xyz="0.0177964 -0.0263655 0.0528717" rpy="0.387285 -0.33183 -1.40356" />
+    <parent link="left_hand_base_link" />
+    <child link="left_thumb_yaw_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.57" effort="1.0" velocity="3.0" />
+  </joint>
+  <link name="left_thumb_yaw_link" />
+</robot>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="zed_camera_link">
+    <inertial>
+      <origin xyz="-0.00582666 7.99367e-05 0.0155354" rpy="0.0 0.0 0.0" />
+      <mass value="0.167393" />
+      <inertia ixx="0.000154504" ixy="1.76553e-07" ixz="5.37029e-07" iyy="4.4123e-05" iyz="5.87551e-09" izz="0.000160618" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/zedxm.stl" />
+      </geometry>
+      <material name="Aluminum_Anodized_Black">
+        <color rgba="0.112 0.112 0.112 1.0" />
+      </material>
+    </visual>
+  </link>
+</robot>

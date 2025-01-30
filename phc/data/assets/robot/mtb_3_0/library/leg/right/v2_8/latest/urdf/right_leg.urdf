@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="right_leg_ee">
+    <inertial>
+      <origin xyz="0.195268 -0.000166838 0.00375318" rpy="0.0 0.0 0.0" />
+      <mass value="1.823" />
+      <inertia ixx="0.00175639" ixy="-3.14985e-05" ixz="-0.000314383" iyy="0.0113574" iyz="-1.38822e-06" izz="0.0118538" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_leg_ee.STL" />
+      </geometry>
+      <material name="right_leg_ee_material">
+        <color rgba="0.18 0.18 0.18 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.06 0.0 0.0" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.06" length="0.115" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_knee" type="revolute">
+    <origin xyz="0.241 0.0 0.0" rpy="3.1416 0.0 0.0" />
+    <parent link="right_leg_ee" />
+    <child link="right_shin" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-1.95" upper="1.95" effort="80.0" velocity="5.0" />
+  </joint>
+  <link name="right_shin">
+    <inertial>
+      <origin xyz="0.246314 7.82587e-05 0.0152856" rpy="0.0 0.0 0.0" />
+      <mass value="2.352" />
+      <inertia ixx="0.00252199" ixy="1.30436e-05" ixz="-0.002131" iyy="0.0361649" iyz="-2.51738e-07" izz="0.0362134" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_shin.STL" />
+      </geometry>
+      <material name="right_shin_material">
+        <color rgba="0.18 0.18 0.18 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.24 0.0 0.02" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.27" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_ankle_pitch" type="revolute">
+    <origin xyz="0.34 0.0 0.02025" rpy="-3.14159 0.0 0.0" />
+    <parent link="right_shin" />
+    <child link="right_ankle_pitch" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-0.7" upper="2.1" effort="80.0" velocity="5.0" />
+  </joint>
+  <link name="right_ankle_pitch">
+    <inertial>
+      <origin xyz="0.000598914 -0.0934002 0.000958641" rpy="0.0 0.0 0.0" />
+      <mass value="1.274" />
+      <inertia ixx="0.00388082" ixy="-1.88526e-06" ixz="7.51983e-07" iyy="0.00163177" iyz="-0.000123945" izz="0.00333448" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_ankle_pitch.STL" />
+      </geometry>
+      <material name="right_ankle_pitch_material">
+        <color rgba="0.18 0.18 0.18 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.04 -0.125 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.047" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_ankle_cover" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.5708 0.0 3.14159" />
+    <parent link="right_ankle_pitch" />
+    <child link="right_ankle_cover" />
+  </joint>
+  <link name="right_ankle_cover">
+    <inertial>
+      <origin xyz="0.00645198 -3.42108e-06 0.0823781" rpy="0.0 0.0 0.0" />
+      <mass value="0.08" />
+      <inertia ixx="0.00038331" ixy="1.46941e-08" ixz="-2.40687e-05" iyy="0.000254288" iyz="-7.85331e-09" izz="0.000212263" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_ankle_cover.STL" />
+      </geometry>
+      <material name="right_ankle_cover_material">
+        <color rgba="0.78 0.78 0.78 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_ankle_roll" type="revolute">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.5708 0.0 3.14159" />
+    <parent link="right_ankle_pitch" />
+    <child link="right_ankle_roll" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-0.55" upper="0.55" effort="25.0" velocity="10.0" />
+  </joint>
+  <link name="right_ankle_roll">
+    <inertial>
+      <origin xyz="3.9968e-15 -9.47159e-16 0.137718" rpy="0.0 0.0 0.0" />
+      <mass value="0.175" />
+      <inertia ixx="3.92381e-05" ixy="0.0" ixz="0.0" iyy="3.92381e-05" iyz="0.0" izz="3.88778e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_ankle_roll.STL" />
+      </geometry>
+      <material name="right_ankle_roll_material">
+        <color rgba="0.18 0.18 0.18 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_foot_ee" type="fixed">
+    <origin xyz="0.0 0.0 0.15635" rpy="0.0 0.0 0.0" />
+    <parent link="right_ankle_roll" />
+    <child link="right_foot_ee_link" />
+  </joint>
+  <link name="right_foot_ee_link" />
+  <joint name="right_shin_cover" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="right_shin" />
+    <child link="right_shin_cover" />
+  </joint>
+  <link name="right_shin_cover">
+    <inertial>
+      <origin xyz="0.116108 -6.92859e-06 0.0401196" rpy="0.0 0.0 0.0" />
+      <mass value="0.303" />
+      <inertia ixx="0.000352578" ixy="1.51736e-07" ixz="-7.06876e-06" iyy="0.00219912" iyz="7.56558e-09" izz="0.00242339" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_shin_cover.STL" />
+      </geometry>
+      <material name="right_shin_cover_material">
+        <color rgba="0.78 0.78 0.78 1.0" />
+      </material>
+    </visual>
+  </link>
+</robot>

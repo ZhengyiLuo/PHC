@@ -36,7 +36,7 @@ asset_root = "/"
 asset_root = "./"
 
 asset_descriptors = [
-    AssetDesc("test_good.xml", False),
+    AssetDesc("phc/data/assets/robot/mtb_3_0/mtb_3_0.xml", False),
 ]
 
 # parse arguments

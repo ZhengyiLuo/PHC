@@ -381,7 +381,7 @@ class Humanoid_Batch:
         merged_mesh = joined_mesh_obj[0]
         for mesh in joined_mesh_obj[1:]:
             merged_mesh += mesh
-        
+        # o3d.visualization.draw_geometries([merged_mesh])
         # Save the merged mesh to a file
         # merged_mesh.compute_vertex_normals()
         # o3d.io.write_triangle_mesh(f"data/{self.cfg.humanoid_type}/combined_{self.cfg.humanoid_type}.stl", merged_mesh)

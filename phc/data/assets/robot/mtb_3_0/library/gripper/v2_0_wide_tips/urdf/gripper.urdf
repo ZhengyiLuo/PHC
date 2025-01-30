@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="gripper_base_link">
+    <inertial>
+      <origin xyz="-4.28449e-07 -0.00497955 0.0694783" rpy="0.0 0.0 0.0" />
+      <mass value="0.261" />
+      <inertia ixx="0.000385366" ixy="2.51525e-09" ixz="3.09809e-09" iyy="0.000408675" iyz="-3.43276e-06" izz="0.000186223" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/gripper_base_link.STL" />
+      </geometry>
+      <material name="gripper_base_material">
+        <color rgba="0.18 0.18 0.18 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.055" rpy="1.5708 -1.5708 0.0" />
+      <geometry>
+        <box size="0.11 0.08 0.069" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="gripper_april_tag_ee" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="gripper_base_link" />
+    <child link="gripper_april_tag_ee_link" />
+  </joint>
+  <link name="gripper_april_tag_ee_link" />
+  <joint name="gripper_back_ee" type="fixed">
+    <origin xyz="0.0 -0.0345 0.0621106" rpy="-1.5708 -1.5708 0.0" />
+    <parent link="gripper_base_link" />
+    <child link="gripper_back_ee" />
+  </joint>
+  <link name="gripper_back_ee" />
+  <joint name="gripper_camera_ee" type="fixed">
+    <origin xyz="0.0 0.0506043 0.0683889" rpy="0.0 -1.3090 -1.5708" />
+    <parent link="gripper_base_link" />
+    <child link="gripper_camera_ee_link" />
+  </joint>
+  <link name="gripper_camera_ee_link" />
+  <joint name="gripper_ee" type="fixed">
+    <origin xyz="0.0 0.0 0.191" rpy="-1.5708 -1.5708 0.0" />
+    <parent link="gripper_base_link" />
+    <child link="gripper_ee" />
+  </joint>
+  <link name="gripper_ee" />
+  <joint name="l_in_bar" type="revolute">
+    <origin xyz="0.025 0.0 0.1125" rpy="1.5708 0.0 0.0" />
+    <parent link="gripper_base_link" />
+    <child link="l_in_bar_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="0.87267" effort="0.001" velocity="10.0" />
+  </joint>
+  <link name="l_in_bar_link">
+    <inertial>
+      <origin xyz="0.018425 0.0209288 -2.83672e-16" rpy="0.0 0.0 0.0" />
+      <mass value="0.0178" />
+      <inertia ixx="4.82883e-06" ixy="-2.89681e-06" ixz="0.0" iyy="3.47581e-06" iyz="0.0" izz="8.16324e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/l_link.STL" />
+      </geometry>
+      <material name="l_material">
+        <color rgba="0.18 0.18 0.18 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0195659 0.0238259 0.0" rpy="0.0 0.0 1.02974" />
+      <geometry>
+        <box size="0.05 0.016 0.007" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_tip" type="revolute">
+    <origin xyz="0.0309023 0.05143 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="l_in_bar_link" />
+    <child link="l_tip_link" />
+    <axis xyz="0.0 0.0 -1.0" />
+    <limit lower="0.0" upper="0.87267" effort="0.001" velocity="10.0" />
+  </joint>
+  <link name="l_tip_link">
+    <inertial>
+      <origin xyz="0.00320348 0.0265202 0.0101568" rpy="0.0 0.0 0.0" />
+      <mass value="0.0326" />
+      <inertia ixx="1.76958e-05" ixy="5.81775e-07" ixz="-2.30284e-07" iyy="8.386e-06" iyz="-9.4367e-09" izz="1.08976e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/l_tip_link.STL" />
+      </geometry>
+      <material name="l_tip_material">
+        <color rgba="0.18 0.18 0.18 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.00545 0.0305 0.0085" rpy="1.5708 0.0 1.5708" />
+      <geometry>
+        <box size="0.055 0.052 0.0179" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="r_in_bar" type="revolute">
+    <origin xyz="-0.025 0.0 0.1125" rpy="1.5708 0.0 0.0" />
+    <parent link="gripper_base_link" />
+    <child link="r_in_bar_link" />
+    <axis xyz="0.0 0.0 -1.0" />
+    <limit lower="0.0" upper="0.87267" effort="0.001" velocity="10.0" />
+  </joint>
+  <link name="r_in_bar_link">
+    <inertial>
+      <origin xyz="-0.018425 0.0209288 -2.08706e-15" rpy="0.0 0.0 0.0" />
+      <mass value="0.0178" />
+      <inertia ixx="4.82883e-06" ixy="2.89681e-06" ixz="0.0" iyy="3.47581e-06" iyz="0.0" izz="8.16324e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/r_link.STL" />
+      </geometry>
+      <material name="r_material">
+        <color rgba="0.18 0.18 0.18 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.0195659 0.0238259 0.0" rpy="0.0 0.0 2.11185" />
+      <geometry>
+        <box size="0.05 0.016 0.007" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="r_tip" type="revolute">
+    <origin xyz="-0.0309023 0.05143 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="r_in_bar_link" />
+    <child link="r_tip_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="0.87267" effort="0.001" velocity="10.0" />
+  </joint>
+  <link name="r_tip_link">
+    <inertial>
+      <origin xyz="-0.00320348 0.0265202 0.0101568" rpy="0.0 0.0 0.0" />
+      <mass value="0.0326" />
+      <inertia ixx="1.76958e-05" ixy="-5.81775e-07" ixz="2.3028e-07" iyy="8.38599e-06" iyz="-9.44447e-09" izz="1.08976e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/r_tip_link.STL" />
+      </geometry>
+      <material name="r_tip_material">
+        <color rgba="0.18 0.18 0.18 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.00545 0.0305 0.0085" rpy="1.5708 0.0 1.5708" />
+      <geometry>
+        <box size="0.055 0.052 0.0179" />
+      </geometry>
+    </collision>
+  </link>
+</robot>

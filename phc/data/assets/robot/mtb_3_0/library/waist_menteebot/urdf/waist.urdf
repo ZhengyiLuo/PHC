@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+
+  <link name="waist_base_link" />
+
+  
+  <joint name="torso_roll" type="revolute">
+    <origin xyz="0 0 0" rpy="1.5708 0 -1.5708" />
+    <parent link="waist_base_link" />
+    <child link="torso_connector" />
+    <axis xyz="0 1 0" />
+    <limit lower="-2.60000E-1" upper="2.60000E-1" effort="100" velocity="4.2" />
+  </joint>
+
+  <link name="torso_connector">
+    <inertial>
+      <origin xyz="3.19180E-8 6.10380E-9 3.49230E-8" rpy="0 0 0" />
+      <mass value="1.50000E-1" />
+      <inertia ixx="2.58560E-5" ixy="5.60100E-11" ixz="-1.84670E-11" iyy="4.90240E-5" iyz="3.91830E-12" izz="2.99380E-5" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="../meshes/base_link.STL" />
+      </geometry>
+      <material name="base_material">
+        <color rgba="6.50000E-1 6.20000E-1 5.90000E-1 1" />
+      </material>
+    </visual>
+  </link>
+
+  <joint name="torso_pitch" type="revolute">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="torso_connector" />
+    <child link="waist_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-7.80000E-1" upper="2.60000E-1" effort="100" velocity="4.2" />
+  </joint>
+
+  <link name="waist_link">
+    <inertial>
+      <origin xyz="2.82610E-2 1.84060E-2 -3.83460E-6" rpy="0 0 0" />
+      <mass value="5.047" />
+      <inertia ixx="3.39910E-2" ixy="-9.16940E-4" ixz="-2.33780E-5" iyy="3.23520E-2" iyz="2.27790E-5" izz="1.07870E-2" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="../meshes/waist_link.STL" />
+      </geometry>
+      <material name="waist_material">
+        <color rgba="7.00000E-1 7.00000E-1 7.00000E-1 1" />
+      </material>
+    </visual>
+  </link>
+
+  <joint name="torso_yaw" type="revolute">
+    <origin xyz="0 0 0" rpy="1.5708 -3.1416 -1.5708" />
+    <parent link="waist_link" />
+    <child link="pelvis_connector" />
+    <axis xyz="0 0 1" />
+    <limit lower="-7.80000E-1" upper="7.80000E-1" effort="0" velocity="0" />
+  </joint>
+
+  <link name="pelvis_connector" />
+
+  <joint name="pelvis_ee" type="fixed">
+    <origin xyz="0 0 0" rpy="0.0 0.0 3.1416" />
+    <parent link="pelvis_connector" />
+    <child link="pelvis_ee_link" />
+  </joint>
+
+  <link name="pelvis_ee_link" />
+
+</robot>

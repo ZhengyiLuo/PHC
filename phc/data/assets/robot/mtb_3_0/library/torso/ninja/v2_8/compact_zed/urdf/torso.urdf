@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <material name="black">
+    <color rgba="0.18 0.18 0.18 1.0" />
+  </material>
+  <material name="covers">
+    <color rgba="0.78 0.78 0.78 1.0" />
+  </material>
+  <material name="white">
+    <color rgba="1.0 1.0 1.0 1.0" />
+  </material>
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-0.026372 -0.0064997 0.11544" rpy="0.0 0.0 0.0" />
+      <mass value="10.845" />
+      <inertia ixx="0.290498" ixy="-0.00113558" ixz="-0.0163149" iyy="0.273865" iyz="0.000440052" izz="0.0941373" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/base_link.STL" />
+      </geometry>
+      <material name="black" />
+    </visual>
+    <collision>
+      <origin xyz="-0.021 0.0 0.127" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <box size="0.23 0.31 0.51" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="aruco_camera_calibration" type="fixed">
+    <origin xyz="0.4637 0.0 -0.15976" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="aruco_ee" />
+  </joint>
+  <link name="aruco_ee" />
+  <joint name="center" type="fixed">
+    <origin xyz="0.0187 0.0 -0.12276" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="center" />
+  </joint>
+  <link name="center" />
+  <joint name="imu" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="imu_link" />
+  </joint>
+  <link name="imu_link">
+    <inertial>
+      <origin xyz="-0.00564954 -0.0076969 0.00128756" rpy="0.0 0.0 0.0" />
+      <mass value="0.0102286" />
+      <inertia ixx="9.63262e-07" ixy="-1.77855e-10" ixz="3.76127e-08" iyy="7.46825e-07" iyz="4.92881e-11" izz="1.45547e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/imu_link.STL" />
+      </geometry>
+      <material name="black" />
+    </visual>
+  </link>
+  <joint name="l_shoulder_ee" type="fixed">
+    <origin xyz="-0.0233 0.0525 0.25224" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="l_shoulder_ee_link" />
+  </joint>
+  <link name="l_shoulder_ee_link" />
+  <joint name="pelvis_ee" type="fixed">
+    <origin xyz="-0.0233 0.0 -0.14876" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="pelvis_ee_link" />
+  </joint>
+  <link name="pelvis_ee_link" />
+  <joint name="r_shoulder_ee" type="fixed">
+    <origin xyz="-0.0233 -0.0525 0.25224" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="r_shoulder_ee_link" />
+  </joint>
+  <link name="r_shoulder_ee_link" />
+  <joint name="spine" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="spine" />
+  </joint>
+  <link name="spine">
+    <inertial>
+      <origin xyz="-0.034178 -2.40293e-07 0.043419" rpy="0.0 0.0 0.0" />
+      <mass value="1.891" />
+      <inertia ixx="0.0560561" ixy="-1.40606e-08" ixz="0.000359275" iyy="0.0565865" iyz="-7.34568e-08" izz="0.0011735" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/spine.STL" />
+      </geometry>
+      <material name="covers" />
+    </visual>
+  </link>
+  <joint name="zed" type="fixed">
+    <origin xyz="0.089946 0.0 0.34464" rpy="0.0 0.61087 0.0" />
+    <parent link="base_link" />
+    <child link="zed2i_ee_link" />
+  </joint>
+  <link name="zed2i_ee_link" />
+  <joint name="zed_upper" type="fixed">
+    <origin xyz="0.087723 0.0 0.30634" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="zed_camera_upper_ee" />
+  </joint>
+  <link name="zed_camera_upper_ee" />
+</robot>

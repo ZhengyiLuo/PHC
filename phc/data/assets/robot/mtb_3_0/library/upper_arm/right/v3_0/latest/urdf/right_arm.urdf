@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="right_arm_base_link">
+    <inertial>
+      <origin xyz="-0.036 0.000591345 -0.0567817" rpy="0.0 0.0 0.0" />
+      <mass value="1.81895" />
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_arm_base_link/component_0_21-21-22.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.05" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_shoulder_pitch" type="revolute">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.309 0.0 0.0" />
+    <parent link="right_arm_base_link" />
+    <child link="right_shoulder_pitch_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-2.09" upper="2.09" effort="107.0" velocity="7.4" />
+  </joint>
+  <link name="right_shoulder_pitch_link">
+    <inertial>
+      <origin xyz="-0.00973509 0.000974406 0.0634577" rpy="0.0 0.0 0.0" />
+      <mass value="0.481271" />
+      <inertia ixx="0.0010015" ixy="-4.56274e-06" ixz="0.000174614" iyy="0.00126528" iyz="5.95111e-06" izz="0.000995084" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_pitch_link/component_2_21-21-789.STL" />
+      </geometry>
+      <material name="Plastic_Standardized_Surface_Finish">
+        <color rgba="0.123 0.123 0.123 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_pitch_link/component_4_21-22-5342-45.STL" />
+      </geometry>
+      <material name="Plastic_Standardized_Surface_Finish">
+        <color rgba="0.123 0.123 0.123 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_pitch_link/component_0_21-21-326.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_pitch_link/component_1_21-21-324.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_pitch_link/component_3_21-22-5342-29.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_shoulder_roll" type="revolute">
+    <origin xyz="0.0 0.0 0.103" rpy="-1.5708 0.0 1.5708" />
+    <parent link="right_shoulder_pitch_link" />
+    <child link="right_shoulder_roll_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-1.66" upper="0.42" effort="107.0" velocity="7.4" />
+  </joint>
+  <link name="right_shoulder_roll_link">
+    <inertial>
+      <origin xyz="0.0200438 -0.0387314 0.0052482" rpy="0.0 0.0 0.0" />
+      <mass value="3.15871" />
+      <inertia ixx="0.0102191" ixy="0.00257535" ixz="0.000335342" iyy="0.0050377" iyz="-0.000628823" izz="0.0118783" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_roll_link/component_0_21-22-5417-30.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_roll_link/component_22_21-22-5342-21.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_roll_link/component_23_21-22-5342-35.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.005 -0.02 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.055" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.042 -0.111 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.04" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_shoulder_yaw" type="revolute">
+    <origin xyz="0.0479552 -0.132607 0.0" rpy="-1.5708 0.0 -2.87979" />
+    <parent link="right_shoulder_roll_link" />
+    <child link="right_shoulder_yaw_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-2.09" upper="2.09" effort="67.0" velocity="7.5" />
+  </joint>
+  <link name="right_shoulder_yaw_link">
+    <inertial>
+      <origin xyz="-0.00400887 -0.00245285 0.080886" rpy="0.0 0.0 0.0" />
+      <mass value="1.4394" />
+      <inertia ixx="0.002863" ixy="1.54615e-05" ixz="0.000102086" iyy="0.00278717" iyz="-0.000137685" izz="0.00129" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_yaw_link/component_1_21-22-5417-22.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_yaw_link/component_2_21-23-62.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_yaw_link/component_3_21-23-484.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_shoulder_yaw_link/component_18_21-23-1313.STL" />
+      </geometry>
+      <material name="Plastic_Standardized_Surface_Finish">
+        <color rgba="0.123 0.123 0.123 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_elbow" type="revolute">
+    <origin xyz="0.0 0.0 0.0981" rpy="-1.5708 0.0 1.5708" />
+    <parent link="right_shoulder_yaw_link" />
+    <child link="right_elbow_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-2.36" upper="1.92" effort="67.0" velocity="7.5" />
+  </joint>
+  <link name="right_elbow_link">
+    <inertial>
+      <origin xyz="3.56036e-05 -0.0889067 0.00774094" rpy="0.0 0.0 0.0" />
+      <mass value="1.12094" />
+      <inertia ixx="0.00219782" ixy="2.01022e-06" ixz="3.32292e-07" iyy="0.00110422" iyz="-0.000444939" izz="0.00207647" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_elbow_link/component_0_21-23-40.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_elbow_link/component_13_21-24-44.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_elbow_link/component_2_21-23-67.STL" />
+      </geometry>
+      <material name="Plastic_Standardized_Surface_Finish">
+        <color rgba="0.123 0.123 0.123 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_elbow_link/component_12_21-24-2833.STL" />
+      </geometry>
+      <material name="Plastic_Standardized_Surface_Finish">
+        <color rgba="0.123 0.123 0.123 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 -0.015 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.076 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.045" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_wrist_roll" type="revolute">
+    <origin xyz="0.0 -0.13546 0.0" rpy="-1.5708 0.0 3.14159" />
+    <parent link="right_elbow_link" />
+    <child link="right_wrist_roll_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-2.09" upper="2.09" effort="34.3" velocity="8.0" />
+  </joint>
+  <link name="right_wrist_roll_link">
+    <inertial>
+      <origin xyz="0.00315867 -0.00292952 0.0476877" rpy="0.0 0.0 0.0" />
+      <mass value="0.97539" />
+      <inertia ixx="0.00147505" ixy="-2.10727e-07" ixz="5.23714e-05" iyy="0.0013434" iyz="8.35383e-06" izz="0.000808977" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_0_21-25-881.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_1_21-25-206.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_2_21-25-980.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_3_21-25-91.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_4_21-25-84.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_5_21-25-2315.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_6_21-25-1344.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_7_21-25-1347.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_8_21-25-947.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_9_21-25-22-880.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_10_21-24-48.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_11_21-24-1521.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_12_21-25-964.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_13_21-25-22-39.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_14_21-25-22-37.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_16_21-25-1041.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_17_21-24-1527.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_18_21-25-22-148.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_roll_link/component_19_21-25-22-22.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.036" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 0.145" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.06 0.046" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.025" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_wrist_cam_ee" type="fixed">
+    <origin xyz="0.00029 0.0 0.187" rpy="0.0 0.0 0.0" />
+    <parent link="right_wrist_roll_link" />
+    <child link="right_wrist_cam_ee" />
+  </joint>
+  <link name="right_wrist_cam_ee" />
+  <joint name="right_wrist_pitch" type="revolute">
+    <origin xyz="0.0 0.0 0.129" rpy="-1.5708 0.0 -3.14159" />
+    <parent link="right_wrist_roll_link" />
+    <child link="right_wrist_pitch_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-0.66" upper="0.66" effort="34.3" velocity="8.0" />
+  </joint>
+  <link name="right_wrist_pitch_link">
+    <inertial>
+      <origin xyz="0.00509028 -0.00369281 0.000518607" rpy="0.0 0.0 0.0" />
+      <mass value="0.665235" />
+      <inertia ixx="0.000433199" ixy="-2.01798e-06" ixz="8.39548e-06" iyy="0.000448827" iyz="-1.17514e-06" izz="0.000458137" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_pitch_link/component_0_21-25-863-41.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_pitch_link/component_1_21-25-863-601.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_pitch_link/component_2_21-25-863-22-39.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_pitch_link/component_3_21-25-863-22-27.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_pitch_link/component_5_21-25-863-22-37.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_pitch_link/component_21_21-25-863-615.STL" />
+      </geometry>
+      <material name="Plastic_Standardized_Surface_Finish">
+        <color rgba="0.123 0.123 0.123 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_wrist_yaw" type="revolute">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.5708 0.0 -1.5708" />
+    <parent link="right_wrist_pitch_link" />
+    <child link="right_wrist_yaw_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-1.22" upper="1.22" effort="34.3" velocity="8.0" />
+  </joint>
+  <link name="right_wrist_yaw_link">
+    <inertial>
+      <origin xyz="0.0308936 2.56956e-08 0.0214615" rpy="0.0 0.0 0.0" />
+      <mass value="0.151337" />
+      <inertia ixx="8.2981e-05" ixy="-2.44022e-11" ixz="5.09221e-05" iyy="0.000148264" iyz="3.17978e-11" izz="0.000106817" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_yaw_link/component_0_21-25-863-44.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/right_wrist_yaw_link/component_1_21-25-863-45.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_hand_base" type="fixed">
+    <origin xyz="0.058 0.0 0.0" rpy="-1.5708 0.0 -1.5708" />
+    <parent link="right_wrist_yaw_link" />
+    <child link="right_hand_base" />
+  </joint>
+  <link name="right_hand_base" />
+</robot>

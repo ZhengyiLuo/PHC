@@ -185,16 +185,18 @@ def process_motion(key_names, key_name_to_pkls, cfg):
                     "smpl_joints": joints_dump, 
                     "fps": 30
                     }
+        import ipdb; ipdb.set_trace()
         all_data[data_key] = data_dump
     return all_data
         
 
 @hydra.main(version_base=None, config_path="../../phc/data/cfg", config_name="config")
 def main(cfg : DictConfig) -> None:
-    if "amass_root" in cfg:
-        amass_root = cfg.amass_root
-    else:
-        raise ValueError("amass_root is not specified in the config")
+    amass_root = "/home/ilane/Desktop/ilane/Datasets/Wave/"
+    # if "amass_root" in cfg:
+    #     amass_root = cfg.amass_root
+    # else:
+    #     raise ValueError("amass_root is not specified in the config")
     
     all_pkls = glob.glob(f"{amass_root}/**/*.npz", recursive=True)
     split_len = len(amass_root.split("/"))
@@ -205,7 +207,7 @@ def main(cfg : DictConfig) -> None:
     
     from multiprocessing import Pool
     jobs = key_names
-    num_jobs = 30
+    num_jobs = 1
     chunk = np.ceil(len(jobs)/num_jobs).astype(int)
     jobs= [jobs[i:i + chunk] for i in range(0, len(jobs), chunk)]
     job_args = [(jobs[i], key_name_to_pkls, cfg) for i in range(len(jobs))]

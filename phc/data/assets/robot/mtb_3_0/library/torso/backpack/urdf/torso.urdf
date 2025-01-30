@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-0.0964551 -0.00775431 0.0580385" rpy="0.0 0.0 0.0" />
+      <mass value="10.185" />
+      <inertia ixx="0.149593" ixy="1.96505e-06" ixz="-0.000324352" iyy="0.145759" iyz="1.82179e-05" izz="0.102599" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/base_link.STL" />
+      </geometry>
+      <material name="base_material">
+        <color rgba="0.2 0.2 0.2 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.068 -0.008 0.09" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <box size="0.18 0.27 0.35" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="imu" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="imu_link" />
+  </joint>
+  <link name="imu_link">
+    <inertial>
+      <origin xyz="-0.00564954 -0.0076969 0.00128756" rpy="0.0 0.0 0.0" />
+      <mass value="0.0102286" />
+      <inertia ixx="9.63262e-07" ixy="-1.77855e-10" ixz="3.76127e-08" iyy="7.46825e-07" iyz="4.92881e-11" izz="1.45547e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/imu.STL" />
+      </geometry>
+      <material name="imu_material">
+        <color rgba="0.2 0.2 0.2 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="zed2i" type="fixed">
+    <origin xyz="0.01524 -0.0077 0.153" rpy="0.0 0.30541 0.0" />
+    <parent link="base_link" />
+    <child link="zed2i_link" />
+  </joint>
+  <link name="zed2i_link">
+    <inertial>
+      <origin xyz="-0.00377432 8.96146e-07 0.0144442" rpy="0.0 0.0 0.0" />
+      <mass value="0.170323" />
+      <inertia ixx="0.0003945" ixy="3.3136e-09" ixz="-7.21668e-08" iyy="3.31631e-05" iyz="1.38436e-09" izz="0.000402762" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/zed2i.STL" />
+      </geometry>
+      <material name="zed2i_material">
+        <color rgba="0.372549 0.698039 1.0 0.3" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_shoulder_ee" type="fixed">
+    <origin xyz="-0.0773 -0.0602 0.18774" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="right_shoulder_ee_link" />
+  </joint>
+  <link name="right_shoulder_ee_link" />
+  <joint name="left_shoulder_ee" type="fixed">
+    <origin xyz="-0.0773 0.0448 0.18774" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="left_shoulder_ee_link" />
+  </joint>
+  <link name="left_shoulder_ee_link" />
+  <joint name="pelvis_ee" type="fixed">
+    <origin xyz="-0.0773 -0.0077 -0.09226" rpy="0.0 0.0 0.0" />
+    <parent link="base_link" />
+    <child link="pelvis_ee_link" />
+  </joint>
+  <link name="pelvis_ee_link" />
+</robot>

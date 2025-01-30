@@ -1,0 +1,76 @@
+humanoid_type: mtb_3_0
+bias_offset: False
+has_self_collision: False
+has_mesh: False
+has_jt_limit: False
+has_dof_subset: True
+has_upright_start: True
+has_smpl_pd_offset: False
+remove_toe: False # For humanoid's geom toe
+motion_sym_loss: False
+sym_loss_coef: 1
+big_ankle: True
+
+has_shape_obs: false
+has_shape_obs_disc: false
+has_shape_variation: False
+
+masterfoot: False
+freeze_toe: false
+freeze_hand: False
+box_body: True
+real_weight: True
+real_weight_porpotion_capsules: True
+real_weight_porpotion_boxes: True
+
+robot:
+
+body_names: [
+    'base_link', 'imu_pelvis', 'left_leg_link', 'left_hip_yaw_link', 'left_hip_roll_link', 'left_hip_pitch_link', 'left_knee_link', 'left_ankle_pitch_link', 'left_foot', 'right_leg_link', 'right_hip_yaw_link', 'right_hip_roll_link', 'right_hip_pitch_link', 'right_knee_link', 'right_ankle_pitch_link', 'right_foot', 'torso_yaw_link', 'torso_pitch_link', 'torso', 'imu_torso', 'left_arm_link', 'left_shoulder_pitch_link', 'left_shoulder_roll_link', 'left_shoulder_yaw_link', 'left_elbow_link', 'left_wrist_roll_link', 'left_wrist_pitch_link', 'left_wrist_yaw_link', 'left_hand_base_link', 'left_index_finger_base_link', 'left_index_finger_f1_link', 'left_index_finger_f2_link', 'left_index_finger_f3_link', 'left_middle_finger_base_link', 'left_middle_finger_f1_link', 'left_middle_finger_f2_link', 'left_middle_finger_f3_link', 'left_pinky_base_link', 'left_pinky_f1_link', 'left_pinky_f2_link', 'left_pinky_f3_link', 'left_ring_finger_base_link', 'left_ring_finger_f1_link', 'left_ring_finger_f2_link', 'left_ring_finger_f3_link', 'left_thumb_base_link', 'left_thumb_f1_link', 'left_thumb_f2_link', 'right_arm_link', 'right_shoulder_pitch_link', 'right_shoulder_roll_link', 'right_shoulder_yaw_link', 'right_elbow_link', 'right_wrist_roll_link', 'right_wrist_pitch_link', 'right_wrist_yaw_link', 'right_hand_base_link', 'right_index_finger_base_link', 'right_index_finger_f1_link', 'right_index_finger_f2_link', 'right_index_finger_f3_link', 'right_middle_finger_base_link', 'right_middle_finger_f1_link', 'right_middle_finger_f2_link', 'right_middle_finger_f3_link', 'right_pinky_base_link', 'right_pinky_f1_link', 'right_pinky_f2_link', 'right_pinky_f3_link', 'right_ring_finger_base_link', 'right_ring_finger_f1_link', 'right_ring_finger_f2_link', 'right_ring_finger_f3_link', 'right_thumb_base_link', 'right_thumb_f1_link', 'right_thumb_f2_link', 'zed_lower_camera_link', 'zed_upper_camera_link']
+    
+limb_weight_group:
+  - ['left_leg_link', 'left_hip_yaw_link', 'left_hip_roll_link', 'left_hip_pitch_link', 'left_knee_link', 'left_ankle_pitch_link', 'left_ankle_roll_link']
+  - ['right_leg_link', 'right_hip_yaw_link', 'right_hip_roll_link', 'right_hip_pitch_link', 'right_knee_link', 'right_ankle_pitch_link', 'right_ankle_roll_link']
+  - ['imu_pelvis_link', 'torso_yaw_link', 'torso_pitch_link', 'torso_roll_link', 'imu_torso_link']
+  - ['left_arm_link', 'left_shoulder_pitch_link', 'left_shoulder_roll_link', 'left_shoulder_yaw_link', 'left_elbow_link', 'left_wrist_roll_link', 'left_wrist_pitch_link', 'left_wrist_yaw_link', 'left_hand_base_link', 'left_index_finger_base_link', 'left_middle_finger_base_link', 'left_pinky_base_link', 'left_ring_finger_base_link', 'left_thumb_yaw_link', 'left_index_finger_f1_link', 'left_middle_finger_f1_link', 'left_pinky_f1_link', 'left_ring_finger_f1_link', 'left_thumb_f1_link', 'left_index_finger_f2_link', 'left_middle_finger_f2_link', 'left_pinky_f2_link', 'left_ring_finger_f2_link', 'left_thumb_f2_link', 'left_index_finger_f3_link', 'left_middle_finger_f3_link', 'left_pinky_f3_link', 'left_ring_finger_f3_link']
+  - ['right_arm_link', 'right_shoulder_pitch_link', 'right_shoulder_roll_link', 'right_shoulder_yaw_link', 'right_elbow_link', 'right_wrist_roll_link', 'right_wrist_pitch_link', 'right_wrist_yaw_link', 'right_hand_base_link', 'right_index_finger_base_link', 'right_middle_finger_base_link', 'right_pinky_base_link', 'right_ring_finger_base_link', 'right_thumb_yaw_link', 'right_index_finger_f1_link', 'right_middle_finger_f1_link', 'right_pinky_f1_link', 'right_ring_finger_f1_link', 'right_thumb_f1_link', 'right_index_finger_f2_link', 'right_middle_finger_f2_link', 'right_pinky_f2_link', 'right_ring_finger_f2_link', 'right_thumb_f2_link', 'right_index_finger_f3_link', 'right_middle_finger_f3_link', 'right_pinky_f3_link', 'right_ring_finger_f3_link']
+
+dof_names: [
+    'imu_pelvis_link', 'left_leg_link', 'left_hip_yaw_link', 'left_hip_roll_link', 'left_hip_pitch_link', 'left_knee_link', 'left_ankle_pitch_link', 'left_ankle_roll_link', 'right_leg_link', 'right_hip_yaw_link', 'right_hip_roll_link', 'right_hip_pitch_link', 'right_knee_link', 'right_ankle_pitch_link', 'right_ankle_roll_link', 'torso_yaw_link', 'torso_pitch_link', 'torso_roll_link', 'imu_torso_link', 'left_arm_link', 'left_shoulder_pitch_link', 'left_shoulder_roll_link', 'left_shoulder_yaw_link', 'left_elbow_link', 'left_wrist_roll_link', 'left_wrist_pitch_link', 'left_wrist_yaw_link', 'left_hand_base_link', 'left_index_finger_base_link', 'left_index_finger_f1_link', 'left_index_finger_f2_link', 'left_index_finger_f3_link', 'left_middle_finger_base_link', 'left_middle_finger_f1_link', 'left_middle_finger_f2_link', 'left_middle_finger_f3_link', 'left_pinky_base_link', 'left_pinky_f1_link', 'left_pinky_f2_link', 'left_pinky_f3_link', 'left_ring_finger_base_link', 'left_ring_finger_f1_link', 'left_ring_finger_f2_link', 'left_ring_finger_f3_link', 'left_thumb_yaw_link', 'left_thumb_f1_link', 'left_thumb_f2_link', 'right_arm_link', 'right_shoulder_pitch_link', 'right_shoulder_roll_link', 'right_shoulder_yaw_link', 'right_elbow_link', 'right_wrist_roll_link', 'right_wrist_pitch_link', 'right_wrist_yaw_link', 'right_hand_base_link', 'right_index_finger_base_link', 'right_index_finger_f1_link', 'right_index_finger_f2_link', 'right_index_finger_f3_link', 'right_middle_finger_base_link', 'right_middle_finger_f1_link', 'right_middle_finger_f2_link', 'right_middle_finger_f3_link', 'right_pinky_base_link', 'right_pinky_f1_link', 'right_pinky_f2_link', 'right_pinky_f3_link', 'right_ring_finger_base_link', 'right_ring_finger_f1_link', 'right_ring_finger_f2_link', 'right_ring_finger_f3_link', 'right_thumb_yaw_link', 'right_thumb_f1_link', 'right_thumb_f2_link', 'zed_lower_camera_link', 'zed_upper_camera_link'] #75
+
+right_foot_name: 'right_foot'
+left_foot_name: 'left_foot'
+
+asset:
+    assetRoot: "./"
+    assetFileName: "phc/data/assets/robot/mtb_3_0/mtb_3_0.xml"
+    urdfFileName: "phc/data/assets/robot/mtb_3_0/mtb_3_0.urdf"
+
+extend_config:
+  - joint_name: "head_link"
+    parent_name: "base_link"
+    pos: [0.0, 0.0, 0.4]
+    rot: [1.0, 0.0, 0.0, 0.0]
+
+base_link: "base_link"
+
+
+joint_matches:
+  - ["base_link", "Pelvis"]
+  - ["left_hip_pitch_link", "L_Hip"]
+  - ["left_knee_link", "L_Knee"]
+  - ["left_ankle_pitch_link", "L_Ankle"]
+  - ["left_foot", "L_Toe"]
+  - ["right_hip_pitch_link", "R_Hip"]
+  - ["right_knee_link", "R_Knee"]
+  - ["right_ankle_pitch_link", "R_Ankle"]
+  - ["right_foot", "R_Toe"]
+  - ["left_shoulder_roll_link", "L_Shoulder"]
+  - ["left_elbow_link", "L_Elbow"]
+  - ["left_wrist_yaw_link", "L_Wrist"]
+  - ["right_shoulder_roll_link", "R_Shoulder"]
+  - ["right_elbow_link", "R_Elbow"]
+  - ["right_wrist_yaw_link", "R_Wrist"]
+
+smpl_pose_modifier:
+  - Pelvis: "[np.pi/2, 0, np.pi/2]"

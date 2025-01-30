@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="left_foot">
+    <inertial>
+      <origin xyz="0.0916089 -0.00104856 -0.0715544" rpy="0.0 0.0 0.0" />
+      <mass value="0.121388" />
+      <inertia ixx="0.00157782" ixy="0.000133172" ixz="-0.000398991" iyy="0.00562631" iyz="-1.60948e-05" izz="0.00509415" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/left_foot/component_0_21-33.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/left_foot/component_1_21-37.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/left_foot/component_2_21-27-102.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/left_foot/component_3_21-27-110.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/left_foot/component_5_21-196.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/left_foot/component_7_21-205.STL" />
+      </geometry>
+      <material name="Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/left_foot/component_6_21-201.STL" />
+      </geometry>
+      <material name="Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="left_back_left_sole" type="fixed">
+    <origin xyz="-0.0565 0.029 -0.1" rpy="0.0 0.0 0.0" />
+    <parent link="left_foot" />
+    <child link="left_back_left_sole" />
+  </joint>
+  <link name="left_back_left_sole">
+    <inertial>
+      <origin xyz="0.148109 -0.0300486 0.0284456" rpy="0.0 0.0 0.0" />
+      <mass value="0.25" />
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0" />
+    </inertial>
+    <collision>
+      <origin xyz="0.075 -0.0107803 0.015" rpy="-1.5708 0.0 0.0" />
+      <geometry>
+        <box size="0.15 0.03 0.027" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_back_right_sole" type="fixed">
+    <origin xyz="-0.0565 -0.031 -0.1" rpy="0.0 0.0 0.0" />
+    <parent link="left_foot" />
+    <child link="left_back_right_sole" />
+  </joint>
+  <link name="left_back_right_sole">
+    <inertial>
+      <origin xyz="0.148109 0.0299514 0.0284456" rpy="0.0 0.0 0.0" />
+      <mass value="0.25" />
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0" />
+    </inertial>
+    <collision>
+      <origin xyz="0.075 0.0135 0.015" rpy="-1.5708 0.0 0.0" />
+      <geometry>
+        <box size="0.15 0.03 0.027" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_front_left_sole" type="fixed">
+    <origin xyz="0.2135 0.019 -0.1" rpy="0.0 0.0 0.0" />
+    <parent link="left_foot" />
+    <child link="left_front_left_sole" />
+  </joint>
+  <link name="left_front_left_sole">
+    <inertial>
+      <origin xyz="-0.121891 -0.0200486 0.0284456" rpy="0.0 0.0 0.0" />
+      <mass value="0.25" />
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0" />
+    </inertial>
+    <collision>
+      <origin xyz="-0.0563444 0.00570563 0.015" rpy="-1.5708 0.0 -0.341615" />
+      <geometry>
+        <box size="0.11 0.03 0.027" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0565 -0.013 0.015" rpy="-1.5708 0.0 0.0" />
+      <geometry>
+        <box size="0.113 0.03 0.026" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_front_right_sole" type="fixed">
+    <origin xyz="0.2135 -0.037 -0.1" rpy="0.0 0.0 0.0" />
+    <parent link="left_foot" />
+    <child link="left_front_right_sole" />
+  </joint>
+  <link name="left_front_right_sole">
+    <inertial>
+      <origin xyz="-0.121891 0.0359514 0.0284456" rpy="0.0 0.0 0.0" />
+      <mass value="0.25" />
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0" />
+    </inertial>
+    <collision>
+      <origin xyz="-0.0565649 0.00276868 0.015" rpy="-1.5708 0.0 0.191788" />
+      <geometry>
+        <box size="0.11 0.03 0.027" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0565 0.013 0.015" rpy="-1.5708 0.0 0.0" />
+      <geometry>
+        <box size="0.113 0.03 0.026" />
+      </geometry>
+    </collision>
+  </link>
+</robot>

@@ -42,7 +42,6 @@ asset:
   assetFileName: "phc/data/assets/robot/unitree_g1/g1.xml"
   urdfFileName: "phc/data/assets/robot/unitree_g1/g1.xml"
 
-
 extend_config:
   - joint_name: "head_link"
     parent_name: "pelvis"

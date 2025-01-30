@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="gripper_camera_link">
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="1.5708 0.0 1.5708" />
+      <geometry>
+        <mesh filename="../meshes/cam_link.STL" />
+      </geometry>
+      <material name="cam_material">
+        <color rgba="0.79 0.82 0.93 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 -0.01 0.01" rpy="1.5708 0.0 1.5708" />
+      <geometry>
+        <box size="0.05 0.04 0.05" />
+      </geometry>
+    </collision>
+  </link>
+</robot>

@@ -1,0 +1,2077 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="right_hand_base_link">
+    <inertial>
+      <origin xyz="-0.00066896 0.0036509 0.052923" rpy="0.0 0.0 0.0" />
+      <mass value="0.38064" />
+      <inertia ixx="0.0010794" ixy="-1.8057e-05" ixz="4.4255e-07" iyy="0.00064376" iyz="6.2789e-06" izz="0.00061713" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../base/right/meshes/right_hand_base_link/component_0_23.STL" />
+      </geometry>
+      <material name="MI_WhitePlastic">
+        <color rgba="0.888 0.888 0.888 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../base/right/meshes/right_hand_base_link/component_1_82.STL" />
+      </geometry>
+      <material name="MI_WhitePlastic">
+        <color rgba="0.888 0.888 0.888 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../base/right/meshes/right_hand_base_link/component_2_21.STL" />
+      </geometry>
+      <material name="MI_WhitePlastic">
+        <color rgba="0.888 0.888 0.888 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0146827 -0.000301553 0.0624883" rpy="0.0138902 -1.30862 3.09504" />
+      <geometry>
+        <box size="0.105 0.095 0.03" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_hand_ee" type="fixed">
+    <origin xyz="0.0235 0.0 0.075" rpy="0.0 0.0 0.0" />
+    <parent link="right_hand_base_link" />
+    <child link="right_hand_ee" />
+  </joint>
+  <link name="right_hand_ee" />
+  <joint name="right_index_finger" type="fixed">
+    <origin xyz="0.0 0.0345 0.1267" rpy="-1.5708 -1.5708 0.0" />
+    <parent link="right_hand_base_link" />
+    <child link="right_index_finger_base_link" />
+  </joint>
+  <link name="right_index_finger_base_link">
+    <inertial>
+      <origin xyz="-0.052449 -0.013979 0.000160229" rpy="0.0 0.0 0.0" />
+      <mass value="0.0800363" />
+      <inertia ixx="1.12535e-05" ixy="-6.02926e-06" ixz="-5.49146e-07" iyy="3.27864e-05" iyz="-3.63626e-08" izz="4.08345e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_9_21-344-24.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_10_21-174.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_13_21-750.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_14_21-1235.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_18_21-132.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_20_21-382.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_index_finger_b1" type="prismatic">
+    <origin xyz="-0.043443 -0.009 0.0" rpy="1.5708 0.0 1.5708" />
+    <parent link="right_index_finger_base_link" />
+    <child link="right_index_finger_b1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="0.038" effort="200.0" velocity="0.013" />
+  </joint>
+  <link name="right_index_finger_b1_link">
+    <inertial>
+      <origin xyz="0.000428975 2.44163e-12 0.00138155" rpy="0.0 0.0 0.0" />
+      <mass value="0.0174368" />
+      <inertia ixx="9.95596e-07" ixy="3.56986e-16" ixz="9.58784e-09" iyy="8.81696e-07" iyz="1.22497e-16" izz="8.20705e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b1_link/component_2_21-1268.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b1_link/component_3_21-1269.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_index_finger_b2" type="revolute">
+    <origin xyz="0.0 0.0 0.0121" rpy="1.5708 0.0 3.1416" />
+    <parent link="right_index_finger_b1_link" />
+    <child link="right_index_finger_b2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_index_finger_b2_link">
+    <inertial>
+      <origin xyz="0.00211067 0.00927558 -0.000101495" rpy="0.0 0.0 0.0" />
+      <mass value="0.00547861" />
+      <inertia ixx="5.25734e-07" ixy="1.31598e-08" ixz="1.77435e-09" iyy="3.14583e-07" iyz="3.50929e-10" izz="3.3173e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_0_21-1284.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_1_21-1285.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_2_21-215.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_3_21-219.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_4_21-229.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_5_21-253.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_index_finger_b3" type="revolute">
+    <origin xyz="-0.0013297 0.018452 0.0" rpy="0.0 0.0 1.6427" />
+    <parent link="right_index_finger_b2_link" />
+    <child link="right_index_finger_b3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_index_finger_b3_link">
+    <inertial>
+      <origin xyz="0.00958045 -0.00252802 1.56092e-11" rpy="0.0 0.0 0.0" />
+      <mass value="0.00488675" />
+      <inertia ixx="2.10296e-07" ixy="1.55018e-08" ixz="3.56279e-16" iyy="2.22375e-07" iyz="5.85915e-16" izz="2.32584e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b3_link/component_0_21-481.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b3_link/component_1_21-708.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b3_link/component_2_21-25.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_index_finger_b3f1" type="revolute">
+    <origin xyz="0.013409 0.0067239 0.0" rpy="0.0 0.0 -0.07194" />
+    <parent link="right_index_finger_b3_link" />
+    <child link="right_index_finger_b3f1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_index_finger_b3f1_link" />
+  <joint name="right_index_finger_b4" type="revolute">
+    <origin xyz="0.012527 -0.0082502 0.0" rpy="0.0 0.0 -0.61572" />
+    <parent link="right_index_finger_b3_link" />
+    <child link="right_index_finger_b4_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_index_finger_b4_link">
+    <inertial>
+      <origin xyz="0.0158273 0.0115368 -4.23228e-08" rpy="0.0 0.0 0.0" />
+      <mass value="0.0122238" />
+      <inertia ixx="9.60638e-07" ixy="-7.04268e-07" ixz="3.93305e-12" iyy="1.38373e-06" iyz="-4.55396e-12" izz="1.67673e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b4_link/component_0_21-625.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b4_link/component_1_21-490.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_index_finger_b4f2" type="revolute">
+    <origin xyz="0.030995 0.028026 0.0" rpy="0.0 0.0 0.5755" />
+    <parent link="right_index_finger_b4_link" />
+    <child link="right_index_finger_b4f2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_index_finger_b4f2_link" />
+  <joint name="right_index_finger_f1" type="revolute">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="right_index_finger_base_link" />
+    <child link="right_index_finger_f1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.57" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_index_finger_f1_link">
+    <inertial>
+      <origin xyz="0.0271401 0.000679815 3.9196e-09" rpy="0.0 0.0 0.0" />
+      <mass value="0.0163621" />
+      <inertia ixx="4.99077e-07" ixy="2.32367e-07" ixz="-3.52986e-14" iyy="2.91678e-06" iyz="-1.56807e-13" izz="2.89853e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f1_link/component_1_21-1257-21.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f1_link/component_2_21-589.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f1_link/component_0_21-1257-22.STL" />
+      </geometry>
+      <material name="right_index_finger_Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.022 -0.005 0.0" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.011" length="0.014" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_index_finger_b5" type="revolute">
+    <origin xyz="0.049 -0.0069282 0.0" rpy="0.0 0.0 0.031714" />
+    <parent link="right_index_finger_f1_link" />
+    <child link="right_index_finger_b5_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_index_finger_b5_link">
+    <inertial>
+      <origin xyz="0.0161194 0.00199652 7.51207e-10" rpy="0.0 0.0 0.0" />
+      <mass value="0.00295766" />
+      <inertia ixx="4.13467e-08" ixy="-8.32874e-08" ixz="-4.55606e-15" iyy="4.4953e-07" iyz="-8.27097e-15" izz="4.77488e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b5_link/component_2_21-585.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_index_finger_b5f3" type="revolute">
+    <origin xyz="0.030936 0.0072089 0.0" rpy="0.0 0.0 -1.6025" />
+    <parent link="right_index_finger_b5_link" />
+    <child link="right_index_finger_b5f3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_index_finger_b5f3_link" />
+  <joint name="right_index_finger_f2" type="revolute">
+    <origin xyz="0.045 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="right_index_finger_f1_link" />
+    <child link="right_index_finger_f2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.66" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_index_finger_f2_link">
+    <inertial>
+      <origin xyz="0.0124792 -0.00662953 2.63976e-06" rpy="0.0 0.0 0.0" />
+      <mass value="0.0150424" />
+      <inertia ixx="8.93249e-07" ixy="1.5032e-07" ixz="5.85245e-09" iyy="2.11235e-06" iyz="-1.00866e-08" izz="2.01909e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_2_21-1201.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_3_21-1202.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_6_21-611.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_7_21-619.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_1_21-1211-23.STL" />
+      </geometry>
+      <material name="right_index_finger_Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0107167 -0.00666353 0.0001" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.011" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_index_finger_f3" type="revolute">
+    <origin xyz="0.031204 -0.0059417 0.0" rpy="0.0 0.0 0.031714" />
+    <parent link="right_index_finger_f2_link" />
+    <child link="right_index_finger_f3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.4486" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_index_finger_f3_link">
+    <inertial>
+      <origin xyz="0.0109887 0.0032088 -5.39167e-09" rpy="0.0 0.0 0.0" />
+      <mass value="0.0157411" />
+      <inertia ixx="7.15188e-07" ixy="7.76911e-08" ixz="-3.66384e-13" iyy="1.04173e-06" iyz="-6.4345e-13" izz="1.07766e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f3_link/component_0_21-41.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f3_link/component_3_21-1197-22.STL" />
+      </geometry>
+      <material name="right_index_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f3_link/component_4_21-1197-24.STL" />
+      </geometry>
+      <material name="right_index_finger_Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0148682 0.00353726 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.009" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_middle_finger" type="fixed">
+    <origin xyz="0.0 0.0115 0.1267" rpy="-1.5708 -1.5708 0.0" />
+    <parent link="right_hand_base_link" />
+    <child link="right_middle_finger_base_link" />
+  </joint>
+  <link name="right_middle_finger_base_link">
+    <inertial>
+      <origin xyz="-0.052449 -0.013979 0.000160229" rpy="0.0 0.0 0.0" />
+      <mass value="0.0800363" />
+      <inertia ixx="1.12535e-05" ixy="-6.02926e-06" ixz="-5.49146e-07" iyy="3.27864e-05" iyz="-3.63626e-08" izz="4.08345e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_9_21-344-24.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_10_21-174.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_13_21-750.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_14_21-1235.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_18_21-132.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_20_21-382.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_middle_finger_b1" type="prismatic">
+    <origin xyz="-0.043443 -0.009 0.0" rpy="1.5708 0.0 1.5708" />
+    <parent link="right_middle_finger_base_link" />
+    <child link="right_middle_finger_b1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="0.038" effort="200.0" velocity="0.013" />
+  </joint>
+  <link name="right_middle_finger_b1_link">
+    <inertial>
+      <origin xyz="0.000428975 2.44163e-12 0.00138155" rpy="0.0 0.0 0.0" />
+      <mass value="0.0174368" />
+      <inertia ixx="9.95596e-07" ixy="3.56986e-16" ixz="9.58784e-09" iyy="8.81696e-07" iyz="1.22497e-16" izz="8.20705e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b1_link/component_2_21-1268.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b1_link/component_3_21-1269.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_middle_finger_b2" type="revolute">
+    <origin xyz="0.0 0.0 0.0121" rpy="1.5708 0.0 3.1416" />
+    <parent link="right_middle_finger_b1_link" />
+    <child link="right_middle_finger_b2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_middle_finger_b2_link">
+    <inertial>
+      <origin xyz="0.00211067 0.00927558 -0.000101495" rpy="0.0 0.0 0.0" />
+      <mass value="0.00547861" />
+      <inertia ixx="5.25734e-07" ixy="1.31598e-08" ixz="1.77435e-09" iyy="3.14583e-07" iyz="3.50929e-10" izz="3.3173e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_0_21-1284.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_1_21-1285.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_2_21-215.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_3_21-219.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_4_21-229.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_5_21-253.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_middle_finger_b3" type="revolute">
+    <origin xyz="-0.0013297 0.018452 0.0" rpy="0.0 0.0 1.6427" />
+    <parent link="right_middle_finger_b2_link" />
+    <child link="right_middle_finger_b3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_middle_finger_b3_link">
+    <inertial>
+      <origin xyz="0.00958045 -0.00252802 1.56092e-11" rpy="0.0 0.0 0.0" />
+      <mass value="0.00488675" />
+      <inertia ixx="2.10296e-07" ixy="1.55018e-08" ixz="3.56279e-16" iyy="2.22375e-07" iyz="5.85915e-16" izz="2.32584e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b3_link/component_0_21-481.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b3_link/component_1_21-708.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b3_link/component_2_21-25.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_middle_finger_b3f1" type="revolute">
+    <origin xyz="0.013409 0.0067239 0.0" rpy="0.0 0.0 -0.07194" />
+    <parent link="right_middle_finger_b3_link" />
+    <child link="right_middle_finger_b3f1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_middle_finger_b3f1_link" />
+  <joint name="right_middle_finger_b4" type="revolute">
+    <origin xyz="0.012527 -0.0082502 0.0" rpy="0.0 0.0 -0.61572" />
+    <parent link="right_middle_finger_b3_link" />
+    <child link="right_middle_finger_b4_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_middle_finger_b4_link">
+    <inertial>
+      <origin xyz="0.0158273 0.0115368 -4.23228e-08" rpy="0.0 0.0 0.0" />
+      <mass value="0.0122238" />
+      <inertia ixx="9.60638e-07" ixy="-7.04268e-07" ixz="3.93305e-12" iyy="1.38373e-06" iyz="-4.55396e-12" izz="1.67673e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b4_link/component_0_21-625.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b4_link/component_1_21-490.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_middle_finger_b4f2" type="revolute">
+    <origin xyz="0.030995 0.028026 0.0" rpy="0.0 0.0 0.5755" />
+    <parent link="right_middle_finger_b4_link" />
+    <child link="right_middle_finger_b4f2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_middle_finger_b4f2_link" />
+  <joint name="right_middle_finger_f1" type="revolute">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="right_middle_finger_base_link" />
+    <child link="right_middle_finger_f1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.57" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_middle_finger_f1_link">
+    <inertial>
+      <origin xyz="0.0271401 0.000679815 3.9196e-09" rpy="0.0 0.0 0.0" />
+      <mass value="0.0163621" />
+      <inertia ixx="4.99077e-07" ixy="2.32367e-07" ixz="-3.52986e-14" iyy="2.91678e-06" iyz="-1.56807e-13" izz="2.89853e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f1_link/component_1_21-1257-21.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f1_link/component_2_21-589.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f1_link/component_0_21-1257-22.STL" />
+      </geometry>
+      <material name="right_middle_finger_Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.022 -0.005 0.0" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.011" length="0.014" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_middle_finger_b5" type="revolute">
+    <origin xyz="0.049 -0.0069282 0.0" rpy="0.0 0.0 0.031714" />
+    <parent link="right_middle_finger_f1_link" />
+    <child link="right_middle_finger_b5_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_middle_finger_b5_link">
+    <inertial>
+      <origin xyz="0.0161194 0.00199652 7.51207e-10" rpy="0.0 0.0 0.0" />
+      <mass value="0.00295766" />
+      <inertia ixx="4.13467e-08" ixy="-8.32874e-08" ixz="-4.55606e-15" iyy="4.4953e-07" iyz="-8.27097e-15" izz="4.77488e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b5_link/component_2_21-585.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_middle_finger_b5f3" type="revolute">
+    <origin xyz="0.030936 0.0072089 0.0" rpy="0.0 0.0 -1.6025" />
+    <parent link="right_middle_finger_b5_link" />
+    <child link="right_middle_finger_b5f3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_middle_finger_b5f3_link" />
+  <joint name="right_middle_finger_f2" type="revolute">
+    <origin xyz="0.045 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="right_middle_finger_f1_link" />
+    <child link="right_middle_finger_f2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.66" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_middle_finger_f2_link">
+    <inertial>
+      <origin xyz="0.0124792 -0.00662953 2.63976e-06" rpy="0.0 0.0 0.0" />
+      <mass value="0.0150424" />
+      <inertia ixx="8.93249e-07" ixy="1.5032e-07" ixz="5.85245e-09" iyy="2.11235e-06" iyz="-1.00866e-08" izz="2.01909e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_2_21-1201.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_3_21-1202.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_6_21-611.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_7_21-619.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_1_21-1211-23.STL" />
+      </geometry>
+      <material name="right_middle_finger_Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0107167 -0.00666353 0.0001" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.011" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_middle_finger_f3" type="revolute">
+    <origin xyz="0.031204 -0.0059417 0.0" rpy="0.0 0.0 0.031714" />
+    <parent link="right_middle_finger_f2_link" />
+    <child link="right_middle_finger_f3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.4486" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_middle_finger_f3_link">
+    <inertial>
+      <origin xyz="0.0109887 0.0032088 -5.39167e-09" rpy="0.0 0.0 0.0" />
+      <mass value="0.0157411" />
+      <inertia ixx="7.15188e-07" ixy="7.76911e-08" ixz="-3.66384e-13" iyy="1.04173e-06" iyz="-6.4345e-13" izz="1.07766e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f3_link/component_0_21-41.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f3_link/component_3_21-1197-22.STL" />
+      </geometry>
+      <material name="right_middle_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f3_link/component_4_21-1197-24.STL" />
+      </geometry>
+      <material name="right_middle_finger_Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0148682 0.00353726 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.009" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_pinky" type="fixed">
+    <origin xyz="0.0 -0.0345 0.1267" rpy="-1.5708 -1.5708 0.0" />
+    <parent link="right_hand_base_link" />
+    <child link="right_pinky_base_link" />
+  </joint>
+  <link name="right_pinky_base_link">
+    <inertial>
+      <origin xyz="-0.052449 -0.013979 0.000160229" rpy="0.0 0.0 0.0" />
+      <mass value="0.0800363" />
+      <inertia ixx="1.12535e-05" ixy="-6.02926e-06" ixz="-5.49146e-07" iyy="3.27864e-05" iyz="-3.63626e-08" izz="4.08345e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_9_21-344-24.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_10_21-174.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_13_21-750.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_14_21-1235.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_18_21-132.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_20_21-382.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_pinky_b1" type="prismatic">
+    <origin xyz="-0.043443 -0.009 0.0" rpy="1.5708 0.0 1.5708" />
+    <parent link="right_pinky_base_link" />
+    <child link="right_pinky_b1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="0.038" effort="200.0" velocity="0.013" />
+  </joint>
+  <link name="right_pinky_b1_link">
+    <inertial>
+      <origin xyz="0.000428975 2.44163e-12 0.00138155" rpy="0.0 0.0 0.0" />
+      <mass value="0.0174368" />
+      <inertia ixx="9.95596e-07" ixy="3.56986e-16" ixz="9.58784e-09" iyy="8.81696e-07" iyz="1.22497e-16" izz="8.20705e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b1_link/component_2_21-1268.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b1_link/component_3_21-1269.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_pinky_b2" type="revolute">
+    <origin xyz="0.0 0.0 0.0121" rpy="1.5708 0.0 3.1416" />
+    <parent link="right_pinky_b1_link" />
+    <child link="right_pinky_b2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_pinky_b2_link">
+    <inertial>
+      <origin xyz="0.00211067 0.00927558 -0.000101495" rpy="0.0 0.0 0.0" />
+      <mass value="0.00547861" />
+      <inertia ixx="5.25734e-07" ixy="1.31598e-08" ixz="1.77435e-09" iyy="3.14583e-07" iyz="3.50929e-10" izz="3.3173e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_0_21-1284.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_1_21-1285.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_2_21-215.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_3_21-219.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_4_21-229.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_5_21-253.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_pinky_b3" type="revolute">
+    <origin xyz="-0.0013297 0.018452 0.0" rpy="0.0 0.0 1.6427" />
+    <parent link="right_pinky_b2_link" />
+    <child link="right_pinky_b3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_pinky_b3_link">
+    <inertial>
+      <origin xyz="0.00958045 -0.00252802 1.56092e-11" rpy="0.0 0.0 0.0" />
+      <mass value="0.00488675" />
+      <inertia ixx="2.10296e-07" ixy="1.55018e-08" ixz="3.56279e-16" iyy="2.22375e-07" iyz="5.85915e-16" izz="2.32584e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b3_link/component_0_21-481.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b3_link/component_1_21-708.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b3_link/component_2_21-25.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_pinky_b3f1" type="revolute">
+    <origin xyz="0.013409 0.0067239 0.0" rpy="0.0 0.0 -0.07194" />
+    <parent link="right_pinky_b3_link" />
+    <child link="right_pinky_b3f1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_pinky_b3f1_link" />
+  <joint name="right_pinky_b4" type="revolute">
+    <origin xyz="0.012527 -0.0082502 0.0" rpy="0.0 0.0 -0.61572" />
+    <parent link="right_pinky_b3_link" />
+    <child link="right_pinky_b4_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_pinky_b4_link">
+    <inertial>
+      <origin xyz="0.0158273 0.0115368 -4.23228e-08" rpy="0.0 0.0 0.0" />
+      <mass value="0.0122238" />
+      <inertia ixx="9.60638e-07" ixy="-7.04268e-07" ixz="3.93305e-12" iyy="1.38373e-06" iyz="-4.55396e-12" izz="1.67673e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b4_link/component_0_21-625.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b4_link/component_1_21-490.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_pinky_b4f2" type="revolute">
+    <origin xyz="0.030995 0.028026 0.0" rpy="0.0 0.0 0.5755" />
+    <parent link="right_pinky_b4_link" />
+    <child link="right_pinky_b4f2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_pinky_b4f2_link" />
+  <joint name="right_pinky_f1" type="revolute">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="right_pinky_base_link" />
+    <child link="right_pinky_f1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.57" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_pinky_f1_link">
+    <inertial>
+      <origin xyz="0.0271401 0.000679815 3.9196e-09" rpy="0.0 0.0 0.0" />
+      <mass value="0.0163621" />
+      <inertia ixx="4.99077e-07" ixy="2.32367e-07" ixz="-3.52986e-14" iyy="2.91678e-06" iyz="-1.56807e-13" izz="2.89853e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f1_link/component_1_21-1257-21.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f1_link/component_2_21-589.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f1_link/component_0_21-1257-22.STL" />
+      </geometry>
+      <material name="right_pinky_Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.022 -0.005 0.0" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.011" length="0.014" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_pinky_b5" type="revolute">
+    <origin xyz="0.049 -0.0069282 0.0" rpy="0.0 0.0 0.031714" />
+    <parent link="right_pinky_f1_link" />
+    <child link="right_pinky_b5_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_pinky_b5_link">
+    <inertial>
+      <origin xyz="0.0161194 0.00199652 7.51207e-10" rpy="0.0 0.0 0.0" />
+      <mass value="0.00295766" />
+      <inertia ixx="4.13467e-08" ixy="-8.32874e-08" ixz="-4.55606e-15" iyy="4.4953e-07" iyz="-8.27097e-15" izz="4.77488e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b5_link/component_2_21-585.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_pinky_b5f3" type="revolute">
+    <origin xyz="0.030936 0.0072089 0.0" rpy="0.0 0.0 -1.6025" />
+    <parent link="right_pinky_b5_link" />
+    <child link="right_pinky_b5f3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_pinky_b5f3_link" />
+  <joint name="right_pinky_f2" type="revolute">
+    <origin xyz="0.045 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="right_pinky_f1_link" />
+    <child link="right_pinky_f2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.66" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_pinky_f2_link">
+    <inertial>
+      <origin xyz="0.0124792 -0.00662953 2.63976e-06" rpy="0.0 0.0 0.0" />
+      <mass value="0.0150424" />
+      <inertia ixx="8.93249e-07" ixy="1.5032e-07" ixz="5.85245e-09" iyy="2.11235e-06" iyz="-1.00866e-08" izz="2.01909e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_2_21-1201.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_3_21-1202.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_6_21-611.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_7_21-619.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_1_21-1211-23.STL" />
+      </geometry>
+      <material name="right_pinky_Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0107167 -0.00666353 0.0001" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.011" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_pinky_f3" type="revolute">
+    <origin xyz="0.031204 -0.0059417 0.0" rpy="0.0 0.0 0.031714" />
+    <parent link="right_pinky_f2_link" />
+    <child link="right_pinky_f3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.4486" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_pinky_f3_link">
+    <inertial>
+      <origin xyz="0.0109887 0.0032088 -5.39167e-09" rpy="0.0 0.0 0.0" />
+      <mass value="0.0157411" />
+      <inertia ixx="7.15188e-07" ixy="7.76911e-08" ixz="-3.66384e-13" iyy="1.04173e-06" iyz="-6.4345e-13" izz="1.07766e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f3_link/component_0_21-41.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f3_link/component_3_21-1197-22.STL" />
+      </geometry>
+      <material name="right_pinky_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f3_link/component_4_21-1197-24.STL" />
+      </geometry>
+      <material name="right_pinky_Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0148682 0.00353726 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.009" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_ring_finger" type="fixed">
+    <origin xyz="0.0 -0.0115 0.1267" rpy="-1.5708 -1.5708 0.0" />
+    <parent link="right_hand_base_link" />
+    <child link="right_ring_finger_base_link" />
+  </joint>
+  <link name="right_ring_finger_base_link">
+    <inertial>
+      <origin xyz="-0.052449 -0.013979 0.000160229" rpy="0.0 0.0 0.0" />
+      <mass value="0.0800363" />
+      <inertia ixx="1.12535e-05" ixy="-6.02926e-06" ixz="-5.49146e-07" iyy="3.27864e-05" iyz="-3.63626e-08" izz="4.08345e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_9_21-344-24.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_10_21-174.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_13_21-750.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_14_21-1235.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_18_21-132.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/base_link/component_20_21-382.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_ring_finger_b1" type="prismatic">
+    <origin xyz="-0.043443 -0.009 0.0" rpy="1.5708 0.0 1.5708" />
+    <parent link="right_ring_finger_base_link" />
+    <child link="right_ring_finger_b1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="0.038" effort="200.0" velocity="0.013" />
+  </joint>
+  <link name="right_ring_finger_b1_link">
+    <inertial>
+      <origin xyz="0.000428975 2.44163e-12 0.00138155" rpy="0.0 0.0 0.0" />
+      <mass value="0.0174368" />
+      <inertia ixx="9.95596e-07" ixy="3.56986e-16" ixz="9.58784e-09" iyy="8.81696e-07" iyz="1.22497e-16" izz="8.20705e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b1_link/component_2_21-1268.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b1_link/component_3_21-1269.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_ring_finger_b2" type="revolute">
+    <origin xyz="0.0 0.0 0.0121" rpy="1.5708 0.0 3.1416" />
+    <parent link="right_ring_finger_b1_link" />
+    <child link="right_ring_finger_b2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_ring_finger_b2_link">
+    <inertial>
+      <origin xyz="0.00211067 0.00927558 -0.000101495" rpy="0.0 0.0 0.0" />
+      <mass value="0.00547861" />
+      <inertia ixx="5.25734e-07" ixy="1.31598e-08" ixz="1.77435e-09" iyy="3.14583e-07" iyz="3.50929e-10" izz="3.3173e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_0_21-1284.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_1_21-1285.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_2_21-215.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_3_21-219.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_4_21-229.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b2_link/component_5_21-253.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_ring_finger_b3" type="revolute">
+    <origin xyz="-0.0013297 0.018452 0.0" rpy="0.0 0.0 1.6427" />
+    <parent link="right_ring_finger_b2_link" />
+    <child link="right_ring_finger_b3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_ring_finger_b3_link">
+    <inertial>
+      <origin xyz="0.00958045 -0.00252802 1.56092e-11" rpy="0.0 0.0 0.0" />
+      <mass value="0.00488675" />
+      <inertia ixx="2.10296e-07" ixy="1.55018e-08" ixz="3.56279e-16" iyy="2.22375e-07" iyz="5.85915e-16" izz="2.32584e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b3_link/component_0_21-481.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b3_link/component_1_21-708.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b3_link/component_2_21-25.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_ring_finger_b3f1" type="revolute">
+    <origin xyz="0.013409 0.0067239 0.0" rpy="0.0 0.0 -0.07194" />
+    <parent link="right_ring_finger_b3_link" />
+    <child link="right_ring_finger_b3f1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_ring_finger_b3f1_link" />
+  <joint name="right_ring_finger_b4" type="revolute">
+    <origin xyz="0.012527 -0.0082502 0.0" rpy="0.0 0.0 -0.61572" />
+    <parent link="right_ring_finger_b3_link" />
+    <child link="right_ring_finger_b4_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_ring_finger_b4_link">
+    <inertial>
+      <origin xyz="0.0158273 0.0115368 -4.23228e-08" rpy="0.0 0.0 0.0" />
+      <mass value="0.0122238" />
+      <inertia ixx="9.60638e-07" ixy="-7.04268e-07" ixz="3.93305e-12" iyy="1.38373e-06" iyz="-4.55396e-12" izz="1.67673e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b4_link/component_0_21-625.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b4_link/component_1_21-490.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_ring_finger_b4f2" type="revolute">
+    <origin xyz="0.030995 0.028026 0.0" rpy="0.0 0.0 0.5755" />
+    <parent link="right_ring_finger_b4_link" />
+    <child link="right_ring_finger_b4f2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_ring_finger_b4f2_link" />
+  <joint name="right_ring_finger_f1" type="revolute">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="right_ring_finger_base_link" />
+    <child link="right_ring_finger_f1_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.57" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_ring_finger_f1_link">
+    <inertial>
+      <origin xyz="0.0271401 0.000679815 3.9196e-09" rpy="0.0 0.0 0.0" />
+      <mass value="0.0163621" />
+      <inertia ixx="4.99077e-07" ixy="2.32367e-07" ixz="-3.52986e-14" iyy="2.91678e-06" iyz="-1.56807e-13" izz="2.89853e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f1_link/component_1_21-1257-21.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f1_link/component_2_21-589.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f1_link/component_0_21-1257-22.STL" />
+      </geometry>
+      <material name="right_ring_finger_Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.022 -0.005 0.0" rpy="0.0 1.5708 0.0" />
+      <geometry>
+        <cylinder radius="0.011" length="0.014" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_ring_finger_b5" type="revolute">
+    <origin xyz="0.049 -0.0069282 0.0" rpy="0.0 0.0 0.031714" />
+    <parent link="right_ring_finger_f1_link" />
+    <child link="right_ring_finger_b5_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_ring_finger_b5_link">
+    <inertial>
+      <origin xyz="0.0161194 0.00199652 7.51207e-10" rpy="0.0 0.0 0.0" />
+      <mass value="0.00295766" />
+      <inertia ixx="4.13467e-08" ixy="-8.32874e-08" ixz="-4.55606e-15" iyy="4.4953e-07" iyz="-8.27097e-15" izz="4.77488e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/b5_link/component_2_21-585.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_ring_finger_b5f3" type="revolute">
+    <origin xyz="0.030936 0.0072089 0.0" rpy="0.0 0.0 -1.6025" />
+    <parent link="right_ring_finger_b5_link" />
+    <child link="right_ring_finger_b5f3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_ring_finger_b5f3_link" />
+  <joint name="right_ring_finger_f2" type="revolute">
+    <origin xyz="0.045 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <parent link="right_ring_finger_f1_link" />
+    <child link="right_ring_finger_f2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.66" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_ring_finger_f2_link">
+    <inertial>
+      <origin xyz="0.0124792 -0.00662953 2.63976e-06" rpy="0.0 0.0 0.0" />
+      <mass value="0.0150424" />
+      <inertia ixx="8.93249e-07" ixy="1.5032e-07" ixz="5.85245e-09" iyy="2.11235e-06" iyz="-1.00866e-08" izz="2.01909e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_2_21-1201.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_3_21-1202.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_6_21-611.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_7_21-619.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f2_link/component_1_21-1211-23.STL" />
+      </geometry>
+      <material name="right_ring_finger_Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0107167 -0.00666353 0.0001" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.011" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_ring_finger_f3" type="revolute">
+    <origin xyz="0.031204 -0.0059417 0.0" rpy="0.0 0.0 0.031714" />
+    <parent link="right_ring_finger_f2_link" />
+    <child link="right_ring_finger_f3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="0.0" upper="1.4486" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_ring_finger_f3_link">
+    <inertial>
+      <origin xyz="0.0109887 0.0032088 -5.39167e-09" rpy="0.0 0.0 0.0" />
+      <mass value="0.0157411" />
+      <inertia ixx="7.15188e-07" ixy="7.76911e-08" ixz="-3.66384e-13" iyy="1.04173e-06" iyz="-6.4345e-13" izz="1.07766e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f3_link/component_0_21-41.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f3_link/component_3_21-1197-22.STL" />
+      </geometry>
+      <material name="right_ring_finger_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../finger/full/meshes/f3_link/component_4_21-1197-24.STL" />
+      </geometry>
+      <material name="right_ring_finger_Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0148682 0.00353726 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.009" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_thumb_yaw" type="revolute">
+    <origin xyz="0.017796 0.026366 0.052872" rpy="-0.38728 -0.33183 1.4036" />
+    <parent link="right_hand_base_link" />
+    <child link="right_thumb_base_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-1.57" upper="0.0" effort="1.0" velocity="3.0" />
+  </joint>
+  <link name="right_thumb_base_link">
+    <inertial>
+      <origin xyz="-0.017469 0.0048832 -0.01406" rpy="0.0 0.0 0.0" />
+      <mass value="0.13901" />
+      <inertia ixx="2.9019e-05" ixy="8.7341e-06" ixz="-2.6969e-06" iyy="7.9196e-05" iyz="2.25e-06" izz="8.6696e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../thumb/right/full/meshes/base_link/component_11_21-54.STL" />
+      </geometry>
+      <material name="right_thumb_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../thumb/right/full/meshes/base_link/component_13_21-21.STL" />
+      </geometry>
+      <material name="right_thumb_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../thumb/right/full/meshes/base_link/component_18_21-35.STL" />
+      </geometry>
+      <material name="right_thumb_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../thumb/right/full/meshes/base_link/component_21_21-345.STL" />
+      </geometry>
+      <material name="right_thumb_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../thumb/right/full/meshes/base_link/component_22_21-292.STL" />
+      </geometry>
+      <material name="right_thumb_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_thumb_b1" type="revolute">
+    <origin xyz="-0.018028 0.0 -0.0155" rpy="0.0 1.5708 0.0" />
+    <parent link="right_thumb_base_link" />
+    <child link="right_thumb_b1_link" />
+    <axis xyz="0.0 0.0 -1.0" />
+    <limit lower="0.0" upper="0.023" effort="20.0" velocity="0.013" />
+  </joint>
+  <link name="right_thumb_b1_link">
+    <inertial>
+      <origin xyz="-0.00043761 -1.9843e-06 0.0013838" rpy="0.0 0.0 0.0" />
+      <mass value="0.017406" />
+      <inertia ixx="9.9532e-07" ixy="1.4933e-10" ixz="-9.7807e-09" iyy="8.8073e-07" iyz="-4.4342e-11" izz="8.1986e-07" />
+    </inertial>
+  </link>
+  <joint name="right_thumb_b2" type="revolute">
+    <origin xyz="0.0 0.0 0.0121" rpy="1.5708 0.0 0.0" />
+    <parent link="right_thumb_b1_link" />
+    <child link="right_thumb_b2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_thumb_b2_link">
+    <inertial>
+      <origin xyz="0.0019899 0.0090444 -0.00010306" rpy="0.0 0.0 0.0" />
+      <mass value="0.0053954" />
+      <inertia ixx="5.0596e-07" ixy="1.4526e-08" ixz="1.7896e-09" iyy="3.1129e-07" iyz="3.7448e-10" izz="3.1485e-07" />
+    </inertial>
+  </link>
+  <joint name="right_thumb_b3" type="revolute">
+    <origin xyz="-0.0015 0.017937 0.0" rpy="0.0 0.0 1.5708" />
+    <parent link="right_thumb_b2_link" />
+    <child link="right_thumb_b3_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_thumb_b3_link">
+    <inertial>
+      <origin xyz="0.0097124 -0.0019608 1.5609e-11" rpy="0.0 0.0 0.0" />
+      <mass value="0.0048868" />
+      <inertia ixx="2.0852e-07" ixy="1.4686e-08" ixz="3.2124e-16" iyy="2.2415e-07" iyz="6.0583e-16" izz="2.3258e-07" />
+    </inertial>
+  </link>
+  <joint name="right_thumb_b3f1" type="revolute">
+    <origin xyz="0.01299 0.0075 0.0" rpy="0.0 0.0 -1.5708" />
+    <parent link="right_thumb_b3_link" />
+    <child link="right_thumb_b3f1_link" />
+    <axis xyz="0.0 0.0 -1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_thumb_b3f1_link" />
+  <joint name="right_thumb_b4" type="fixed">
+    <origin xyz="0.01299 -0.0075 0.0" rpy="0.0 0.0 -0.55694" />
+    <parent link="right_thumb_b3_link" />
+    <child link="right_thumb_b4_link" />
+  </joint>
+  <link name="right_thumb_b4_link">
+    <inertial>
+      <origin xyz="0.016285 0.015557 -1.0017e-07" rpy="0.0 0.0 0.0" />
+      <mass value="0.0099065" />
+      <inertia ixx="1.1816e-06" ixy="-9.4279e-07" ixz="1.2203e-11" iyy="1.3725e-06" iyz="7.3718e-12" izz="2.0181e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../thumb/right/full/meshes/b4_link/component_0_21-150.STL" />
+      </geometry>
+      <material name="right_thumb_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="right_thumb_b4f2" type="revolute">
+    <origin xyz="0.030537 0.028524 0.0" rpy="0.0 0.0 0.75133" />
+    <parent link="right_thumb_b4_link" />
+    <child link="right_thumb_b4f2_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-3.14" upper="3.14" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_thumb_b4f2_link" />
+  <joint name="right_thumb_f1" type="revolute">
+    <origin xyz="0.025 0.0 -0.0065" rpy="1.5708 1.5708 0.0" />
+    <parent link="right_thumb_base_link" />
+    <child link="right_thumb_f1_link" />
+    <axis xyz="0.0 0.0 -1.0" />
+    <limit lower="0.0" upper="1.2217" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_thumb_f1_link">
+    <inertial>
+      <origin xyz="-0.0014733 0.023527 -0.00026728" rpy="0.0 0.0 0.0" />
+      <mass value="0.015992" />
+      <inertia ixx="3.2055e-06" ixy="1.8519e-08" ixz="4.8601e-09" iyy="4.2252e-07" iyz="-8.8665e-08" izz="3.036e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../thumb/right/full/meshes/f1_link/component_0_21-278-21.STL" />
+      </geometry>
+      <material name="right_thumb_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../thumb/right/full/meshes/f1_link/component_2_21-34.STL" />
+      </geometry>
+      <material name="right_thumb_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../thumb/right/full/meshes/f1_link/component_5_21-268.STL" />
+      </geometry>
+      <material name="right_thumb_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../thumb/right/full/meshes/f1_link/component_1_21-278-22.STL" />
+      </geometry>
+      <material name="right_thumb_Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.005 0.022 0.0" rpy="-1.5708 0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.011" length="0.014" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_thumb_f2" type="revolute">
+    <origin xyz="0.0 0.045 0.0" rpy="0.0 0.0 1.5708" />
+    <parent link="right_thumb_f1_link" />
+    <child link="right_thumb_f2_link" />
+    <axis xyz="0.0 0.0 -1.0" />
+    <limit lower="0.0" upper="1.0472" effort="0.0" velocity="0.0" />
+  </joint>
+  <link name="right_thumb_f2_link">
+    <inertial>
+      <origin xyz="0.02114 -0.003495 -8.2302e-05" rpy="0.0 0.0 0.0" />
+      <mass value="0.026285" />
+      <inertia ixx="1.0997e-06" ixy="-2.4631e-07" ixz="-8.6762e-09" iyy="5.6617e-06" iyz="-9.5665e-09" izz="5.6159e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../thumb/right/full/meshes/f2_link/component_2_21-151.STL" />
+      </geometry>
+      <material name="right_thumb_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../thumb/right/full/meshes/f2_link/component_3_21-154.STL" />
+      </geometry>
+      <material name="right_thumb_Aluminum_Cast">
+        <color rgba="0.555 0.555 0.555 1.0" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../../thumb/right/full/meshes/f2_link/component_0_21-245-22.STL" />
+      </geometry>
+      <material name="right_thumb_Rubber_Textured">
+        <color rgba="0.111 0.111 0.111 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0125 -0.0024282 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.009" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0365938 -0.0018875 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.009" />
+      </geometry>
+    </collision>
+  </link>
+</robot>

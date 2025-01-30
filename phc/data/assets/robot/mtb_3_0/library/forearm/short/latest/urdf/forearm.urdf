@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mentee Robotics LTD -->
+<robot name="robot">
+  <link name="wrist_base_link">
+    <inertial>
+      <origin xyz="-0.000104341 -0.00154328 -0.0587022" rpy="0.0 0.0 0.0" />
+      <mass value="0.734" />
+      <inertia ixx="0.0012504" ixy="3.05106e-07" ixz="1.94973e-06" iyy="0.000869502" iyz="-6.39001e-05" izz="0.000974176" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/wrist_base_link.STL" />
+      </geometry>
+      <material name="wrist_base_material">
+        <color rgba="0.25 0.25 0.25 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="wrist_roll" type="revolute">
+    <origin xyz="0.0649 -0.00379937 0.0" rpy="-1.5708 -1.55425 -1.5708" />
+    <parent link="wrist_base_link" />
+    <child link="wrist_roll_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-1.7" upper="1.7" effort="3.5" velocity="19.9" />
+  </joint>
+  <link name="wrist_roll_link">
+    <inertial>
+      <origin xyz="0.000171338 0.00190583 0.129608" rpy="0.0 0.0 0.0" />
+      <mass value="1.424" />
+      <inertia ixx="0.00518944" ixy="7.71471e-06" ixz="0.000166281" iyy="0.00545012" iyz="-0.000226962" izz="0.000907308" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/wrist_roll_link.STL" />
+      </geometry>
+      <material name="wrist_roll_material">
+        <color rgba="0.87 0.87 0.89 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.001 0.14" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.04" length="0.14" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="wrist_pitch" type="revolute">
+    <origin xyz="0.0 0.0 0.236" rpy="-1.5708 0.0 3.1416" />
+    <parent link="wrist_roll_link" />
+    <child link="wrist_pitch_link" />
+    <axis xyz="0.0 0.0 -1.0" />
+    <limit lower="-1.5708" upper="0.8028" effort="3.9" velocity="9.4" />
+  </joint>
+  <link name="wrist_pitch_link">
+    <inertial>
+      <origin xyz="-0.000889447 0.0141235 6.42642e-06" rpy="0.0 0.0 0.0" />
+      <mass value="0.509" />
+      <inertia ixx="0.000425905" ixy="8.98498e-06" ixz="-5.60958e-08" iyy="0.000353863" iyz="-4.70004e-08" izz="0.000195267" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/wrist_pitch_link.STL" />
+      </geometry>
+      <material name="wrist_pitch_material">
+        <color rgba="0.792157 0.819608 0.933333 1.0" />
+      </material>
+    </visual>
+  </link>
+  <joint name="wrist_yaw" type="revolute">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.5708 0.0 1.5708" />
+    <parent link="wrist_pitch_link" />
+    <child link="wrist_yaw_link" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-1.5708" upper="1.5708" effort="3.9" velocity="9.4" />
+  </joint>
+  <link name="wrist_yaw_link">
+    <inertial>
+      <origin xyz="-0.0233861 -1.86193e-09 0.026724" rpy="0.0 0.0 0.0" />
+      <mass value="0.245" />
+      <inertia ixx="0.000121769" ixy="-8.60472e-12" ixz="-6.81978e-05" iyy="0.000245584" iyz="-1.38663e-12" izz="0.000181712" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="../meshes/wrist_yaw_link.STL" />
+      </geometry>
+      <material name="wrist_yaw_material">
+        <color rgba="0.65 0.62 0.59 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.085 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <sphere radius="0.0335" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="wrist_ee" type="fixed">
+    <origin xyz="-0.058 0.0 0.0005" rpy="0.0 0.0 -1.5708" />
+    <parent link="wrist_yaw_link" />
+    <child link="wrist_ee_link" />
+  </joint>
+  <link name="wrist_ee_link" />
+</robot>
