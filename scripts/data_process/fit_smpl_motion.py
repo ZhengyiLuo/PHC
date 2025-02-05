@@ -192,7 +192,7 @@ def process_motion(key_names, key_name_to_pkls, cfg):
 
 @hydra.main(version_base=None, config_path="../../phc/data/cfg", config_name="config")
 def main(cfg : DictConfig) -> None:
-    amass_root = "/home/ilane/Desktop/ilane/Datasets/Wave/"
+    amass_root = "/home/nfs/ilane/Datasets/AMASS/"
     # if "amass_root" in cfg:
     #     amass_root = cfg.amass_root
     # else:
