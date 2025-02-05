@@ -13,7 +13,6 @@ import os.path as osp
 
 sys.path.append(os.getcwd())
 
-from smpl_sim.khrylib.utils import get_body_qposaddr
 from smpl_sim.smpllib.smpl_mujoco import SMPL_BONE_ORDER_NAMES as joint_names
 from smpl_sim.smpllib.smpl_local_robot import SMPL_Robot as LocalRobot
 import scipy.ndimage.filters as filters
