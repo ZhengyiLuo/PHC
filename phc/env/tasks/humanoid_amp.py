@@ -324,7 +324,7 @@ class HumanoidAMP(Humanoid):
         else:
             print("Unsupported character config file: {s}".format(asset_file))
             assert (False)
-
+        
         if (self._enable_hist_obs):
             self._num_self_obs += self._num_amp_obs_steps * self._num_amp_obs_per_step
         return

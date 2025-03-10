@@ -8,14 +8,15 @@ use_flex: False
 physx:
   step_dt: 1/200
   num_threads: 4
-  solver_type: 1  # 0: pgs, 1: tgs
+  solver_type: 1 # 0: pgs, 1: tgs
   num_position_iterations: 4
   num_velocity_iterations: 0
-  contact_offset: 0.02
+  contact_offset: 0.01
   rest_offset: 0.0
-  bounce_threshold_velocity: 0.2
-  max_depenetration_velocity: 10.0
-  default_buffer_size_multiplier: 10.0
+  bounce_threshold_velocity: 0.5
+  max_depenetration_velocity: 1.0
+  default_buffer_size_multiplier: 5
+  contact_collection: 2
 
 flex:
   num_inner_iterations: 10

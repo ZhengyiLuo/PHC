@@ -1122,63 +1122,41 @@ class Humanoid(BaseTask):
             
         elif self.humanoid_type in ["g1"]:
             if self.cfg.env.get("pd_v", 1) == 1:
-                self.p_gains = to_torch([
-                    # Pelvis is not controlled
-                    200.0, 200.0, 200.0,  # Left hip (pitch, roll, yaw)
-                    300.0,                # Left knee
-                    200.0, 200.0,         # Left ankle (pitch, roll)
-                    200.0, 200.0, 200.0,  # Right hip (pitch, roll, yaw)
-                    300.0,                # Right knee
-                    200.0, 200.0,         # Right ankle (pitch, roll)
-                    120.0,                # Torso
-                    40.0, 40.0, 40.0,     # Left shoulder (pitch, roll, yaw)
-                    60.0,                 # Left elbow pitch
-                    40.0,                 # Left elbow roll
-                    20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0,  # Left hand (zero to six)
-                    40.0, 40.0, 40.0,     # Right shoulder (pitch, roll, yaw)
-                    60.0,                 # Right elbow pitch
-                    40.0,                 # Right elbow roll
-                    20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0   # Right hand (zero to six)
-                ], device=self.device)
+                self.p_gains = to_torch([100., 100., 100., 200.,  20.,  20., 100., 100., 100., 200.,  20.,  20.,
+        400., 400., 400.,  90.,  60.,  20.,  60.,  90.,  60.,  20.,  60.], device=self.device)
                 
-                self.d_gains = to_torch([
-                    # Pelvis is not controlled
-                    5.0, 5.0, 5.0,    # Left hip (pitch, roll, yaw)
-                    7.5,              # Left knee
-                    5.0, 5.0,         # Left ankle (pitch, roll)
-                    5.0, 5.0, 5.0,    # Right hip (pitch, roll, yaw)
-                    7.5,              # Right knee
-                    5.0, 5.0,         # Right ankle (pitch, roll)
-                    3.0,              # Torso
-                    1.0, 1.0, 1.0,    # Left shoulder (pitch, roll, yaw)
-                    1.5,              # Left elbow pitch
-                    1.0,              # Left elbow roll
-                    0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5,  # Left hand (zero to six)
-                    1.0, 1.0, 1.0,    # Right shoulder (pitch, roll, yaw)
-                    1.5,              # Right elbow pitch
-                    1.0,              # Right elbow roll
-                    0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5   # Right hand (zero to six)
-                ], device=self.device)
-                self.torque_limits_hard_coded = to_torch([
-                        88, 88, 88,       # Left hip (pitch, roll, yaw)
-                        139,              # Left knee
-                        40, 40,           # Left ankle (pitch, roll)
-                        88, 88, 88,       # Right hip (pitch, roll, yaw)
-                        139,              # Right knee
-                        40, 40,           # Right ankle (pitch, roll)
-                        88,               # Torso
-                        20, 20, 20,       # Left shoulder (pitch, roll, yaw)
-                        20,               # Left elbow pitch
-                        20,               # Left elbow roll
-                        0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7,  # Left hand (zero to six)
-                        20, 20, 20,       # Right shoulder (pitch, roll, yaw)
-                        20,               # Right elbow pitch
-                        20,               # Right elbow roll
-                        0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7   # Right hand (zero to six)
-                    ], device=self.device)
+                self.d_gains = to_torch([2.5000, 2.5000, 2.5000, 5.0000, 0.2000, 0.1000, 2.5000, 2.5000, 2.5000,
+        5.0000, 0.2000, 0.1000, 5.0000, 5.0000, 5.0000, 2.0000, 1.0000, 0.4000,
+        1.0000, 2.0000, 1.0000, 0.4000, 1.0000], device=self.device)
+                self.torque_limits_hard_coded = to_torch([ 88.,  88.,  88., 139.,  50.,  50.,  88.,  88.,  88., 139.,  50.,  50.,
+         88.,  50.,  50.,  25.,  25.,  25.,  25.,  25.,  25.,  25.,  25.], device=self.device)
             
             self.p_gains, self.d_gains = to_torch(self.p_gains), to_torch(self.d_gains)
-            self.default_dof_pos = torch.zeros(1, self.num_dof).to(self.device)
+            self.default_dof_pos = torch.tensor([[
+                                    -0.1,  # left_hip_pitch_joint
+                                    0.0,   # left_hip_roll_joint
+                                    0.0,   # left_hip_yaw_joint
+                                    0.3,   # left_knee_joint
+                                    -0.2,  # left_ankle_pitch_joint
+                                    0.0,   # left_ankle_roll_joint
+                                    -0.1,  # right_hip_pitch_joint
+                                    0.0,   # right_hip_roll_joint
+                                    0.0,   # right_hip_yaw_joint
+                                    0.3,   # right_knee_joint
+                                    -0.2,  # right_ankle_pitch_joint
+                                    0.0,   # right_ankle_roll_joint
+                                    0.0,   # waist_yaw_joint
+                                    0.0,   # waist_roll_joint
+                                    0.0,   # waist_pitch_joint
+                                    0.0,   # left_shoulder_pitch_joint
+                                    0.0,   # left_shoulder_roll_joint
+                                    0.0,   # left_shoulder_yaw_joint
+                                    0.0,   # left_elbow_joint
+                                    0.0,   # right_shoulder_pitch_joint
+                                    0.0,   # right_shoulder_roll_joint
+                                    0.0,   # right_shoulder_yaw_joint
+                                    0.0    # right_elbow_joint
+                                ]]).to(self.device)
         
         
         dof_prop = self.gym.get_asset_dof_properties(humanoid_asset)
@@ -1200,8 +1178,6 @@ class Humanoid(BaseTask):
         self.gym.set_actor_dof_properties(env_ptr, humanoid_handle, dof_prop)
         
         
-        
-
         if self.humanoid_type in ['h1', 'g1', "smpl", "smplh", "smplx"] and self._has_self_collision:
             # compliance_vals = [0.1] * 24
             # thickness_vals = [1.0] * 24
@@ -1521,6 +1497,7 @@ class Humanoid(BaseTask):
     def pre_physics_step(self, actions):
         # if flags.debug:
             # actions *= 0
+        
         if flags.debug:
             print("\nhumanoid.py pre_physics_step actions")
             print(actions[0][0: 8])
@@ -1595,6 +1572,7 @@ class Humanoid(BaseTask):
             raise NameError(f"Unknown controller type: {control_type}")
         # if self.cfg.domain_rand.randomize_torque_rfi:
             # torques = torques + (torch.rand_like(torques)*2.-1.) * self.cfg.domain_rand.rfi_lim * self.torque_limits
+        
         return torch.clip(torques, -self.torque_limits, self.torque_limits)
     
     

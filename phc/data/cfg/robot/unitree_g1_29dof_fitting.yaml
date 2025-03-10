@@ -63,8 +63,8 @@ left_foot_name: 'l_foot_roll'
 
 asset:
   assetRoot: "./"
-  assetFileName: "phc/data/assets/robot/unitree_g1/g1_29dof.xml"
-  urdfFileName: "phc/data/assets/robot/unitree_g1/g1_29dof.xml"
+  assetFileName: "phc/data/assets/robot/unitree_g1/g1_23dof.xml"
+  urdfFileName: "phc/data/assets/robot/unitree_g1/g1_23dof.xml"
 
 
 extend_config:

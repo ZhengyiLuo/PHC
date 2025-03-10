@@ -212,6 +212,7 @@ class MotionLibReal(MotionLibBase):
             self.gavs_t = torch.cat([m.global_angular_velocity_extend for m in motions], dim=0).float().to(self._device)
         
         if "dof_pos" in motions[0].__dict__:
+            
             self.dof_pos = torch.cat([m.dof_pos for m in motions], dim=0).float().to(self._device)
         
         if flags.real_traj:
@@ -289,7 +290,7 @@ class MotionLibReal(MotionLibBase):
             dof_vel = (1.0 - blend_exp) * dof_vel0 + blend_exp * dof_vel1
             local_rot = torch_utils.slerp(local_rot0, local_rot1, torch.unsqueeze(blend, axis=-1))
             dof_pos = self._local_rotation_to_dof_smpl(local_rot)
-
+        
         rb_rot0 = self.grs[f0l]
         rb_rot1 = self.grs[f1l]
         rb_rot = torch_utils.slerp(rb_rot0, rb_rot1, blend_exp)
@@ -388,6 +389,7 @@ class MotionLibReal(MotionLibBase):
             trans = to_torch(curr_file['root_trans_offset']).clone()[start:end]
             pose_aa = to_torch(curr_file['pose_aa'][start:end]).clone()
             dt = 1/curr_file['fps']
+            dof_pos = to_torch(curr_file['dof'][start:end]).clone()
 
             B, J, N = pose_aa.shape
 
@@ -412,6 +414,8 @@ class MotionLibReal(MotionLibBase):
             
             trans, trans_fix = MotionLibReal.fix_trans_height(pose_aa, trans, mesh_parsers, fix_height_mode = fix_height)
             curr_motion = mesh_parsers.fk_batch(pose_aa[None, ], trans[None, ], return_full= True, dt = dt)
+            curr_motion.dof_pos = dof_pos
+            
             
             curr_motion = EasyDict({k: v.squeeze() if torch.is_tensor(v) else v for k, v in curr_motion.items() })
             
