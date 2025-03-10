@@ -44,7 +44,7 @@ kp_scale: 1
 remove_toe_im: False # For imitation 
 power_reward: True
 power_coefficient: 0.0005
-
+ampRootHeightObs: False
 
 powerScale: 1.0
 

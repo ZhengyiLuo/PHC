@@ -75,6 +75,10 @@ def process_motion(key_names, key_name_to_pkls, cfg):
         if amass_data is None: continue
         skip = int(amass_data['fps']//30)
         trans = torch.from_numpy(amass_data['trans'][::skip])
+        
+        if cfg.robot.humanoid_type == "g1": # G1 is 1.32m tall, but SMPL mean is 1.75m
+            trans = trans * 1.32/1.75
+            
         N = trans.shape[0]
         pose_aa_walk = torch.from_numpy(amass_data['pose_aa'][::skip]).float()
         
