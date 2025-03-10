@@ -50,7 +50,7 @@ powerScale: 1.0
 
 stateInit: "Random"  
 hybridInitProb: 0.5
-numAMPObsSteps: 10
+numAMPObsSteps: 2
 
 local_root_obs: True
 root_height_obs: True

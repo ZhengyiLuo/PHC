@@ -79,7 +79,7 @@ class HumanoidAMP(Humanoid):
 
     def __init__(self, cfg, sim_params, physics_engine, device_type, device_id, headless):
         if (HACK_MOTION_SYNC or HACK_CONSISTENCY_TEST):
-            control_freq_inv = cfg["env"]["controlFrequencyInv"]
+            control_freq_inv = cfg.control.decimation
             self._motion_sync_dt = control_freq_inv * sim_params.dt
             cfg["env"]["controlFrequencyInv"] = 1
             cfg["env"]["pd_control"] = False
