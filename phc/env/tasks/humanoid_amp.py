@@ -63,7 +63,7 @@ from phc.utils.flags import flags
 from collections import OrderedDict
 
 HACK_MOTION_SYNC = False
-# HACK_MOTION_SYNC = True
+HACK_MOTION_SYNC = True
 HACK_CONSISTENCY_TEST = False
 HACK_OUTPUT_MOTION = False
 HACK_OUTPUT_MOTION_ALL = False

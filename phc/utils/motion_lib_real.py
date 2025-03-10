@@ -414,7 +414,7 @@ class MotionLibReal(MotionLibBase):
             
             trans, trans_fix = MotionLibReal.fix_trans_height(pose_aa, trans, mesh_parsers, fix_height_mode = fix_height)
             curr_motion = mesh_parsers.fk_batch(pose_aa[None, ], trans[None, ], return_full= True, dt = dt)
-            curr_motion.dof_pos = dof_pos
+            
             
             
             curr_motion = EasyDict({k: v.squeeze() if torch.is_tensor(v) else v for k, v in curr_motion.items() })
