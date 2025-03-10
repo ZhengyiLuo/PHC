@@ -39,8 +39,8 @@ left_foot_name: 'l_foot_roll'
 
 asset:
   assetRoot: "./"
-  assetFileName: "phc/data/assets/robot/unitree_g1/g1.xml"
-  urdfFileName: "phc/data/assets/robot/unitree_g1/g1.xml"
+  assetFileName: "phc/data/assets/robot/unitree_g1/g1_29dof.xml"
+  urdfFileName: "phc/data/assets/robot/unitree_g1/g1_29dof.xml"
 
 
 extend_config:
@@ -64,10 +64,10 @@ joint_matches:
   - ["pelvis", "Pelvis"]
   - ["left_hip_pitch_link", "L_Hip"]
   - ["left_knee_link", "L_Knee"]
-  - ["left_ankle_roll_link", "L_Ankle"]
+  - ["left_ankle_pitch_link", "L_Ankle"]
   - ["right_hip_pitch_link", "R_Hip"]
   - ["right_knee_link", "R_Knee"]
-  - ["right_ankle_roll_link", "R_Ankle"]
+  - ["right_ankle_pitch_link", "R_Ankle"]
   - ["left_shoulder_roll_link", "L_Shoulder"]
   - ["left_elbow_pitch_link", "L_Elbow"]
   - ["left_zero_link", "L_Hand"]

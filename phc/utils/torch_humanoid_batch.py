@@ -142,7 +142,8 @@ class Humanoid_Batch:
             return node_index
         
         _add_xml_node(xml_body_root, -1, 0)
-        assert(len(joints_range) == self.num_dof) 
+        
+        assert(len(joints_range) == self.num_dof)
         return {
             "node_names": node_names,
             "parent_indices": torch.from_numpy(np.array(parent_indices, dtype=np.int32)),

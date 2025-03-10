@@ -114,7 +114,7 @@ def process_motion(key_names, key_name_to_pkls, cfg):
 
         kernel_size = 5  # Size of the Gaussian kernel
         sigma = 0.75  # Standard deviation of the Gaussian kernel
-        B, T, J, D = dof_pos_new.shape    
+        B, T, J, D = dof_pos_new.shape
 
         
         for iteration in range(cfg.get("fitting_iterations", 500)):
@@ -143,26 +143,27 @@ def process_motion(key_names, key_name_to_pkls, cfg):
             pbar.set_description_str(f"{data_key}-Iter: {iteration} \t {loss.item() * 1000:.3f}")
             dof_pos_new.data = gaussian_filter_1d_batch(dof_pos_new.squeeze().transpose(1, 0)[None, ], kernel_size, sigma).transpose(2, 1)[..., None]
             
-            # from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
-            # import matplotlib.pyplot as plt
-            
-            # j3d = fk_return.global_translation[0, :, :, :].detach().numpy()
-            # j3d_joints = joints.detach().numpy()
-            # idx = 0
-            # fig = plt.figure()
-            # ax = fig.add_subplot(111, projection='3d')
-            # ax.view_init(90, 0)
-            # ax.scatter(j3d[idx, :,0], j3d[idx, :,1], j3d[idx, :,2])
-            # ax.scatter(j3d_joints[idx, :,0], j3d_joints[idx, :,1], j3d_joints[idx, :,2])
+        from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
+        import matplotlib.pyplot as plt
+        
+        j3d = fk_return.global_translation_extend[0, :, :, :].detach().numpy()
+        j3d_joints = joints.detach().numpy()
+        idx = 0
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        ax.view_init(90, 0)
+        ax.scatter(j3d[idx, :,0], j3d[idx, :,1], j3d[idx, :,2])
+        ax.scatter(j3d_joints[idx, :,0], j3d_joints[idx, :,1], j3d_joints[idx, :,2])
 
-            # ax.set_xlabel('X Label')
-            # ax.set_ylabel('Y Label')
-            # ax.set_zlabel('Z Label')
-            # drange = 1
-            # ax.set_xlim(-drange, drange)
-            # ax.set_ylim(-drange, drange)
-            # ax.set_zlim(-drange, drange)
-            # plt.show()
+        ax.set_xlabel('X Label')
+        ax.set_ylabel('Y Label')
+        ax.set_zlabel('Z Label')
+        drange = 1
+        ax.set_xlim(-drange, drange)
+        ax.set_ylim(-drange, drange)
+        ax.set_zlim(-drange, drange)
+        plt.show()
+        
             
         dof_pos_new.data.clamp_(humanoid_fk.joints_range[:, 0, None], humanoid_fk.joints_range[:, 1, None])
         pose_aa_h1_new = torch.cat([root_rot_new[None, :, None], humanoid_fk.dof_axis * dof_pos_new, torch.zeros((1, N, num_augment_joint, 3)).to(device)], axis = 2)
