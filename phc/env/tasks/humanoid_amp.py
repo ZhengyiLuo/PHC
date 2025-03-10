@@ -90,6 +90,7 @@ class HumanoidAMP(Humanoid):
         self._hybrid_init_prob = cfg["env"]["hybridInitProb"]
         self._num_amp_obs_steps = cfg["env"]["numAMPObsSteps"]
         self._amp_root_height_obs = cfg["env"].get("ampRootHeightObs", cfg["env"].get("root_height_obs", True))
+        self._min_motion_len = cfg["env"].get("min_length", -1)
         
         self._num_amp_obs_enc_steps = cfg["env"].get("numAMPEncObsSteps", self._num_amp_obs_steps) # Calm
 
@@ -355,7 +356,7 @@ class HumanoidAMP(Humanoid):
                 "min_length": self._min_motion_len,
                 "max_length": self.max_len,
                 "im_eval": flags.im_eval,
-                "multi_thread": True ,
+                "multi_thread": not self.cfg.disable_multiprocessing ,
                 "smpl_type": self.humanoid_type,
                 "randomrize_heading": True,
                 "device": self.device,

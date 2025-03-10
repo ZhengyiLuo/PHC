@@ -13,6 +13,7 @@ from torch import optim
 import torch
 from torch import nn
 from phc.env.tasks.humanoid_amp_task import HumanoidAMPTask
+from phc.env.tasks.humanoid_im import HumanoidIm
 
 import learning.replay_buffer as replay_buffer
 import learning.common_agent as common_agent
@@ -926,11 +927,16 @@ class AMPAgent(common_agent.CommonAgent):
         
         if "reward_raw" in train_info:
             reward_raw=train_info['reward_raw'].cpu().numpy().tolist()
-            train_info_dict["rewards/body_pos"] =  reward_raw[0]
-            train_info_dict["rewards/body_rot"] =  reward_raw[1]
-            train_info_dict["rewards/lin_vel"] =  reward_raw[2]
-            train_info_dict["rewards/ang_vel"] =  reward_raw[3]
-            train_info_dict["rewards/power"] =  reward_raw[4]
+             
+            if type(self.vec_env.env.task) == HumanoidIm:
+                train_info_dict["rewards/body_pos"] =  reward_raw[0]
+                train_info_dict["rewards/body_rot"] =  reward_raw[1]
+                train_info_dict["rewards/lin_vel"] =  reward_raw[2]
+                train_info_dict["rewards/ang_vel"] =  reward_raw[3]
+                train_info_dict["rewards/power"] =  reward_raw[4]
+            else:
+                for i in range(len(reward_raw)):
+                    train_info_dict[f"rewards/reward_raw_{i}"] =  reward_raw[i]
         
         if "sym_loss" in train_info:
             train_info_dict['loss/sym_loss'] = torch_ext.mean_list(train_info['sym_loss']).item()
