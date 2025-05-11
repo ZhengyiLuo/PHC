@@ -21,10 +21,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", action="store_true", default=False)
     parser.add_argument("--path", type=str, default="")
+    parser.add_argument("--process_split", type=str, default="train")
+    parser.add_argument("--upright_start", action="store_true", default=False)
     args = parser.parse_args()
     
-    process_split = "train"
-    upright_start = False
+    process_split = args.process_split
+    upright_start = args.upright_start
     robot_cfg = {
             "mesh": False,
             "rel_joint_lm": True,

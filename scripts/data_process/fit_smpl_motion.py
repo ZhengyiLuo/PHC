@@ -5,6 +5,7 @@ import pdb
 import os.path as osp
 sys.path.append(os.getcwd())
 
+import torch.multiprocessing as mp
 from smpl_sim.utils import torch_utils
 from smpl_sim.poselib.skeleton.skeleton3d import SkeletonTree, SkeletonMotion, SkeletonState
 from scipy.spatial.transform import Rotation as sRot
@@ -203,7 +204,8 @@ def main(cfg : DictConfig) -> None:
     if not cfg.get("fit_all", False):
         key_names = ["0-Transitions_mocap_mazen_c3d_dance_stand_poses"]
     
-    from multiprocessing import Pool
+    torch.set_num_threads(1)
+    mp.set_sharing_strategy('file_descriptor')
     jobs = key_names
     num_jobs = 30
     chunk = np.ceil(len(jobs)/num_jobs).astype(int)
@@ -213,7 +215,7 @@ def main(cfg : DictConfig) -> None:
         all_data = process_motion(key_names, key_name_to_pkls, cfg)
     else:
         try:
-            pool = Pool(num_jobs)   # multi-processing
+            pool = mp.Pool(num_jobs)   # multi-processing
             all_data_list = pool.starmap(process_motion, job_args)
         except KeyboardInterrupt:
             pool.terminate()
