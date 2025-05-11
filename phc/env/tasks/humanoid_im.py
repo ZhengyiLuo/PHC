@@ -698,6 +698,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
             env_ids = torch.arange(self.num_envs).to(self.device)
 
         self_obs = self._compute_humanoid_obs(env_ids)
+        
         self.self_obs_buf[env_ids] = self_obs
 
         if (self._enable_task_obs):

@@ -1464,7 +1464,7 @@ class Humanoid(BaseTask):
                 
                 
                 
-                if self.humanoid_type in ["'h1', 'g1', smpl", "smplh", "smplx"] :
+                if self.humanoid_type in ['h1', 'g1', "smpl", "smplh", "smplx"] :
                     if (env_ids is None):
                         body_shape_params = self.humanoid_shapes[:, :-6] if self.humanoid_type in ["smpl", "smplh", "smplx"] else self.humanoid_shapes
                         limb_weights = self.humanoid_limb_and_weights
@@ -1472,6 +1472,7 @@ class Humanoid(BaseTask):
                         body_shape_params = self.humanoid_shapes[env_ids, :-6] if self.humanoid_type in ["smpl", "smplh", "smplx"] else self.humanoid_shapes[env_ids]
                         limb_weights = self.humanoid_limb_and_weights[env_ids]
                         
+                    
                     if self.self_obs_v == 1:
                         obs = compute_humanoid_observations_smpl_max(body_pos, body_rot, body_vel, body_ang_vel, body_shape_params, limb_weights, self._local_root_obs, self._root_height_obs, self._has_upright_start, self._has_shape_obs, self._has_limb_weight_obs)
                     elif self.self_obs_v == 2:
@@ -2044,7 +2045,7 @@ def compute_humanoid_observations_smpl_max(body_pos, body_rot, body_vel, body_an
         
     if has_limb_weight_params:
         obs_list.append(limb_weight_params)
-
+    
     obs = torch.cat(obs_list, dim=-1)
     return obs
 
