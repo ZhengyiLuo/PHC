@@ -39,6 +39,10 @@ class Humanoid_Batch:
         
         parser = XMLParser(remove_blank_text=True)
         tree = parse(BytesIO(open(self.mjcf_file, "rb").read()), parser=parser,)
+        
+        # Parse default classes to handle MuJoCo class inheritance
+        self.class_defaults = self._parse_default_classes(tree.getroot())
+        
         self.dof_axis = []
         joints = sorted([j.attrib['name'] for j in tree.getroot().find("worldbody").findall('.//joint')])
         motors = sorted([m.attrib['name'] for m in tree.getroot().find("actuator").getchildren()])
@@ -61,15 +65,18 @@ class Humanoid_Batch:
         
         if "type" in tree.getroot().find("worldbody").findall('.//joint')[0].attrib and tree.getroot().find("worldbody").findall('.//joint')[0].attrib['type'] == "free":
             for j in tree.getroot().find("worldbody").findall('.//joint')[1:]:
-                self.dof_axis.append([int(i) for i in j.attrib['axis'].split(" ")])
+                axis = self._get_joint_axis(j)
+                self.dof_axis.append([int(i) for i in axis.split(" ")])
             self.has_freejoint = True
         elif not "type" in tree.getroot().find("worldbody").findall('.//joint')[0].attrib:
             for j in tree.getroot().find("worldbody").findall('.//joint'):
-                self.dof_axis.append([int(i) for i in j.attrib['axis'].split(" ")])
+                axis = self._get_joint_axis(j)
+                self.dof_axis.append([int(i) for i in axis.split(" ")])
             self.has_freejoint = True
         else:
             for j in tree.getroot().find("worldbody").findall('.//joint')[6:]:
-                self.dof_axis.append([int(i) for i in j.attrib['axis'].split(" ")])
+                axis = self._get_joint_axis(j)
+                self.dof_axis.append([int(i) for i in axis.split(" ")])
             self.has_freejoint = False
         
         self.dof_axis = torch.tensor(self.dof_axis)
@@ -387,6 +394,50 @@ class Humanoid_Batch:
         # o3d.io.write_triangle_mesh(f"data/{self.cfg.humanoid_type}/combined_{self.cfg.humanoid_type}.stl", merged_mesh)
         return merged_mesh
 
+    def _parse_default_classes(self, root):
+        """Parse MuJoCo default classes to extract joint properties like axis."""
+        class_defaults = {}
+        
+        def parse_defaults_recursive(default_elem, parent_class=None):
+            # Get the class name
+            class_name = default_elem.get('class', parent_class)
+            
+            # Find joint definitions in this default
+            joint_elem = default_elem.find('joint')
+            if joint_elem is not None:
+                joint_attrs = dict(joint_elem.attrib)
+                if class_name:
+                    class_defaults[class_name] = joint_attrs
+            
+            # Recursively parse nested defaults
+            for child_default in default_elem.findall('default'):
+                parse_defaults_recursive(child_default, class_name)
+        
+        # Start parsing from the root default element
+        default_root = root.find('default')
+        if default_root is not None:
+            parse_defaults_recursive(default_root)
+            
+            # Also parse any nested defaults
+            for default_elem in default_root.findall('.//default'):
+                parse_defaults_recursive(default_elem)
+        
+        return class_defaults
+    
+    def _get_joint_axis(self, joint_elem):
+        """Get the axis for a joint, either from explicit attribute or class inheritance."""
+        # First check if joint has explicit axis
+        if 'axis' in joint_elem.attrib:
+            return joint_elem.attrib['axis']
+        
+        # Otherwise look up from class
+        if 'class' in joint_elem.attrib:
+            class_name = joint_elem.attrib['class']
+            if class_name in self.class_defaults and 'axis' in self.class_defaults[class_name]:
+                return self.class_defaults[class_name]['axis']
+        
+        # Default fallback if no axis found
+        return "1 0 0"
     
     
 @hydra.main(version_base=None, config_path="../../phc/data/cfg", config_name="config")
