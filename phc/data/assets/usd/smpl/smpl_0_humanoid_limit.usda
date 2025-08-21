@@ -1,0 +1,2599 @@
+#usda 1.0
+(
+    defaultPrim = "smpl_humanoid"
+    upAxis = "Z"
+)
+
+def Xform "smpl_humanoid" (
+    delete apiSchemas = ["PhysicsArticulationRootAPI", "PhysxArticulationAPI"]
+)
+{
+
+    def Xform "bodies"
+    {
+        quatd xformOp:orient = (1, 0, 0, 0)
+        double3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+
+        def Xform "Pelvis" (
+            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI", "PhysicsArticulationRootAPI", "PhysxArticulationAPI", "AnimationDataAPI"]
+        )
+        {
+            float physics:density = 0
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (-0.0017999999690800905, -0.2232999950647354, 0.028200000524520874, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Cube "Pelvis" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    float3[] extent = [(-0.1069, -0.0722, -0.083), (0.1069, 0.0722, 0.083)]
+                    uniform token physics:approximation = "boundingCube"
+                    uniform token purpose = "guide"
+                    matrix4d xformOp:transform = ( (0.10689999908208847, 0, 0, 0), (0, 0.0722000002861023, 0, 0), (0, 0, 0.08299999684095383, 0), (0, -0.01209999993443489, -0.005499999970197678, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Cube "Pelvis" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    float3[] extent = [(-0.1069, -0.0722, -0.083), (0.1069, 0.0722, 0.083)]
+                    rel material:binding = </smpl_humanoid/bodies/Pelvis/visuals/Looks/material_rgba>
+                    matrix4d xformOp:transform = ( (0.10689999908208847, 0, 0, 0), (0, 0.0722000002861023, 0, 0), (0, 0, 0.08299999684095383, 0), (0, -0.01209999993443489, -0.005499999970197678, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/Pelvis/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/Pelvis/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/Pelvis/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "L_Hip" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0.06769999861717224, -0.31470000743865967, 0.021400000900030136, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "L_Hip" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.17457362, -0.0615, -0.0615), (0.17457362, 0.0615, 0.0615)]
+                    double height = 0.22614723443984985
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.061500001698732376
+                    matrix4d xformOp:transform = ( (0.09064894881170449, -0.9958113622206781, -0.011939125074817314, 0), (0.9958113622206781, 0.09077964412060169, -0.010900955704307824, 0), (0.011939125074817314, -0.010900955704307824, 0.9998693046911028, 0), (0.017149999737739563, -0.18759998679161072, -0.0022499999031424522, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "L_Hip" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.17457362, -0.0615, -0.0615), (0.17457362, 0.0615, 0.0615)]
+                    double height = 0.22614723443984985
+                    rel material:binding = </smpl_humanoid/bodies/L_Hip/visuals/Looks/material_rgba>
+                    double radius = 0.061500001698732376
+                    matrix4d xformOp:transform = ( (0.09064894881170449, -0.9958113622206781, -0.011939125074817314, 0), (0.9958113622206781, 0.09077964412060169, -0.010900955704307824, 0), (0.011939125074817314, -0.010900955704307824, 0.9998693046911028, 0), (0.017149999737739563, -0.18759998679161072, -0.0022499999031424522, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/L_Hip/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/L_Hip/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/L_Hip/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "L_Knee" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            prepend rel physics:filteredPairs = [
+                </smpl_humanoid/bodies/L_Toe>,
+                </smpl_humanoid/bodies/R_Ankle>,
+                </smpl_humanoid/bodies/R_Toe>,
+            ]
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0.10199999809265137, -0.6899000406265259, 0.01690000109374523, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "L_Knee" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.1742919, -0.0541, -0.0541), (0.1742919, 0.0541, 0.0541)]
+                    double height = 0.2403837889432907
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.054099999368190765
+                    matrix4d xformOp:transform = ( (-0.03411202459214424, -0.9934113608858794, -0.1094083742414238, 0), (0.9934113608858794, -0.021719083377384152, -0.11252601716178567, 0), (0.1094083742414238, -0.11252601716178567, 0.9876070587852399, 0), (-0.006800000090152025, -0.19900000095367432, -0.02185000106692314, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "L_Knee" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.1742919, -0.0541, -0.0541), (0.1742919, 0.0541, 0.0541)]
+                    double height = 0.2403837889432907
+                    rel material:binding = </smpl_humanoid/bodies/L_Knee/visuals/Looks/material_rgba>
+                    double radius = 0.054099999368190765
+                    matrix4d xformOp:transform = ( (-0.03411202459214424, -0.9934113608858794, -0.1094083742414238, 0), (0.9934113608858794, -0.021719083377384152, -0.11252601716178567, 0), (0.1094083742414238, -0.11252601716178567, 0.9876070587852399, 0), (-0.006800000090152025, -0.19900000095367432, -0.02185000106692314, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/L_Knee/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/L_Knee/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/L_Knee/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "L_Ankle" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            prepend rel physics:filteredPairs = </smpl_humanoid/bodies/R_Knee>
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0.08839999884366989, -1.0879000425338745, -0.026799997314810753, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Cube "L_Ankle" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    float3[] extent = [(-0.0483, -0.0464, -0.085), (0.0483, 0.0464, 0.085)]
+                    uniform token physics:approximation = "boundingCube"
+                    uniform token purpose = "guide"
+                    matrix4d xformOp:transform = ( (0.04830000177025795, 0, 0, 0), (0, 0.04639999940991402, 0, 0), (0, 0, 0.08500000089406967, 0), (0.02329999953508377, -0.023900000378489494, 0.02419999986886978, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Cube "L_Ankle" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    float3[] extent = [(-0.0483, -0.0464, -0.085), (0.0483, 0.0464, 0.085)]
+                    rel material:binding = </smpl_humanoid/bodies/L_Ankle/visuals/Looks/material_rgba>
+                    matrix4d xformOp:transform = ( (0.04830000177025795, 0, 0, 0), (0, 0.04639999940991402, 0, 0), (0, 0, 0.08500000089406967, 0), (0.02329999953508377, -0.023900000378489494, 0.02419999986886978, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/L_Ankle/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/L_Ankle/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/L_Ankle/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "L_Toe" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            prepend rel physics:filteredPairs = [
+                </smpl_humanoid/bodies/L_Knee>,
+                </smpl_humanoid/bodies/R_Knee>,
+            ]
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0.11479999870061874, -1.1437000036239624, 0.0925000011920929, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Cube "L_Toe" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    float3[] extent = [(-0.0478, -0.02, -0.0496), (0.0478, 0.02, 0.0496)]
+                    uniform token physics:approximation = "boundingCube"
+                    uniform token purpose = "guide"
+                    matrix4d xformOp:transform = ( (0.04780000075697899, 0, 0, 0), (0, 0.019999999552965164, 0, 0), (0, 0, 0.04960000142455101, 0), (-0.003000000026077032, 0.005499999970197678, 0.024800000712275505, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Cube "L_Toe" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    float3[] extent = [(-0.0478, -0.02, -0.0496), (0.0478, 0.02, 0.0496)]
+                    rel material:binding = </smpl_humanoid/bodies/L_Toe/visuals/Looks/material_rgba>
+                    matrix4d xformOp:transform = ( (0.04780000075697899, 0, 0, 0), (0, 0.019999999552965164, 0, 0), (0, 0, 0.04960000142455101, 0), (-0.003000000026077032, 0.005499999970197678, 0.024800000712275505, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/L_Toe/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/L_Toe/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/L_Toe/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "R_Hip" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (-0.06949999928474426, -0.31379997730255127, 0.023900000378489494, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "R_Hip" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.17600003, -0.0606, -0.0606), (0.17600003, 0.0606, 0.0606)]
+                    double height = 0.23080004751682281
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.060600001364946365
+                    matrix4d xformOp:transform = ( (-0.09922021661624236, -0.9948005663658108, -0.02296360217657112, 0), (0.9948005663658108, -0.09863480500144561, -0.025360472694092584, 0), (0.02296360217657112, -0.025360472694092584, 0.9994145883852033, 0), (-0.01915000006556511, -0.19130000472068787, -0.004449999891221523, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "R_Hip" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.17600003, -0.0606, -0.0606), (0.17600003, 0.0606, 0.0606)]
+                    double height = 0.23080004751682281
+                    rel material:binding = </smpl_humanoid/bodies/R_Hip/visuals/Looks/material_rgba>
+                    double radius = 0.060600001364946365
+                    matrix4d xformOp:transform = ( (-0.09922021661624236, -0.9948005663658108, -0.02296360217657112, 0), (0.9948005663658108, -0.09863480500144561, -0.025360472694092584, 0), (0.02296360217657112, -0.025360472694092584, 0.9994145883852033, 0), (-0.01915000006556511, -0.19130000472068787, -0.004449999891221523, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/R_Hip/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/R_Hip/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/R_Hip/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "R_Knee" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            prepend rel physics:filteredPairs = [
+                </smpl_humanoid/bodies/L_Ankle>,
+                </smpl_humanoid/bodies/L_Toe>,
+                </smpl_humanoid/bodies/R_Toe>,
+            ]
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (-0.10779999941587448, -0.696399986743927, 0.015000000596046448, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "R_Knee" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.17435956, -0.0541, -0.0541), (0.17435956, 0.0541, 0.0541)]
+                    double height = 0.24051912128925323
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.054099999368190765
+                    matrix4d xformOp:transform = ( (0.03908210357395303, -0.993684017843826, -0.10518914432003079, 0), (0.993684017843826, 0.04973068947548853, -0.10059336152407461, 0), (0.10518914432003079, -0.10059336152407461, 0.9893514140984645, 0), (0.007899999618530273, -0.19919998943805695, -0.021150000393390656, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "R_Knee" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.17435956, -0.0541, -0.0541), (0.17435956, 0.0541, 0.0541)]
+                    double height = 0.24051912128925323
+                    rel material:binding = </smpl_humanoid/bodies/R_Knee/visuals/Looks/material_rgba>
+                    double radius = 0.054099999368190765
+                    matrix4d xformOp:transform = ( (0.03908210357395303, -0.993684017843826, -0.10518914432003079, 0), (0.993684017843826, 0.04973068947548853, -0.10059336152407461, 0), (0.10518914432003079, -0.10059336152407461, 0.9893514140984645, 0), (0.007899999618530273, -0.19919998943805695, -0.021150000393390656, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/R_Knee/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/R_Knee/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/R_Knee/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "R_Ankle" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            prepend rel physics:filteredPairs = </smpl_humanoid/bodies/L_Knee>
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (-0.09200000017881393, -1.0947999954223633, -0.027300000190734863, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Cube "R_Ankle" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    float3[] extent = [(-0.0483, -0.0478, -0.0865), (0.0483, 0.0478, 0.0865)]
+                    uniform token physics:approximation = "boundingCube"
+                    uniform token purpose = "guide"
+                    matrix4d xformOp:transform = ( (0.04830000177025795, 0, 0, 0), (0, 0.04780000075697899, 0, 0), (0, 0, 0.08649999648332596, 0), (-0.021199999377131462, -0.017400000244379044, 0.025599999353289604, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Cube "R_Ankle" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    float3[] extent = [(-0.0483, -0.0478, -0.0865), (0.0483, 0.0478, 0.0865)]
+                    rel material:binding = </smpl_humanoid/bodies/R_Ankle/visuals/Looks/material_rgba>
+                    matrix4d xformOp:transform = ( (0.04830000177025795, 0, 0, 0), (0, 0.04780000075697899, 0, 0), (0, 0, 0.08649999648332596, 0), (-0.021199999377131462, -0.017400000244379044, 0.025599999353289604, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/R_Ankle/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/R_Ankle/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/R_Ankle/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "R_Toe" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            prepend rel physics:filteredPairs = [
+                </smpl_humanoid/bodies/L_Knee>,
+                </smpl_humanoid/bodies/R_Knee>,
+            ]
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (-0.11739999800920486, -1.142899990081787, 0.09600000083446503, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Cube "R_Toe" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    float3[] extent = [(-0.0479, -0.0216, -0.0493), (0.0479, 0.0216, 0.0493)]
+                    uniform token physics:approximation = "boundingCube"
+                    uniform token purpose = "guide"
+                    matrix4d xformOp:transform = ( (0.0478999987244606, 0, 0, 0), (0, 0.02160000056028366, 0, 0), (0, 0, 0.049300000071525574, 0), (0.00419999985024333, 0.0044999998062849045, 0.022700000554323196, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Cube "R_Toe" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    float3[] extent = [(-0.0479, -0.0216, -0.0493), (0.0479, 0.0216, 0.0493)]
+                    rel material:binding = </smpl_humanoid/bodies/R_Toe/visuals/Looks/material_rgba>
+                    matrix4d xformOp:transform = ( (0.0478999987244606, 0, 0, 0), (0, 0.02160000056028366, 0, 0), (0, 0, 0.049300000071525574, 0), (0.00419999985024333, 0.0044999998062849045, 0.022700000554323196, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/R_Toe/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/R_Toe/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/R_Toe/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "Torso" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            prepend rel physics:filteredPairs = </smpl_humanoid/bodies/Chest>
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (-0.00430000014603138, -0.11429999768733978, 0.0015000011771917343, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "Torso" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.083654806, -0.0769, -0.0769), (0.083654806, 0.0769, 0.0769)]
+                    double height = 0.01350962370634079
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.07689999788999557
+                    matrix4d xformOp:transform = ( (0.037010511348544495, 0.9992874799901728, 0.007402130907097848, 0), (-0.9992874799901728, 0.03706334739921857, -0.007132865467166349, 0), (-0.007402130907097848, -0.007132865467166349, 0.9999471639493259, 0), (0.002749999985098839, 0.06755000352859497, 0.0005499999970197678, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "Torso" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.083654806, -0.0769, -0.0769), (0.083654806, 0.0769, 0.0769)]
+                    double height = 0.01350962370634079
+                    rel material:binding = </smpl_humanoid/bodies/Torso/visuals/Looks/material_rgba>
+                    double radius = 0.07689999788999557
+                    matrix4d xformOp:transform = ( (0.037010511348544495, 0.9992874799901728, 0.007402130907097848, 0), (-0.9992874799901728, 0.03706334739921857, -0.007132865467166349, 0), (-0.007402130907097848, -0.007132865467166349, 0.9999471639493259, 0), (0.002749999985098839, 0.06755000352859497, 0.0005499999970197678, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/Torso/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/Torso/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/Torso/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "Spine" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0.001199999824166298, 0.020899996161460876, 0.00260000117123127, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "Spine" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.07845212, -0.0755, -0.0755), (0.07845212, 0.0755, 0.0755)]
+                    double height = 0.00590423634275794
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.0754999965429306
+                    matrix4d xformOp:transform = ( (0.01693683607177121, 0.8976607337196185, 0.4403618741834663, 0), (-0.8976607337196185, 0.20762570566168392, -0.3887119222245161, 0), (-0.4403618741834663, -0.3887119222245161, 0.8093111304100873, 0), (0.000750000006519258, 0.02645000070333481, 0.012700000777840614, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "Spine" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.07845212, -0.0755, -0.0755), (0.07845212, 0.0755, 0.0755)]
+                    double height = 0.00590423634275794
+                    rel material:binding = </smpl_humanoid/bodies/Spine/visuals/Looks/material_rgba>
+                    double radius = 0.0754999965429306
+                    matrix4d xformOp:transform = ( (0.01693683607177121, 0.8976607337196185, 0.4403618741834663, 0), (-0.8976607337196185, 0.20762570566168392, -0.3887119222245161, 0), (-0.4403618741834663, -0.3887119222245161, 0.8093111304100873, 0), (0.000750000006519258, 0.02645000070333481, 0.012700000777840614, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/Spine/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/Spine/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/Spine/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "Chest" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            prepend rel physics:filteredPairs = [
+                </smpl_humanoid/bodies/Torso>,
+                </smpl_humanoid/bodies/Head>,
+                </smpl_humanoid/bodies/L_Shoulder>,
+                </smpl_humanoid/bodies/R_Shoulder>,
+            ]
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0.002699999837204814, 0.0737999975681305, 0.02800000086426735, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "Chest" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.10799792, -0.1002, -0.1002), (0.10799792, 0.1002, 0.1002)]
+                    double height = 0.015595834702253342
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.10019999742507935
+                    matrix4d xformOp:transform = ( (-0.006412027388752239, 0.968207360839898, -0.25006671152332416, 0), (-0.968207360839898, 0.056524888056848965, 0.24367891444561884, 0), (0.25006671152332416, 0.24367891444561884, 0.9370630845543988, 0), (-0.0009500000160187483, 0.07575000077486038, -0.01924999989569187, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "Chest" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.10799792, -0.1002, -0.1002), (0.10799792, 0.1002, 0.1002)]
+                    double height = 0.015595834702253342
+                    rel material:binding = </smpl_humanoid/bodies/Chest/visuals/Looks/material_rgba>
+                    double radius = 0.10019999742507935
+                    matrix4d xformOp:transform = ( (-0.006412027388752239, 0.968207360839898, -0.25006671152332416, 0), (-0.968207360839898, 0.056524888056848965, 0.24367891444561884, 0), (0.25006671152332416, 0.24367891444561884, 0.9370630845543988, 0), (-0.0009500000160187483, 0.07575000077486038, -0.01924999989569187, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/Chest/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/Chest/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/Chest/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "Neck" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (-0.00010000006295740604, 0.28769999742507935, -0.014899998903274536, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "Neck" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.06849603, -0.0436, -0.0436), (0.06849603, 0.0436, 0.0436)]
+                    double height = 0.04979206994175911
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.04360000044107437
+                    matrix4d xformOp:transform = ( (0.0622589506861857, 0.7832572919706848, 0.6185723898114759, 0), (-0.7832572919706848, 0.4224647320486099, -0.4561047494345871, 0), (-0.6185723898114759, -0.4561047494345871, 0.6397942186375758, 0), (0.0025500000920146704, 0.032499998807907104, 0.025699999183416367, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "Neck" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.06849603, -0.0436, -0.0436), (0.06849603, 0.0436, 0.0436)]
+                    double height = 0.04979206994175911
+                    rel material:binding = </smpl_humanoid/bodies/Neck/visuals/Looks/material_rgba>
+                    double radius = 0.04360000044107437
+                    matrix4d xformOp:transform = ( (0.0622589506861857, 0.7832572919706848, 0.6185723898114759, 0), (-0.7832572919706848, 0.4224647320486099, -0.4561047494345871, 0), (-0.6185723898114759, -0.4561047494345871, 0.6397942186375758, 0), (0.0025500000920146704, 0.032499998807907104, 0.025699999183416367, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/Neck/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/Neck/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/Neck/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "Head" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            prepend rel physics:filteredPairs = </smpl_humanoid/bodies/Chest>
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0.0050999997183680534, 0.35269999504089355, 0.036400001496076584, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Cube "Head" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    float3[] extent = [(-0.0606, -0.1154, -0.076), (0.0606, 0.1154, 0.076)]
+                    uniform token physics:approximation = "boundingCube"
+                    uniform token purpose = "guide"
+                    matrix4d xformOp:transform = ( (0.060600001364946365, 0, 0, 0), (0, 0.11540000140666962, 0, 0), (0, 0, 0.07599999755620956, 0), (-0.00419999985024333, 0.08760000020265579, -0.011599999852478504, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Cube "Head" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    float3[] extent = [(-0.0606, -0.1154, -0.076), (0.0606, 0.1154, 0.076)]
+                    rel material:binding = </smpl_humanoid/bodies/Head/visuals/Looks/material_rgba>
+                    matrix4d xformOp:transform = ( (0.060600001364946365, 0, 0, 0), (0, 0.11540000140666962, 0, 0), (0, 0, 0.07599999755620956, 0), (-0.00419999985024333, 0.08760000020265579, -0.011599999852478504, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/Head/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/Head/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/Head/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "L_Thorax" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0.08150000125169754, 0.195499986410141, -0.006099998950958252, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "L_Thorax" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.08101427, -0.0521, -0.0521), (0.08101427, 0.0521, 0.0521)]
+                    double height = 0.05782854184508324
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.05209999904036522
+                    matrix4d xformOp:transform = ( (0.944170465647557, 0.316452785392185, -0.09165027012495042, 0), (-0.316452785392185, 0.9484909569466562, 0.014917921180140903, 0), (0.09165027012495042, 0.014917921180140903, 0.9956795087009008, 0), (0.045500002801418304, 0.015249999240040779, -0.004449999891221523, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "L_Thorax" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.08101427, -0.0521, -0.0521), (0.08101427, 0.0521, 0.0521)]
+                    double height = 0.05782854184508324
+                    rel material:binding = </smpl_humanoid/bodies/L_Thorax/visuals/Looks/material_rgba>
+                    double radius = 0.05209999904036522
+                    matrix4d xformOp:transform = ( (0.944170465647557, 0.316452785392185, -0.09165027012495042, 0), (-0.316452785392185, 0.9484909569466562, 0.014917921180140903, 0), (0.09165027012495042, 0.014917921180140903, 0.9956795087009008, 0), (0.045500002801418304, 0.015249999240040779, -0.004449999891221523, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/L_Thorax/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/L_Thorax/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/L_Thorax/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "L_Shoulder" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            prepend rel physics:filteredPairs = </smpl_humanoid/bodies/Chest>
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0.17249999940395355, 0.22599998116493225, -0.014999998733401299, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "L_Shoulder" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.13012776, -0.0517, -0.0517), (0.13012776, 0.0517, 0.0517)]
+                    double height = 0.156855508685112
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.05169999971985817
+                    matrix4d xformOp:transform = ( (0.9932708126668874, -0.048452310906082374, -0.10519252032840498, 0), (0.048452310906082374, 0.998822224051783, -0.002557013650293677, 0), (0.10519252032840498, -0.002557013650293677, 0.9944485886151044, 0), (0.1297999918460846, -0.006400000303983688, -0.013749999925494194, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "L_Shoulder" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.13012776, -0.0517, -0.0517), (0.13012776, 0.0517, 0.0517)]
+                    double height = 0.156855508685112
+                    rel material:binding = </smpl_humanoid/bodies/L_Shoulder/visuals/Looks/material_rgba>
+                    double radius = 0.05169999971985817
+                    matrix4d xformOp:transform = ( (0.9932708126668874, -0.048452310906082374, -0.10519252032840498, 0), (0.048452310906082374, 0.998822224051783, -0.002557013650293677, 0), (0.10519252032840498, -0.002557013650293677, 0.9944485886151044, 0), (0.1297999918460846, -0.006400000303983688, -0.013749999925494194, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/L_Shoulder/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/L_Shoulder/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/L_Shoulder/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "L_Elbow" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0.43209999799728394, 0.21319998800754547, -0.04249999672174454, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "L_Elbow" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.11534953, -0.0405, -0.0405), (0.11534953, 0.0405, 0.0405)]
+                    double height = 0.14969906210899353
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.04050000011920929
+                    matrix4d xformOp:transform = ( (0.9993382692860856, 0.036071582062060514, -0.004675945374519319, 0), (-0.036071582062060514, 0.9993492051373054, 0.00008436228892711936, 0), (0.004675945374519319, 0.00008436228892711936, 0.9999890641487802, 0), (0.12459999322891235, 0.0044999998062849045, -0.0005499999970197678, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "L_Elbow" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.11534953, -0.0405, -0.0405), (0.11534953, 0.0405, 0.0405)]
+                    double height = 0.14969906210899353
+                    rel material:binding = </smpl_humanoid/bodies/L_Elbow/visuals/Looks/material_rgba>
+                    double radius = 0.04050000011920929
+                    matrix4d xformOp:transform = ( (0.9993382692860856, 0.036071582062060514, -0.004675945374519319, 0), (-0.036071582062060514, 0.9993492051373054, 0.00008436228892711936, 0), (0.004675945374519319, 0.00008436228892711936, 0.9999890641487802, 0), (0.12459999322891235, 0.0044999998062849045, -0.0005499999970197678, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/L_Elbow/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/L_Elbow/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/L_Elbow/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "L_Wrist" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0.6812999844551086, 0.22219999134540558, -0.043699998408555984, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "L_Wrist" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.057515606, -0.0318, -0.0318), (0.057515606, 0.0318, 0.0318)]
+                    double height = 0.051431212574243546
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.03180000185966492
+                    matrix4d xformOp:transform = ( (0.9799495929565246, -0.09527291759402967, -0.1749910513463373, 0), (0.09527291759402967, 0.9954155759873008, -0.00842036958727399, 0), (0.1749910513463373, -0.00842036958727399, 0.9845340169692238, 0), (0.041999999433755875, -0.004050000105053186, -0.007500000298023224, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "L_Wrist" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.057515606, -0.0318, -0.0318), (0.057515606, 0.0318, 0.0318)]
+                    double height = 0.051431212574243546
+                    rel material:binding = </smpl_humanoid/bodies/L_Wrist/visuals/Looks/material_rgba>
+                    double radius = 0.03180000185966492
+                    matrix4d xformOp:transform = ( (0.9799495929565246, -0.09527291759402967, -0.1749910513463373, 0), (0.09527291759402967, 0.9954155759873008, -0.00842036958727399, 0), (0.1749910513463373, -0.00842036958727399, 0.9845340169692238, 0), (0.041999999433755875, -0.004050000105053186, -0.007500000298023224, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/L_Wrist/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/L_Wrist/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/L_Wrist/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "L_Hand" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0.7652999758720398, 0.21399998664855957, -0.05859999731183052, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Cube "L_Hand" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    float3[] extent = [(-0.0585, -0.0158, -0.0538), (0.0585, 0.0158, 0.0538)]
+                    uniform token physics:approximation = "boundingCube"
+                    uniform token purpose = "guide"
+                    matrix4d xformOp:transform = ( (0.05849999934434891, 0, 0, 0), (0, 0.015799999237060547, 0, 0), (0, 0, 0.05380000174045563, 0), (0.049300000071525574, 0.0010000000474974513, -0.005799999926239252, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Cube "L_Hand" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    float3[] extent = [(-0.0585, -0.0158, -0.0538), (0.0585, 0.0158, 0.0538)]
+                    rel material:binding = </smpl_humanoid/bodies/L_Hand/visuals/Looks/material_rgba>
+                    matrix4d xformOp:transform = ( (0.05849999934434891, 0, 0, 0), (0, 0.015799999237060547, 0, 0), (0, 0, 0.05380000174045563, 0), (0.049300000071525574, 0.0010000000474974513, -0.005799999926239252, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/L_Hand/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/L_Hand/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/L_Hand/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "R_Thorax" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (-0.07909999787807465, 0.19259999692440033, -0.010600000619888306, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "R_Thorax" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.08162974, -0.0511, -0.0511), (0.08162974, 0.0511, 0.0511)]
+                    double height = 0.061059482395648956
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.051100000739097595
+                    matrix4d xformOp:transform = ( (-0.9433428284990129, 0.3193609265551345, -0.09007615259832846, 0), (-0.3193609265551345, -0.8001367064582112, 0.5077308311252935, 0), (0.09007615259832846, 0.5077308311252935, 0.8567938779591984, 0), (-0.04800000041723251, 0.016249999403953552, -0.004550000187009573, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "R_Thorax" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.08162974, -0.0511, -0.0511), (0.08162974, 0.0511, 0.0511)]
+                    double height = 0.061059482395648956
+                    rel material:binding = </smpl_humanoid/bodies/R_Thorax/visuals/Looks/material_rgba>
+                    double radius = 0.051100000739097595
+                    matrix4d xformOp:transform = ( (-0.9433428284990129, 0.3193609265551345, -0.09007615259832846, 0), (-0.3193609265551345, -0.8001367064582112, 0.5077308311252935, 0), (0.09007615259832846, 0.5077308311252935, 0.8567938779591984, 0), (-0.04800000041723251, 0.016249999403953552, -0.004550000187009573, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/R_Thorax/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/R_Thorax/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/R_Thorax/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "R_Shoulder" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            prepend rel physics:filteredPairs = </smpl_humanoid/bodies/Chest>
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (-0.17509999871253967, 0.22519999742507935, -0.019700001925230026, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "R_Shoulder" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.12962309, -0.0531, -0.0531), (0.12962309, 0.0531, 0.0531)]
+                    double height = 0.15304617583751678
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.05310000106692314
+                    matrix4d xformOp:transform = ( (-0.9951244774918919, -0.052272255908859755, -0.08363560827701333, 0), (0.052272255908859755, 0.43957176464093095, -0.8966851639537623, 0), (0.08363560827701333, -0.8966851639537623, -0.4346962421328229, 0), (-0.12684999406337738, -0.006700000260025263, -0.010700000450015068, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "R_Shoulder" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.12962309, -0.0531, -0.0531), (0.12962309, 0.0531, 0.0531)]
+                    double height = 0.15304617583751678
+                    rel material:binding = </smpl_humanoid/bodies/R_Shoulder/visuals/Looks/material_rgba>
+                    double radius = 0.05310000106692314
+                    matrix4d xformOp:transform = ( (-0.9951244774918919, -0.052272255908859755, -0.08363560827701333, 0), (0.052272255908859755, 0.43957176464093095, -0.8966851639537623, 0), (0.08363560827701333, -0.8966851639537623, -0.4346962421328229, 0), (-0.12684999406337738, -0.006700000260025263, -0.010700000450015068, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/R_Shoulder/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/R_Shoulder/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/R_Shoulder/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "R_Elbow" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (-0.42879998683929443, 0.211899995803833, -0.04110000282526016, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "R_Elbow" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.117402315, -0.0408, -0.0408), (0.117402315, 0.0408, 0.0408)]
+                    double height = 0.15320463478565216
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.040800001472234726
+                    matrix4d xformOp:transform = ( (-0.9993167886795646, 0.030024799238877797, -0.021539530511312854, 0), (-0.030024799238877797, -0.3199857228556837, 0.9469463068093447, 0), (0.021539530511312854, 0.9469463068093447, 0.3206689341761191, 0), (-0.12764999270439148, 0.003900000127032399, -0.002749999985098839, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "R_Elbow" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.117402315, -0.0408, -0.0408), (0.117402315, 0.0408, 0.0408)]
+                    double height = 0.15320463478565216
+                    rel material:binding = </smpl_humanoid/bodies/R_Elbow/visuals/Looks/material_rgba>
+                    double radius = 0.040800001472234726
+                    matrix4d xformOp:transform = ( (-0.9993167886795646, 0.030024799238877797, -0.021539530511312854, 0), (-0.030024799238877797, -0.3199857228556837, 0.9469463068093447, 0), (0.021539530511312854, 0.9469463068093447, 0.3206689341761191, 0), (-0.12764999270439148, 0.003900000127032399, -0.002749999985098839, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/R_Elbow/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/R_Elbow/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/R_Elbow/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "R_Wrist" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (-0.6840999722480774, 0.21969999372959137, -0.04670000076293945, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Capsule "R_Wrist" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.058255263, -0.0326, -0.0326), (0.058255263, 0.0326, 0.0326)]
+                    double height = 0.051310524344444275
+                    uniform token physics:approximation = "convexHull"
+                    uniform token purpose = "guide"
+                    double radius = 0.032600000500679016
+                    matrix4d xformOp:transform = ( (-0.9900503377292011, -0.07210983504034552, -0.1208326933726358, 0), (0.07210983504034552, 0.477387489326901, -0.8757290488812544, 0), (0.1208326933726358, -0.8757290488812544, -0.46743782705610215, 0), (-0.04230000078678131, -0.0030499999411404133, -0.005200000014156103, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Capsule "R_Wrist" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    float3[] extent = [(-0.058255263, -0.0326, -0.0326), (0.058255263, 0.0326, 0.0326)]
+                    double height = 0.051310524344444275
+                    rel material:binding = </smpl_humanoid/bodies/R_Wrist/visuals/Looks/material_rgba>
+                    double radius = 0.032600000500679016
+                    matrix4d xformOp:transform = ( (-0.9900503377292011, -0.07210983504034552, -0.1208326933726358, 0), (0.07210983504034552, 0.477387489326901, -0.8757290488812544, 0), (0.1208326933726358, -0.8757290488812544, -0.46743782705610215, 0), (-0.04230000078678131, -0.0030499999411404133, -0.005200000014156103, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/R_Wrist/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/R_Wrist/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/R_Wrist/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+
+        def Xform "R_Hand" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+        )
+        {
+            float physics:density = 0
+            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (-0.7687000036239624, 0.21359999477863312, -0.05700000002980232, 1) )
+            uniform token[] xformOpOrder = ["xformOp:transform"]
+
+            def "collisions"
+            {
+                def Cube "R_Hand" (
+                    apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                )
+                {
+                    float3[] extent = [(-0.0569, -0.0164, -0.0546), (0.0569, 0.0164, 0.0546)]
+                    uniform token physics:approximation = "boundingCube"
+                    uniform token purpose = "guide"
+                    matrix4d xformOp:transform = ( (0.05689999833703041, 0, 0, 0), (0, 0.01640000008046627, 0, 0), (0, 0, 0.05460000038146973, 0), (-0.04619999974966049, -0.0008999999845400453, -0.007899999618530273, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+            }
+
+            def "visuals"
+            {
+                def Cube "R_Hand" (
+                    apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    float3[] extent = [(-0.0569, -0.0164, -0.0546), (0.0569, 0.0164, 0.0546)]
+                    rel material:binding = </smpl_humanoid/bodies/R_Hand/visuals/Looks/material_rgba>
+                    matrix4d xformOp:transform = ( (0.05689999833703041, 0, 0, 0), (0, 0.01640000008046627, 0, 0), (0, 0, 0.05460000038146973, 0), (-0.04619999974966049, -0.0008999999845400453, -0.007899999618530273, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+                }
+
+                def Scope "Looks"
+                {
+                    def Material "material_rgba"
+                    {
+                        token outputs:mdl:displacement.connect = </smpl_humanoid/bodies/R_Hand/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:surface.connect = </smpl_humanoid/bodies/R_Hand/visuals/Looks/material_rgba/Shader.outputs:out>
+                        token outputs:mdl:volume.connect = </smpl_humanoid/bodies/R_Hand/visuals/Looks/material_rgba/Shader.outputs:out>
+
+                        def Shader "Shader"
+                        {
+                            uniform token info:id = "UsdPreviewSurface"
+                            uniform token info:implementationSource = "sourceAsset"
+                            uniform asset info:mdl:sourceAsset = @OmniPBR.mdl@
+                            uniform token info:mdl:sourceAsset:subIdentifier = "OmniPBR"
+                            color3f inputs:diffuse_color_constant = (0.8, 0.6, 0.4)
+                            token outputs:out
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    def "joints"
+    {
+        def PhysicsJoint "L_Hip" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 80
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 800
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 80
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 800
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 80
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 800
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 22.92
+            float limit:rotX:physics:low = -160.0
+            float limit:rotY:physics:high = 70.0
+            float limit:rotY:physics:low = -70.0
+            float limit:rotZ:physics:high = 90.0
+            float limit:rotZ:physics:low = -28.65
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "L_Hip_x"
+            custom token mjcf:rotY:name = "L_Hip_y"
+            custom token mjcf:rotZ:name = "L_Hip_z"
+            rel physics:body0 = </smpl_humanoid/bodies/Pelvis>
+            rel physics:body1 = </smpl_humanoid/bodies/L_Hip>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0.0695, -0.09140001, -0.0067999996)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 80
+            float physxLimit:rotX:stiffness = 800
+            float physxLimit:rotY:damping = 80
+            float physxLimit:rotY:stiffness = 800
+            float physxLimit:rotZ:damping = 80
+            float physxLimit:rotZ:stiffness = 800
+        }
+
+        def PhysicsJoint "L_Knee" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 80
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 800
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 80
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 800
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 80
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 800
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 171.89
+            float limit:rotX:physics:low = -5.16
+            float limit:rotY:physics:high = 6.88
+            float limit:rotY:physics:low = -4.58
+            float limit:rotZ:physics:high = 4.58
+            float limit:rotZ:physics:low = -6.88
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "L_Knee_x"
+            custom token mjcf:rotY:name = "L_Knee_y"
+            custom token mjcf:rotZ:name = "L_Knee_z"
+            rel physics:body0 = </smpl_humanoid/bodies/L_Hip>
+            rel physics:body1 = </smpl_humanoid/bodies/L_Knee>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0.0343, -0.37520003, -0.0045)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 80
+            float physxLimit:rotX:stiffness = 800
+            float physxLimit:rotY:damping = 80
+            float physxLimit:rotY:stiffness = 800
+            float physxLimit:rotZ:damping = 80
+            float physxLimit:rotZ:stiffness = 800
+        }
+
+        def PhysicsJoint "L_Ankle" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 80
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 800
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 80
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 800
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 80
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 800
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 45.84
+            float limit:rotX:physics:low = -45.84
+            float limit:rotY:physics:high = 22.92
+            float limit:rotY:physics:low = -74.48
+            float limit:rotZ:physics:high = 4.58
+            float limit:rotZ:physics:low = -4.58
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "L_Ankle_x"
+            custom token mjcf:rotY:name = "L_Ankle_y"
+            custom token mjcf:rotZ:name = "L_Ankle_z"
+            rel physics:body0 = </smpl_humanoid/bodies/L_Knee>
+            rel physics:body1 = </smpl_humanoid/bodies/L_Ankle>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-0.013599999, -0.398, -0.0437)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 80
+            float physxLimit:rotX:stiffness = 800
+            float physxLimit:rotY:damping = 80
+            float physxLimit:rotY:stiffness = 800
+            float physxLimit:rotZ:damping = 80
+            float physxLimit:rotZ:stiffness = 800
+        }
+
+        def PhysicsJoint "L_Toe" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 50
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 500
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 50
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 500
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 50
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 500
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 22.92
+            float limit:rotX:physics:low = -91.67
+            float limit:rotY:physics:high = 4.58
+            float limit:rotY:physics:low = -4.58
+            float limit:rotZ:physics:high = 4.58
+            float limit:rotZ:physics:low = -4.58
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "L_Toe_x"
+            custom token mjcf:rotY:name = "L_Toe_y"
+            custom token mjcf:rotZ:name = "L_Toe_z"
+            rel physics:body0 = </smpl_humanoid/bodies/L_Ankle>
+            rel physics:body1 = </smpl_humanoid/bodies/L_Toe>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0.0264, -0.05579996, 0.1193)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 50
+            float physxLimit:rotX:stiffness = 500
+            float physxLimit:rotY:damping = 50
+            float physxLimit:rotY:stiffness = 500
+            float physxLimit:rotZ:damping = 50
+            float physxLimit:rotZ:stiffness = 500
+        }
+
+        def PhysicsJoint "R_Hip" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 80
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 800
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 80
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 800
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 80
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 800
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 22.92
+            float limit:rotX:physics:low = -160.0
+            float limit:rotY:physics:high = 70.0
+            float limit:rotY:physics:low = -70.0
+            float limit:rotZ:physics:high = 28.65
+            float limit:rotZ:physics:low = -90.0
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "R_Hip_x"
+            custom token mjcf:rotY:name = "R_Hip_y"
+            custom token mjcf:rotZ:name = "R_Hip_z"
+            rel physics:body0 = </smpl_humanoid/bodies/Pelvis>
+            rel physics:body1 = </smpl_humanoid/bodies/R_Hip>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-0.0677, -0.09049998, -0.0043)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 80
+            float physxLimit:rotX:stiffness = 800
+            float physxLimit:rotY:damping = 80
+            float physxLimit:rotY:stiffness = 800
+            float physxLimit:rotZ:damping = 80
+            float physxLimit:rotZ:stiffness = 800
+        }
+
+        def PhysicsJoint "R_Knee" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 80
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 800
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 80
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 800
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 80
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 800
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 171.89
+            float limit:rotX:physics:low = -5.16
+            float limit:rotY:physics:high = 4.58
+            float limit:rotY:physics:low = -6.88
+            float limit:rotZ:physics:high = 6.88
+            float limit:rotZ:physics:low = -4.58
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "R_Knee_x"
+            custom token mjcf:rotY:name = "R_Knee_y"
+            custom token mjcf:rotZ:name = "R_Knee_z"
+            rel physics:body0 = </smpl_humanoid/bodies/R_Hip>
+            rel physics:body1 = </smpl_humanoid/bodies/R_Knee>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-0.0383, -0.3826, -0.0089)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 80
+            float physxLimit:rotX:stiffness = 800
+            float physxLimit:rotY:damping = 80
+            float physxLimit:rotY:stiffness = 800
+            float physxLimit:rotZ:damping = 80
+            float physxLimit:rotZ:stiffness = 800
+        }
+
+        def PhysicsJoint "R_Ankle" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 80
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 800
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 80
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 800
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 80
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 800
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 45.84
+            float limit:rotX:physics:low = -45.84
+            float limit:rotY:physics:high = 74.48
+            float limit:rotY:physics:low = -22.92
+            float limit:rotZ:physics:high = 4.58
+            float limit:rotZ:physics:low = -4.58
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "R_Ankle_x"
+            custom token mjcf:rotY:name = "R_Ankle_y"
+            custom token mjcf:rotZ:name = "R_Ankle_z"
+            rel physics:body0 = </smpl_humanoid/bodies/R_Knee>
+            rel physics:body1 = </smpl_humanoid/bodies/R_Ankle>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0.0158, -0.3984, -0.0423)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 80
+            float physxLimit:rotX:stiffness = 800
+            float physxLimit:rotY:damping = 80
+            float physxLimit:rotY:stiffness = 800
+            float physxLimit:rotZ:damping = 80
+            float physxLimit:rotZ:stiffness = 800
+        }
+
+        def PhysicsJoint "R_Toe" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 50
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 500
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 50
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 500
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 50
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 500
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 22.92
+            float limit:rotX:physics:low = -91.67
+            float limit:rotY:physics:high = 4.58
+            float limit:rotY:physics:low = -4.58
+            float limit:rotZ:physics:high = 4.58
+            float limit:rotZ:physics:low = -4.58
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "R_Toe_x"
+            custom token mjcf:rotY:name = "R_Toe_y"
+            custom token mjcf:rotZ:name = "R_Toe_z"
+            rel physics:body0 = </smpl_humanoid/bodies/R_Ankle>
+            rel physics:body1 = </smpl_humanoid/bodies/R_Toe>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-0.025399998, -0.048099995, 0.1233)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 50
+            float physxLimit:rotX:stiffness = 500
+            float physxLimit:rotY:damping = 50
+            float physxLimit:rotY:stiffness = 500
+            float physxLimit:rotZ:damping = 50
+            float physxLimit:rotZ:stiffness = 500
+        }
+
+        def PhysicsJoint "Torso" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 100
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 1000
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 100
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 1000
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 100
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 1000
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 57.3
+            float limit:rotX:physics:low = -25.78
+            float limit:rotY:physics:high = 57.3
+            float limit:rotY:physics:low = -57.3
+            float limit:rotZ:physics:high = 34.38
+            float limit:rotZ:physics:low = -34.38
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "Torso_x"
+            custom token mjcf:rotY:name = "Torso_y"
+            custom token mjcf:rotZ:name = "Torso_z"
+            rel physics:body0 = </smpl_humanoid/bodies/Pelvis>
+            rel physics:body1 = </smpl_humanoid/bodies/Torso>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-0.0025000002, 0.109, -0.0267)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 100
+            float physxLimit:rotX:stiffness = 1000
+            float physxLimit:rotY:damping = 100
+            float physxLimit:rotY:stiffness = 1000
+            float physxLimit:rotZ:damping = 100
+            float physxLimit:rotZ:stiffness = 1000
+        }
+
+        def PhysicsJoint "Spine" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 100
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 1000
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 100
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 1000
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 100
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 1000
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 57.3
+            float limit:rotX:physics:low = -25.78
+            float limit:rotY:physics:high = 57.3
+            float limit:rotY:physics:low = -57.3
+            float limit:rotZ:physics:high = 34.38
+            float limit:rotZ:physics:low = -34.38
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "Spine_x"
+            custom token mjcf:rotY:name = "Spine_y"
+            custom token mjcf:rotZ:name = "Spine_z"
+            rel physics:body0 = </smpl_humanoid/bodies/Torso>
+            rel physics:body1 = </smpl_humanoid/bodies/Spine>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0.0055, 0.1352, 0.0011)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 100
+            float physxLimit:rotX:stiffness = 1000
+            float physxLimit:rotY:damping = 100
+            float physxLimit:rotY:stiffness = 1000
+            float physxLimit:rotZ:damping = 100
+            float physxLimit:rotZ:stiffness = 1000
+        }
+
+        def PhysicsJoint "Chest" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 100
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 1000
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 100
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 1000
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 100
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 1000
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 57.3
+            float limit:rotX:physics:low = -25.78
+            float limit:rotY:physics:high = 57.3
+            float limit:rotY:physics:low = -57.3
+            float limit:rotZ:physics:high = 34.38
+            float limit:rotZ:physics:low = -34.38
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "Chest_x"
+            custom token mjcf:rotY:name = "Chest_y"
+            custom token mjcf:rotZ:name = "Chest_z"
+            rel physics:body0 = </smpl_humanoid/bodies/Spine>
+            rel physics:body1 = </smpl_humanoid/bodies/Chest>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0.0015, 0.0529, 0.0254)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 100
+            float physxLimit:rotX:stiffness = 1000
+            float physxLimit:rotY:damping = 100
+            float physxLimit:rotY:stiffness = 1000
+            float physxLimit:rotZ:damping = 100
+            float physxLimit:rotZ:stiffness = 1000
+        }
+
+        def PhysicsJoint "Neck" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 50
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 500
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 50
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 500
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 50
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 500
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 57.3
+            float limit:rotX:physics:low = -28.65
+            float limit:rotY:physics:high = 40.11
+            float limit:rotY:physics:low = -40.11
+            float limit:rotZ:physics:high = 40.11
+            float limit:rotZ:physics:low = -40.11
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "Neck_x"
+            custom token mjcf:rotY:name = "Neck_y"
+            custom token mjcf:rotZ:name = "Neck_z"
+            rel physics:body0 = </smpl_humanoid/bodies/Chest>
+            rel physics:body1 = </smpl_humanoid/bodies/Neck>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-0.0028, 0.2139, -0.0429)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 50
+            float physxLimit:rotX:stiffness = 500
+            float physxLimit:rotY:damping = 50
+            float physxLimit:rotY:stiffness = 500
+            float physxLimit:rotZ:damping = 50
+            float physxLimit:rotZ:stiffness = 500
+        }
+
+        def PhysicsJoint "Head" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 50
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 500
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 50
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 500
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 50
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 500
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 57.3
+            float limit:rotX:physics:low = -28.65
+            float limit:rotY:physics:high = 40.11
+            float limit:rotY:physics:low = -40.11
+            float limit:rotZ:physics:high = 40.11
+            float limit:rotZ:physics:low = -40.11
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "Head_x"
+            custom token mjcf:rotY:name = "Head_y"
+            custom token mjcf:rotZ:name = "Head_z"
+            rel physics:body0 = </smpl_humanoid/bodies/Neck>
+            rel physics:body1 = </smpl_humanoid/bodies/Head>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0.0051999995, 0.065, 0.0513)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 50
+            float physxLimit:rotX:stiffness = 500
+            float physxLimit:rotY:damping = 50
+            float physxLimit:rotY:stiffness = 500
+            float physxLimit:rotZ:damping = 50
+            float physxLimit:rotZ:stiffness = 500
+        }
+
+        def PhysicsJoint "L_Thorax" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 50
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 500
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 50
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 500
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 50
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 500
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 4.58
+            float limit:rotX:physics:low = -10.89
+            float limit:rotY:physics:high = 17.19
+            float limit:rotY:physics:low = -28.65
+            float limit:rotZ:physics:high = 40.11
+            float limit:rotZ:physics:low = -31.51
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "L_Thorax_x"
+            custom token mjcf:rotY:name = "L_Thorax_y"
+            custom token mjcf:rotZ:name = "L_Thorax_z"
+            rel physics:body0 = </smpl_humanoid/bodies/Chest>
+            rel physics:body1 = </smpl_humanoid/bodies/L_Thorax>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0.0788, 0.12169999, -0.0341)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 50
+            float physxLimit:rotX:stiffness = 500
+            float physxLimit:rotY:damping = 50
+            float physxLimit:rotY:stiffness = 500
+            float physxLimit:rotZ:damping = 50
+            float physxLimit:rotZ:stiffness = 500
+        }
+
+        def PhysicsJoint "L_Shoulder" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 50
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 500
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 50
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 500
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 50
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 500
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 97.4
+            float limit:rotX:physics:low = -97.4
+            float limit:rotY:physics:high = 80.21
+            float limit:rotY:physics:low = -108.86
+            float limit:rotZ:physics:high = 85.94
+            float limit:rotZ:physics:low = -97.4
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "L_Shoulder_x"
+            custom token mjcf:rotY:name = "L_Shoulder_y"
+            custom token mjcf:rotZ:name = "L_Shoulder_z"
+            rel physics:body0 = </smpl_humanoid/bodies/L_Thorax>
+            rel physics:body1 = </smpl_humanoid/bodies/L_Shoulder>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0.091, 0.030499995, -0.0089)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 50
+            float physxLimit:rotX:stiffness = 500
+            float physxLimit:rotY:damping = 50
+            float physxLimit:rotY:stiffness = 500
+            float physxLimit:rotZ:damping = 50
+            float physxLimit:rotZ:stiffness = 500
+        }
+
+        def PhysicsJoint "L_Elbow" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 50
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 500
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 50
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 500
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 50
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 500
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 4.58
+            float limit:rotX:physics:low = -17.19
+            float limit:rotY:physics:high = 17.19
+            float limit:rotY:physics:low = -180.0
+            float limit:rotZ:physics:high = 4.58
+            float limit:rotZ:physics:low = -100.84
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "L_Elbow_x"
+            custom token mjcf:rotY:name = "L_Elbow_y"
+            custom token mjcf:rotZ:name = "L_Elbow_z"
+            rel physics:body0 = </smpl_humanoid/bodies/L_Shoulder>
+            rel physics:body1 = </smpl_humanoid/bodies/L_Elbow>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0.25959998, -0.012799993, -0.027499998)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 50
+            float physxLimit:rotX:stiffness = 500
+            float physxLimit:rotY:damping = 50
+            float physxLimit:rotY:stiffness = 500
+            float physxLimit:rotZ:damping = 50
+            float physxLimit:rotZ:stiffness = 500
+        }
+
+        def PhysicsJoint "L_Wrist" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 30
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 300
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 30
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 300
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 30
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 300
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 22.92
+            float limit:rotX:physics:low = -180.0
+            float limit:rotY:physics:high = 17.19
+            float limit:rotY:physics:low = -17.19
+            float limit:rotZ:physics:high = 22.92
+            float limit:rotZ:physics:low = -22.92
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "L_Wrist_x"
+            custom token mjcf:rotY:name = "L_Wrist_y"
+            custom token mjcf:rotZ:name = "L_Wrist_z"
+            rel physics:body0 = </smpl_humanoid/bodies/L_Elbow>
+            rel physics:body1 = </smpl_humanoid/bodies/L_Wrist>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0.24919999, 0.009000003, -0.0012000017)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 30
+            float physxLimit:rotX:stiffness = 300
+            float physxLimit:rotY:damping = 30
+            float physxLimit:rotY:stiffness = 300
+            float physxLimit:rotZ:damping = 30
+            float physxLimit:rotZ:stiffness = 300
+        }
+
+        def PhysicsJoint "L_Hand" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 30
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 300
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 30
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 300
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 30
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 300
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 17.19
+            float limit:rotX:physics:low = -17.19
+            float limit:rotY:physics:high = 51.57
+            float limit:rotY:physics:low = -51.57
+            float limit:rotZ:physics:high = 91.67
+            float limit:rotZ:physics:low = -91.67
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "L_Hand_x"
+            custom token mjcf:rotY:name = "L_Hand_y"
+            custom token mjcf:rotZ:name = "L_Hand_z"
+            rel physics:body0 = </smpl_humanoid/bodies/L_Wrist>
+            rel physics:body1 = </smpl_humanoid/bodies/L_Hand>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0.08399999, -0.008200005, -0.014899999)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 30
+            float physxLimit:rotX:stiffness = 300
+            float physxLimit:rotY:damping = 30
+            float physxLimit:rotY:stiffness = 300
+            float physxLimit:rotZ:damping = 30
+            float physxLimit:rotZ:stiffness = 300
+        }
+
+        def PhysicsJoint "R_Thorax" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 50
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 500
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 50
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 500
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 50
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 500
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 4.58
+            float limit:rotX:physics:low = -10.89
+            float limit:rotY:physics:high = 28.65
+            float limit:rotY:physics:low = -17.19
+            float limit:rotZ:physics:high = 31.51
+            float limit:rotZ:physics:low = -40.11
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "R_Thorax_x"
+            custom token mjcf:rotY:name = "R_Thorax_y"
+            custom token mjcf:rotZ:name = "R_Thorax_z"
+            rel physics:body0 = </smpl_humanoid/bodies/Chest>
+            rel physics:body1 = </smpl_humanoid/bodies/R_Thorax>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-0.0818, 0.1188, -0.0386)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 50
+            float physxLimit:rotX:stiffness = 500
+            float physxLimit:rotY:damping = 50
+            float physxLimit:rotY:stiffness = 500
+            float physxLimit:rotZ:damping = 50
+            float physxLimit:rotZ:stiffness = 500
+        }
+
+        def PhysicsJoint "R_Shoulder" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 50
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 500
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 50
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 500
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 50
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 500
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 97.4
+            float limit:rotX:physics:low = -97.4
+            float limit:rotY:physics:high = 108.86
+            float limit:rotY:physics:low = -80.21
+            float limit:rotZ:physics:high = 97.4
+            float limit:rotZ:physics:low = -85.94
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "R_Shoulder_x"
+            custom token mjcf:rotY:name = "R_Shoulder_y"
+            custom token mjcf:rotZ:name = "R_Shoulder_z"
+            rel physics:body0 = </smpl_humanoid/bodies/R_Thorax>
+            rel physics:body1 = </smpl_humanoid/bodies/R_Shoulder>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-0.096, 0.0326, -0.009100001)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 50
+            float physxLimit:rotX:stiffness = 500
+            float physxLimit:rotY:damping = 50
+            float physxLimit:rotY:stiffness = 500
+            float physxLimit:rotZ:damping = 50
+            float physxLimit:rotZ:stiffness = 500
+        }
+
+        def PhysicsJoint "R_Elbow" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 50
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 500
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 50
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 500
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 50
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 500
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 4.58
+            float limit:rotX:physics:low = -17.19
+            float limit:rotY:physics:high = 180.0
+            float limit:rotY:physics:low = -17.19
+            float limit:rotZ:physics:high = 100.84
+            float limit:rotZ:physics:low = -4.58
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "R_Elbow_x"
+            custom token mjcf:rotY:name = "R_Elbow_y"
+            custom token mjcf:rotZ:name = "R_Elbow_z"
+            rel physics:body0 = </smpl_humanoid/bodies/R_Shoulder>
+            rel physics:body1 = </smpl_humanoid/bodies/R_Elbow>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-0.2537, -0.013300002, -0.0214)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 50
+            float physxLimit:rotX:stiffness = 500
+            float physxLimit:rotY:damping = 50
+            float physxLimit:rotY:stiffness = 500
+            float physxLimit:rotZ:damping = 50
+            float physxLimit:rotZ:stiffness = 500
+        }
+
+        def PhysicsJoint "R_Wrist" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 30
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 300
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 30
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 300
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 30
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 300
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 22.92
+            float limit:rotX:physics:low = -180.0
+            float limit:rotY:physics:high = 17.19
+            float limit:rotY:physics:low = -17.19
+            float limit:rotZ:physics:high = 22.92
+            float limit:rotZ:physics:low = -22.92
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "R_Wrist_x"
+            custom token mjcf:rotY:name = "R_Wrist_y"
+            custom token mjcf:rotZ:name = "R_Wrist_z"
+            rel physics:body0 = </smpl_humanoid/bodies/R_Elbow>
+            rel physics:body1 = </smpl_humanoid/bodies/R_Wrist>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-0.2553, 0.007799998, -0.005599998)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 30
+            float physxLimit:rotX:stiffness = 300
+            float physxLimit:rotY:damping = 30
+            float physxLimit:rotY:stiffness = 300
+            float physxLimit:rotZ:damping = 30
+            float physxLimit:rotZ:stiffness = 300
+        }
+
+        def PhysicsJoint "R_Hand" (
+            prepend apiSchemas = ["PhysxJointAPI", "PhysicsLimitAPI:transX", "PhysicsLimitAPI:transY", "PhysicsLimitAPI:transZ", "PhysicsLimitAPI:rotX", "PhysxLimitAPI:rotX", "PhysicsJointStateAPI:angular", "PhysicsDriveAPI:rotX", "PhysicsLimitAPI:rotY", "PhysxLimitAPI:rotY", "PhysicsDriveAPI:rotY", "PhysicsLimitAPI:rotZ", "PhysxLimitAPI:rotZ", "PhysicsDriveAPI:rotZ"]
+        )
+        {
+            float drive:rotX:physics:damping = 30
+            float drive:rotX:physics:maxForce = 3.4028235e38
+            float drive:rotX:physics:stiffness = 300
+            uniform token drive:rotX:physics:type = "force"
+            float drive:rotY:physics:damping = 30
+            float drive:rotY:physics:maxForce = 3.4028235e38
+            float drive:rotY:physics:stiffness = 300
+            uniform token drive:rotY:physics:type = "force"
+            float drive:rotZ:physics:damping = 30
+            float drive:rotZ:physics:maxForce = 3.4028235e38
+            float drive:rotZ:physics:stiffness = 300
+            uniform token drive:rotZ:physics:type = "force"
+            float limit:rotX:physics:high = 17.19
+            float limit:rotX:physics:low = -17.19
+            float limit:rotY:physics:high = 51.57
+            float limit:rotY:physics:low = -51.57
+            float limit:rotZ:physics:high = 91.67
+            float limit:rotZ:physics:low = -91.67
+            float limit:transX:physics:high = -1
+            float limit:transX:physics:low = 1
+            float limit:transY:physics:high = -1
+            float limit:transY:physics:low = 1
+            float limit:transZ:physics:high = -1
+            float limit:transZ:physics:low = 1
+            custom token mjcf:rotX:name = "R_Hand_x"
+            custom token mjcf:rotY:name = "R_Hand_y"
+            custom token mjcf:rotZ:name = "R_Hand_z"
+            rel physics:body0 = </smpl_humanoid/bodies/R_Wrist>
+            rel physics:body1 = </smpl_humanoid/bodies/R_Hand>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-0.08460003, -0.006099999, -0.010299999)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physxJoint:armature = 0.02
+            float physxLimit:rotX:damping = 30
+            float physxLimit:rotX:stiffness = 300
+            float physxLimit:rotY:damping = 30
+            float physxLimit:rotY:stiffness = 300
+            float physxLimit:rotZ:damping = 30
+            float physxLimit:rotZ:stiffness = 300
+        }
+    }
+
+}
+

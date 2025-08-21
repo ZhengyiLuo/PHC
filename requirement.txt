@@ -22,7 +22,7 @@ lxml
 human_body_prior
 autograd
 scikit-learn
-chumpy
+git+https://github.com/mattloper/chumpy
 patchelf
 rl-games==1.1.4
 wandb

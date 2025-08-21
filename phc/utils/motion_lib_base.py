@@ -11,7 +11,7 @@ import os
 import yaml
 from tqdm import tqdm
 
-from phc.utils import torch_utils
+import phc.utils.isaacgym_torch_utils as torch_utils
 import joblib
 import torch
 from poselib.poselib.skeleton.skeleton3d import SkeletonMotion, SkeletonState

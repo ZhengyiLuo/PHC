@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from phc.utils import torch_utils
+from phc.utils import isaacgym_torch_utils as torch_utils
 
 from easydict import EasyDict as edict
 from phc.learning.vq_quantizer import EMAVectorQuantizer, Quantizer
