@@ -26,7 +26,12 @@ import sys
 
 # add argparse arguments
 parser = argparse.ArgumentParser(description="Tutorial on using the interactive scene interface.")
-parser.add_argument("--num_envs", type=int, default=2, help="Number of environments to spawn.")
+parser.add_argument("--num_envs", type=int, default=1, help="Number of environments to spawn.")
+parser.add_argument("--motion_file", type=str, default="sample_data/amass_isaac_standing_upright_slim.pkl", help="Path to motion file to load.")
+parser.add_argument("--policy_path", type=str, default="output/HumanoidIm/phc_3/Humanoid.pth", help="Path to policy checkpoint file.")
+parser.add_argument("--action_offset_file", type=str, default="phc/data/action_offset_smpl.pkl", help="Path to action offset file.")
+parser.add_argument("--humanoid_type", type=str, default="smpl", choices=["smpl", "smplx"], help="Type of humanoid model to use.")
+parser.add_argument("--num_motions", type=int, default=10, help="Number of motions to load from motion library.")
 # append AppLauncher cli args
 AppLauncher.add_app_launcher_args(parser)
 # parse the arguments
@@ -141,6 +146,7 @@ class SMPLEnvCfg(DirectRLEnvCfg):
     
     observation_space = None
     action_space = None
+    motion_file = args_cli.motion_file
     
 
 class SMPLEnv(DirectRLEnv):
@@ -162,8 +168,7 @@ class SMPLEnv(DirectRLEnv):
         self.gym_to_sim_dof = [gym_joint_names.index(n) for n in sim_joint_names]
         self.gym_to_sim_body = [SMPL_NAMES.index(n) for n in sim_body_names]
         
-        motion_file = "data/amass/pkls/amass_isaac_run_upright_slim.pkl"
-        self._load_motion(motion_file)
+        self._load_motion(cfg.motion_file)
         
         keyboard_interface = Se2Keyboard()
         keyboard_interface.add_callback("R", self.reset)
@@ -201,7 +206,6 @@ class SMPLEnv(DirectRLEnv):
             self._has_upright_start = False
         else:
             self._has_upright_start = True
-        self._has_upright_start = True
         
         motion_lib_cfg = EasyDict({
                         "has_upright_start": self._has_upright_start,
@@ -261,6 +265,7 @@ class SMPLEnv(DirectRLEnv):
         motion_lib = MotionLibSMPL(motion_lib_cfg)
         motion_lib.load_motions(skeleton_trees=skeleton_trees, 
                                 gender_betas=[torch.from_numpy(gender_beta)] * num_motions,
+                                limb_weights=[torch.from_numpy(gender_beta)] * num_motions, # not used.
                                 random_sample=False,
                                 start_idx = start_idx)
         self._motion_lib = motion_lib
@@ -301,17 +306,16 @@ class SMPLEnv(DirectRLEnv):
         body_vel_subset = body_vel
         body_ang_vel_subset = body_ang_vel
         
-        ref_rb_pos_subset = ref_rb_pos[:, self.sim_to_gym_body]
-        ref_rb_rot_subset = wxyz_to_xyzw(ref_rb_rot[:, self.sim_to_gym_body])
-        ref_body_vel_subset = ref_body_vel[:, self.sim_to_gym_body]
-        ref_body_ang_vel_subset = ref_body_ang_vel[:, self.sim_to_gym_body]
-        
-        # ref_joint_pos = ref_dof_pos
-        # ref_joint_vel = ref_dof_vel
+        ref_rb_pos_subset = ref_rb_pos
+        ref_rb_rot_subset = ref_rb_rot
+        ref_body_vel_subset = ref_body_vel
+        ref_body_ang_vel_subset = ref_body_ang_vel
         
         # Data replay
+        # ref_joint_pos = ref_dof_pos[:, self.gym_to_sim_dof]
+        # ref_joint_vel = ref_dof_vel[:, self.gym_to_sim_dof]
         
-        # ref_root_state = torch.cat([ref_root_pos, ref_root_rot, ref_root_vel, ref_root_ang_vel], dim = -1)
+        # ref_root_state = torch.cat([ref_root_pos, xyzw_to_wxyz(ref_root_rot), ref_root_vel, ref_root_ang_vel], dim = -1)
         # self.robot.write_root_state_to_sim(ref_root_state, None)
         # self.robot.write_joint_state_to_sim(ref_joint_pos, ref_joint_vel, None, None)
         
@@ -337,12 +341,11 @@ class SMPLEnv(DirectRLEnv):
         ref_root_pos, ref_root_rot, ref_dof_pos, ref_root_vel, ref_root_ang_vel, ref_dof_vel, ref_smpl_params, ref_pose_aa, ref_rb_pos, ref_rb_rot, ref_body_vel, ref_body_ang_vel = \
                         motion_res["root_pos"], motion_res["root_rot"], motion_res["dof_pos"], motion_res["root_vel"], motion_res["root_ang_vel"], motion_res["dof_vel"], \
                         motion_res["motion_bodies"], motion_res["motion_aa"], motion_res["rg_pos"], motion_res["rb_rot"], motion_res["body_vel"], motion_res["body_ang_vel"]
-        init_joint_pos = ref_dof_pos
-        init_joint_vel = ref_dof_vel
+        init_joint_pos = ref_dof_pos[:, self.gym_to_sim_dof]
+        init_joint_vel = ref_dof_vel[:, self.gym_to_sim_dof]
         
-        # ref_joint_pos = torch.from_numpy(sRot.from_rotvec(ref_joint_pos.reshape(-1, 3)).as_euler("xyz")).to(ref_joint_pos).reshape(scene.num_envs, -1)
         
-        init_root_state = torch.cat([ref_root_pos, ref_root_rot, ref_root_vel, ref_root_ang_vel], dim = -1)
+        init_root_state = torch.cat([ref_root_pos, xyzw_to_wxyz(ref_root_rot), ref_root_vel, ref_root_ang_vel], dim = -1)
         self.robot.write_root_state_to_sim(init_root_state, env_ids)
         self.robot.write_joint_state_to_sim(init_joint_pos, init_joint_vel, None, env_ids)
     
@@ -354,19 +357,16 @@ def main():
     
     
     device = env.device
-    if env.humanoid_type == "smplx":
-        # policy_path = "output/HumanoidIm/phc_x_pnn/Humanoid.pth"
-        policy_path = "output/HumanoidIm/smplx_im_upright_1/Humanoid_00117000.pth"
-    else:
-        policy_path = "output/HumanoidIm/phc_3/Humanoid.pth"
+    
+    # Use configurable policy path or fall back to defaults
+    policy_path = args_cli.policy_path
+    
     
     check_points = [torch_ext.load_checkpoint(policy_path)]
     pnn = load_pnn(check_points[0], num_prim = 3, has_lateral = False, activation = "silu", device = device)
     running_mean, running_var = check_points[-1]['running_mean_std']['running_mean'], check_points[-1]['running_mean_std']['running_var']
-    if env.humanoid_type == "smplx":
-        action_offset = joblib.load("data/action_offset_smplx.pkl")
-    else:
-        action_offset = joblib.load("data/action_offset_smpl.pkl")
+    
+    action_offset = joblib.load(args_cli.action_offset_file)
         
     pd_action_offset = action_offset[0]
     pd_action_scale = action_offset[1]
@@ -374,8 +374,6 @@ def main():
     time = 0 
     obs_dict, extras = env.reset()
     while True:
-        
-        
         self_obs, task_obs = obs_dict["self_obs"], obs_dict["task_obs"]
         full_obs = torch.cat([self_obs, task_obs], dim = -1)
         full_obs = ((full_obs - running_mean.float()) / torch.sqrt(running_var.float() + 1e-05))
@@ -397,3 +395,5 @@ if __name__ == "__main__":
     main()
     # close sim app
     simulation_app.close()
+    
+    
