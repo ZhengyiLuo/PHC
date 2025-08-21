@@ -35,6 +35,8 @@ Official implementation of ICCV 2023 paper: "Perpetual Humanoid Control for Real
 
 ## News 🚩
 
+[August 21, 2025] Adding sample eval code in IsaacLab. PHC policy can directly be inferred in IsaacLab. `python scripts/eval_in_isaaclab.py`. 
+
 [December 10, 2024] Release process for generating offline dataset (PHC_Act) for offline RL or behavior cloning (developed by [@kangnil](https://github.com/kangnil)). See [docs/offline_dataset.md](docs/offline_dataset.md) for more details. 
 
 [December 9, 2024] Release retargeting [documentation](docs/retargeting.md) (for retargeting to your own humanoids using SMPL data). 
